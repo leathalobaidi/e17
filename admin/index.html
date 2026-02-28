@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E17Studios — CRM Dashboard</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #09090f;
+    --surface: #111118;
+    --surface-2: #16161f;
+    --surface-3: #1c1c28;
+    --border: #25253a;
+    --border-light: #2e2e45;
+    --text: #e8e8f0;
+    --text-dim: #8888a0;
+    --text-muted: #55556a;
+    --accent: #e74c3c;
+    --accent-dim: rgba(231, 76, 60, 0.15);
+    --accent-glow: rgba(231, 76, 60, 0.3);
+    --green: #2ecc71;
+    --green-dim: rgba(46, 204, 113, 0.15);
+    --blue: #3498db;
+    --blue-dim: rgba(52, 152, 219, 0.15);
+    --yellow: #f39c12;
+    --yellow-dim: rgba(243, 156, 18, 0.15);
+    --purple: #9b59b6;
+    --purple-dim: rgba(155, 89, 182, 0.15);
+    --orange: #e67e22;
+    --orange-dim: rgba(230, 126, 34, 0.15);
+    --sidebar-w: 260px;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sidebar-logo .logo-icon {
+    width: 38px;
+    height: 38px;
+    background: var(--accent);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    color: #fff;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo .logo-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-logo .logo-text strong {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .sidebar-logo .logo-text span {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 1px;
+  }
+
+  .sidebar-nav { padding: 16px 0; flex: 1; }
+
+  .nav-group { margin-bottom: 8px; }
+
+  .nav-group-label {
+    padding: 6px 20px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .nav-link:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+
+  .nav-link.active {
+    color: var(--accent);
+    background: var(--accent-dim);
+    border-left-color: var(--accent);
+  }
+
+  .nav-link .nav-icon {
+    width: 18px;
+    text-align: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sidebar-footer .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer .user-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-footer .user-info strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .sidebar-footer .user-info span {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ── Main Content ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    padding: 0;
+    min-width: 0;
+  }
+
+  /* ── Top Header ── */
+  .top-header {
+    padding: 24px 32px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .top-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .top-header h1 span {
+    color: var(--accent);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    color: var(--text-dim);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+  }
+
+  .btn:hover {
+    border-color: var(--border-light);
+    color: var(--text);
+    background: var(--surface-3);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: #d44235;
+    border-color: #d44235;
+    color: #fff;
+  }
+
+  .date-badge {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 6px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+
+  /* ── Stats Bar ── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    padding: 24px 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+  }
+
+  .stat-card:nth-child(1)::before { background: var(--blue); }
+  .stat-card:nth-child(2)::before { background: var(--accent); }
+  .stat-card:nth-child(3)::before { background: var(--green); }
+  .stat-card:nth-child(4)::before { background: var(--purple); }
+  .stat-card:nth-child(5)::before { background: var(--yellow); }
+
+  .stat-card:hover {
+    border-color: var(--border-light);
+    transform: translateY(-1px);
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-card:nth-child(1) .stat-value { color: var(--blue); }
+  .stat-card:nth-child(2) .stat-value { color: var(--accent); }
+  .stat-card:nth-child(3) .stat-value { color: var(--green); }
+  .stat-card:nth-child(4) .stat-value { color: var(--purple); }
+  .stat-card:nth-child(5) .stat-value { color: var(--yellow); }
+
+  .stat-change {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .stat-change.up { color: var(--green); }
+  .stat-change.neutral { color: var(--text-muted); }
+
+  /* ── Content Grid ── */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    padding: 0 32px 32px;
+  }
+
+  .content-main { min-width: 0; }
+  .content-aside { min-width: 0; }
+
+  /* ── Section ── */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header h2 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+
+  .section-header .section-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  /* ── Pipeline Kanban ── */
+  .pipeline {
+    padding: 20px;
+    overflow-x: auto;
+  }
+
+  .pipeline-cols {
+    display: flex;
+    gap: 12px;
+    min-width: 700px;
+  }
+
+  .pipeline-col {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .pipeline-col-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 0 4px;
+  }
+
+  .pipeline-col-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+  }
+
+  .pipeline-col-count {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--surface-3);
+    color: var(--text-muted);
+  }
+
+  .pipeline-col:nth-child(1) .pipeline-col-count { background: var(--blue-dim); color: var(--blue); }
+  .pipeline-col:nth-child(2) .pipeline-col-count { background: var(--orange-dim); color: var(--orange); }
+  .pipeline-col:nth-child(3) .pipeline-col-count { background: var(--yellow-dim); color: var(--yellow); }
+  .pipeline-col:nth-child(4) .pipeline-col-count { background: var(--purple-dim); color: var(--purple); }
+  .pipeline-col:nth-child(5) .pipeline-col-count { background: var(--green-dim); color: var(--green); }
+
+  .pipeline-bar {
+    height: 4px;
+    border-radius: 2px;
+    margin-bottom: 12px;
+    background: var(--surface-3);
+    overflow: hidden;
+  }
+
+  .pipeline-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+
+  .pipeline-col:nth-child(1) .pipeline-bar-fill { background: var(--blue); width: 100%; }
+  .pipeline-col:nth-child(2) .pipeline-bar-fill { background: var(--orange); width: 60%; }
+  .pipeline-col:nth-child(3) .pipeline-bar-fill { background: var(--yellow); width: 47%; }
+  .pipeline-col:nth-child(4) .pipeline-bar-fill { background: var(--purple); width: 47%; }
+  .pipeline-col:nth-child(5) .pipeline-bar-fill { background: var(--green); width: 40%; }
+
+  .pipeline-cards { display: flex; flex-direction: column; gap: 8px; }
+
+  .pipeline-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .pipeline-card:hover {
+    border-color: var(--border-light);
+    background: var(--surface-3);
+    transform: translateY(-1px);
+  }
+
+  .pipeline-card-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pipeline-card-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pipeline-card-score {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-left: auto;
+  }
+
+  .score-hot { background: var(--accent-dim); color: var(--accent); }
+  .score-warm { background: var(--yellow-dim); color: var(--yellow); }
+  .score-cool { background: var(--blue-dim); color: var(--blue); }
+
+  .pipeline-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 16px;
+    padding-top: 28px;
+    flex-shrink: 0;
+    width: 20px;
+  }
+
+  /* ── Lead Table ── */
+  .lead-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .lead-table thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    white-space: nowrap;
+  }
+
+  .lead-table thead th:first-child { border-radius: 0; }
+  .lead-table thead th:last-child { border-radius: 0; }
+
+  .lead-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s ease;
+    cursor: pointer;
+  }
+
+  .lead-table tbody tr:last-child { border-bottom: none; }
+  .lead-table tbody tr:hover { background: var(--surface-2); }
+
+  .lead-table td {
+    padding: 14px 16px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .lead-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .lead-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .lead-name-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .lead-name-text strong {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 13px;
+  }
+
+  .lead-name-text span {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .stars {
+    color: var(--yellow);
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .stars .empty { color: var(--border-light); }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .badge-discovered { background: var(--blue-dim); color: var(--blue); }
+  .badge-discovered .badge-dot { background: var(--blue); }
+
+  .badge-contacted { background: var(--orange-dim); color: var(--orange); }
+  .badge-contacted .badge-dot { background: var(--orange); }
+
+  .badge-preview { background: var(--yellow-dim); color: var(--yellow); }
+  .badge-preview .badge-dot { background: var(--yellow); }
+
+  .badge-replied { background: var(--purple-dim); color: var(--purple); }
+  .badge-replied .badge-dot { background: var(--purple); }
+
+  .badge-paying { background: var(--green-dim); color: var(--green); }
+  .badge-paying .badge-dot { background: var(--green); }
+
+  .lead-score {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .lead-score.high {
+    background: var(--accent-dim);
+    color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-dim);
+  }
+
+  .lead-score.medium {
+    background: var(--yellow-dim);
+    color: var(--yellow);
+    box-shadow: 0 0 0 2px var(--yellow-dim);
+  }
+
+  .lead-score.low {
+    background: var(--blue-dim);
+    color: var(--blue);
+    box-shadow: 0 0 0 2px var(--blue-dim);
+  }
+
+  .lead-actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  .lead-action-btn {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: all 0.15s ease;
+  }
+
+  .lead-action-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  /* ── Activity Feed ── */
+  .activity-feed { padding: 16px 20px; }
+
+  .activity-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .activity-item:last-child { border-bottom: none; }
+
+  .activity-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .activity-icon.sent { background: var(--blue-dim); color: var(--blue); }
+  .activity-icon.reply { background: var(--green-dim); color: var(--green); }
+  .activity-icon.view { background: var(--yellow-dim); color: var(--yellow); }
+  .activity-icon.payment { background: var(--accent-dim); color: var(--accent); }
+  .activity-icon.build { background: var(--purple-dim); color: var(--purple); }
+
+  .activity-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .activity-text {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .activity-text strong {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .activity-time {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  /* ── Revenue Projection ── */
+  .revenue-section { padding: 20px; }
+
+  .revenue-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .revenue-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+  }
+
+  .revenue-card-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .revenue-card-value {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .revenue-card-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ── Revenue Chart (CSS only) ── */
+  .revenue-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 120px;
+    padding: 0 4px;
+    margin-top: 16px;
+  }
+
+  .chart-bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .chart-bar {
+    width: 100%;
+    border-radius: 3px 3px 0 0;
+    min-height: 4px;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .chart-bar.actual { background: var(--accent); }
+  .chart-bar.projected { background: var(--accent); opacity: 0.35; border: 1px dashed var(--accent); background: transparent; }
+
+  .chart-bar-group:hover .chart-bar { opacity: 1; }
+
+  .chart-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  /* ── Pipeline Conversion Funnel ── */
+  .funnel {
+    padding: 20px;
+  }
+
+  .funnel-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .funnel-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+    width: 90px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .funnel-bar-track {
+    flex: 1;
+    height: 24px;
+    background: var(--surface-3);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .funnel-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.9);
+    transition: width 0.6s ease;
+  }
+
+  .funnel-pct {
+    font-size: 12px;
+    font-weight: 600;
+    width: 42px;
+    text-align: left;
+    flex-shrink: 0;
+  }
+
+  /* ── Quick Actions ── */
+  .quick-actions {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .quick-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    cursor: pointer;
+  }
+
+  .quick-action-btn:hover {
+    border-color: var(--accent);
+    color: var(--text);
+    background: var(--surface-3);
+  }
+
+  .quick-action-btn .qa-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    background: var(--accent-dim);
+    color: var(--accent);
+  }
+
+  .quick-action-btn .qa-arrow {
+    margin-left: auto;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1200px) {
+    .content-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 900px) {
+    .stats-bar { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 700px) {
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 16px; }
+    .content-grid { padding: 0 16px 16px; }
+    .top-header { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════ SIDEBAR ════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">E17</div>
+    <div class="logo-text">
+      <strong>E17Studios</strong>
+      <span>Admin Panel</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <!-- Pipeline -->
+    <div class="nav-group">
+      <div class="nav-group-label">Pipeline</div>
+      <a href="/admin/" class="nav-link active">
+        <span class="nav-icon">&#9633;</span> CRM Dashboard
+      </a>
+      <a href="/admin/analytics.html" class="nav-link">
+        <span class="nav-icon">&#9672;</span> Analytics
+      </a>
+    </div>
+
+    <!-- CRM -->
+    <div class="nav-group">
+      <div class="nav-group-label">CRM</div>
+      <a href="/outreach/" class="nav-link">
+        <span class="nav-icon">&#9993;</span> Outreach Agent
+      </a>
+      <a href="/dashboard.html" class="nav-link">
+        <span class="nav-icon">&#9881;</span> Builder Dashboard
+      </a>
+    </div>
+
+    <!-- Sales Tools -->
+    <div class="nav-group">
+      <div class="nav-group-label">Sales Tools</div>
+      <a href="/admin/roi-calculator.html" class="nav-link">
+        <span class="nav-icon">&#9736;</span> ROI Calculator
+      </a>
+      <a href="/admin/competitor-analysis.html" class="nav-link">
+        <span class="nav-icon">&#8982;</span> Competitor Analysis
+      </a>
+      <a href="/admin/whatsapp-templates.html" class="nav-link">
+        <span class="nav-icon">&#9742;</span> WhatsApp Templates
+      </a>
+      <a href="/emails/preview.html" class="nav-link">
+        <span class="nav-icon">&#9993;</span> Email Templates
+      </a>
+      <a href="/admin/sales-script.html" class="nav-link">
+        <span class="nav-icon">&#9998;</span> Sales Script
+      </a>
+    </div>
+
+    <!-- Client Tools -->
+    <div class="nav-group">
+      <div class="nav-group-label">Client Tools</div>
+      <a href="/admin/client-success.html" class="nav-link">
+        <span class="nav-icon">&#9650;</span> Success Metrics
+      </a>
+      <a href="/admin/client-report.html" class="nav-link">
+        <span class="nav-icon">&#9635;</span> Client Report
+      </a>
+      <a href="/admin/expansion-planner.html" class="nav-link">
+        <span class="nav-icon">&#8862;</span> Expansion Planner
+      </a>
+      <a href="/admin/client-dashboard.html" class="nav-link">
+        <span class="nav-icon">&#9638;</span> Client Dashboard
+      </a>
+      <a href="/admin/invoice.html" class="nav-link">
+        <span class="nav-icon">&#9635;</span> Invoice Template
+      </a>
+      <a href="/admin/social-calendar.html" class="nav-link">
+        <span class="nav-icon">&#9733;</span> Social Calendar
+      </a>
+      <a href="/admin/ab-testing.html" class="nav-link">
+        <span class="nav-icon">&#8982;</span> A/B Testing
+      </a>
+      <a href="/admin/deploy-guide.html" class="nav-link">
+        <span class="nav-icon">&#9654;</span> Deploy Guide
+      </a>
+    </div>
+
+    <!-- Public Site -->
+    <div class="nav-group">
+      <div class="nav-group-label">Public Site</div>
+      <a href="/e17studios/" class="nav-link">
+        <span class="nav-icon">&#9750;</span> Landing Page
+      </a>
+      <a href="/e17studios/case-studies.html" class="nav-link">
+        <span class="nav-icon">&#9733;</span> Case Studies
+      </a>
+      <a href="/e17studios/pricing-breakdown.html" class="nav-link">
+        <span class="nav-icon">&#163;</span> Pricing
+      </a>
+      <a href="/e17studios/audit.html" class="nav-link">
+        <span class="nav-icon">&#10003;</span> Free Audit
+      </a>
+      <a href="/e17studios/blog.html" class="nav-link">
+        <span class="nav-icon">&#9998;</span> Blog
+      </a>
+      <a href="/e17studios/referral.html" class="nav-link">
+        <span class="nav-icon">&#9734;</span> Referral Program
+      </a>
+      <a href="/e17studios/reviews.html" class="nav-link">
+        <span class="nav-icon">&#9733;</span> Reviews
+      </a>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-group">
+      <div class="nav-group-label">Navigation</div>
+      <a href="/sitemap.html" class="nav-link">
+        <span class="nav-icon">&#9776;</span> Sitemap
+      </a>
+      <a href="/onboarding/" class="nav-link">
+        <span class="nav-icon">&#9654;</span> Onboarding
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="avatar">LH</div>
+    <div class="user-info">
+      <strong>Leath Sheridan</strong>
+      <span>Founder</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ════════════ MAIN CONTENT ════════════ -->
+<main class="main">
+
+  <!-- Top Header -->
+  <div class="top-header">
+    <h1>CRM <span>Dashboard</span></h1>
+    <div class="header-actions">
+      <span class="date-badge">28 Feb 2026</span>
+      <a href="/outreach/" class="btn">&#9993; Run Outreach</a>
+      <button class="btn btn-primary" onclick="location.reload()">&#8635; Refresh</button>
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-label">Businesses Found</div>
+      <div class="stat-value">34</div>
+      <div class="stat-change up">+6 this week</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">No Website</div>
+      <div class="stat-value">22</div>
+      <div class="stat-change neutral">65% of total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Sites Built</div>
+      <div class="stat-value">6</div>
+      <div class="stat-change up">+1 this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Paying Clients</div>
+      <div class="stat-value">6</div>
+      <div class="stat-change up">+4 this quarter</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Monthly Revenue</div>
+      <div class="stat-value">&pound;1,740</div>
+      <div class="stat-change up">+&pound;1,642 vs last quarter</div>
+    </div>
+  </div>
+
+  <!-- Content Grid -->
+  <div class="content-grid">
+
+    <!-- ──── LEFT COLUMN ──── -->
+    <div class="content-main">
+
+      <!-- Pipeline Kanban -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Pipeline Overview</h2>
+          <span class="section-badge">40 Total Leads</span>
+        </div>
+        <div class="pipeline">
+          <div class="pipeline-cols">
+            <!-- Discovered -->
+            <div class="pipeline-col">
+              <div class="pipeline-col-header">
+                <span class="pipeline-col-title">Discovered</span>
+                <span class="pipeline-col-count">15</span>
+              </div>
+              <div class="pipeline-bar"><div class="pipeline-bar-fill"></div></div>
+              <div class="pipeline-cards">
+                <div class="pipeline-card">
+                  <div class="pipeline-card-name">Hair by Tina</div>
+                  <div class="pipeline-card-meta">
+                    <span>&#9733; 4.8</span>
+                    <span>47 reviews</span>
+                    <span class="pipeline-card-score score-hot">92</span>
+                  </div>
+                </div>
+                <div class="pipeline-card">
+                  <div class="pipeline-card-name">E17 Nails</div>
+                  <div class="pipeline-card-meta">
+                    <span>&#9733; 4.6</span>
+                    <span>31 reviews</span>
+                    <span class="pipeline-card-score score-warm">78</span>
+                  </div>
+                </div>
+                <div class="pipeline-card">
+                  <div class="pipeline-card-name">Walthamstow Kebab</div>
+                  <div class="pipeline-card-meta">
+                    <span>&#9733; 4.3</span>
+                    <span>89 reviews</span>
+                    <span class="pipeline-card-score score-warm">71</span>
+                  </div>
+                </div>
+                <div class="pipeline-card" style="opacity:0.5; text-align:center; border-style:dashed; font-size:12px; color:var(--text-muted); padding:10px;">
+                  +19 more leads
+                </div>
+              </div>
+            </div>
+
+            <div class="pipeline-arrow">&#8594;</div>
+
+            <!-- Contacted -->
+            <div class="pipeline-col">
+              <div class="pipeline-col-header">
+                <span class="pipeline-col-title">Contacted</span>
+                <span class="pipeline-col-count">9</span>
+              </div>
+              <div class="pipeline-bar"><div class="pipeline-bar-fill"></div></div>
+              <div class="pipeline-cards">
+                <div class="pipeline-card">
+                  <div class="pipeline-card-name">E17 Pet Grooming</div>
+                  <div class="pipeline-card-meta">
+                    <span>&#9733; 4.8</span>
+                    <span>Via WhatsApp</span>
+                    <span class="pipeline-card-score score-hot">85</span>
+                  </div>
+                </div>
+                <div class="pipeline-card">
+                  <div class="pipeline-card-name">Fresh Cuts Barber</div>
+                  <div class="pipeline-card-meta">
+                    <span>&#9733; 4.2</span>
+                    <span>Via Email</span>
+                    <span class="pipeline-card-score score-warm">68</span>
+                  </div>
+                </div>
+                <div class="pipeline-card" style="opacity:0.5; text-align:center; border-style:dashed; font-size:12px; color:var(--text-muted); padding:10px;">
+                  +1 more
+                </div>
+              </div>
+            </div>
+
+            <div class="pipeline-arrow">&#8594;</div>
+
+            <!-- Preview Sent -->
+            <div class="pipeline-col">
+              <div class="pipeline-col-header">
+                <span class="pipeline-col-title">Preview Sent</span>
+                <span class="pipeline-col-count">7</span>
+              </div>
+              <div class="pipeline-bar"><div class="pipeline-bar-fill"></div></div>
+              <div class="pipeline-cards">
+                <div class="pipeline-card">
+                  <div class="pipeline-card-name">Star Dry Cleaners</div>
+                  <div class="pipeline-card-meta">
+                    <span>&#9733; 4.5</span>
+                    <span>Viewed 2x</span>
+                    <span class="pipeline-card-score score-warm">76</span>
+                  </div>
+                </div>
+                <div class="pipeline-card" style="opacity:0.5; text-align:center; border-style:dashed; font-size:12px; color:var(--text-muted); padding:10px;">
+                  awaiting reply
+                </div>
+              </div>
+            </div>
+
+            <div class="pipeline-arrow">&#8594;</div>
+
+            <!-- Replied -->
+            <div class="pipeline-col">
+              <div class="pipeline-col-header">
+                <span class="pipeline-col-title">Replied</span>
+                <span class="pipeline-col-count">2</span>
+              </div>
+              <div class="pipeline-bar"><div class="pipeline-bar-fill"></div></div>
+              <div class="pipeline-cards">
+                <div class="pipeline-card">
+                  <div class="pipeline-card-name">E17 Pet Grooming</div>
+                  <div class="pipeline-card-meta">
+                    <span>&#9733; 4.8</span>
+                    <span>Wants pricing</span>
+                    <span class="pipeline-card-score score-hot">85</span>
+                  </div>
+                </div>
+                <div class="pipeline-card">
+                  <div class="pipeline-card-name">Fresh Cuts</div>
+                  <div class="pipeline-card-meta">
+                    <span>&#9733; 4.2</span>
+                    <span>Has questions</span>
+                    <span class="pipeline-card-score score-warm">68</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pipeline-arrow">&#8594;</div>
+
+            <!-- Paying -->
+            <div class="pipeline-col">
+              <div class="pipeline-col-header">
+                <span class="pipeline-col-title">Paying</span>
+                <span class="pipeline-col-count">6</span>
+              </div>
+              <div class="pipeline-bar"><div class="pipeline-bar-fill"></div></div>
+              <div class="pipeline-cards">
+                <div class="pipeline-card" style="border-color: var(--green); border-left: 3px solid var(--green);">
+                  <div class="pipeline-card-name">Morris Dry Cleaners</div>
+                  <div class="pipeline-card-meta">
+                    <span>&pound;290/mo</span>
+                    <span>Since Oct</span>
+                    <span class="pipeline-card-score score-hot">&#10003;</span>
+                  </div>
+                </div>
+                <div class="pipeline-card" style="border-color: var(--green); border-left: 3px solid var(--green);">
+                  <div class="pipeline-card-name">Vanish Cleaners</div>
+                  <div class="pipeline-card-meta">
+                    <span>&pound;290/mo</span>
+                    <span>Since Nov</span>
+                    <span class="pipeline-card-score score-hot">&#10003;</span>
+                  </div>
+                </div>
+                <div class="pipeline-card" style="border-color: var(--green); border-left: 3px solid var(--green);">
+                  <div class="pipeline-card-name">Lagoon Eco-Friendly</div>
+                  <div class="pipeline-card-meta">
+                    <span>&pound;290/mo</span>
+                    <span>Since Dec</span>
+                    <span class="pipeline-card-score score-hot">&#10003;</span>
+                  </div>
+                </div>
+                <div class="pipeline-card" style="border-color: var(--green); border-left: 3px solid var(--green);">
+                  <div class="pipeline-card-name">Pressed 2 Perfection</div>
+                  <div class="pipeline-card-meta">
+                    <span>&pound;290/mo</span>
+                    <span>Since Jan</span>
+                    <span class="pipeline-card-score score-hot">&#10003;</span>
+                  </div>
+                </div>
+                <div class="pipeline-card" style="border-color: var(--green); border-left: 3px solid var(--green);">
+                  <div class="pipeline-card-name">Apollo Dry Cleaners</div>
+                  <div class="pipeline-card-meta">
+                    <span>&pound;290/mo</span>
+                    <span>Since Jan</span>
+                    <span class="pipeline-card-score score-hot">&#10003;</span>
+                  </div>
+                </div>
+                <div class="pipeline-card" style="border-color: var(--green); border-left: 3px solid var(--green);">
+                  <div class="pipeline-card-name">Supreme Dry Cleaners</div>
+                  <div class="pipeline-card-meta">
+                    <span>&pound;290/mo</span>
+                    <span>Since Feb</span>
+                    <span class="pipeline-card-score score-hot">&#10003;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lead Table -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Top Leads</h2>
+          <span class="section-badge">Ranked by Score</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="lead-table">
+            <thead>
+              <tr>
+                <th>Business</th>
+                <th>Reviews</th>
+                <th>Rating</th>
+                <th>Status</th>
+                <th>Score</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="lead-name">
+                    <div class="lead-avatar" style="background: var(--green-dim); color: var(--green);">M</div>
+                    <div class="lead-name-text">
+                      <strong>Morris Dry Cleaners</strong>
+                      <span>Dry Cleaning &middot; Hoe St</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span style="font-weight: 600; color: var(--text);">156</span>
+                  <span style="font-size: 11px; color: var(--text-muted);"> reviews</span>
+                </td>
+                <td>
+                  <div class="stars">&#9733;&#9733;&#9733;&#9733;<span class="empty">&#9733;</span></div>
+                  <span style="font-size: 12px; color: var(--text-dim);">4.6</span>
+                </td>
+                <td><span class="badge badge-paying"><span class="badge-dot"></span>Paying</span></td>
+                <td><span class="lead-score high">91</span></td>
+                <td>
+                  <div class="lead-actions">
+                    <button class="lead-action-btn" title="View Details">&#9998;</button>
+                    <button class="lead-action-btn" title="Send Message">&#9993;</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="lead-name">
+                    <div class="lead-avatar" style="background: var(--yellow-dim); color: var(--yellow);">V</div>
+                    <div class="lead-name-text">
+                      <strong>Vanish Cleaners</strong>
+                      <span>Laundry &middot; High St</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span style="font-weight: 600; color: var(--text);">89</span>
+                  <span style="font-size: 11px; color: var(--text-muted);"> reviews</span>
+                </td>
+                <td>
+                  <div class="stars">&#9733;&#9733;&#9733;&#9733;<span class="empty">&#9733;</span></div>
+                  <span style="font-size: 12px; color: var(--text-dim);">4.4</span>
+                </td>
+                <td><span class="badge badge-paying"><span class="badge-dot"></span>Paying</span></td>
+                <td><span class="lead-score high">82</span></td>
+                <td>
+                  <div class="lead-actions">
+                    <button class="lead-action-btn" title="View Details">&#9998;</button>
+                    <button class="lead-action-btn" title="Send Message">&#9993;</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="lead-name">
+                    <div class="lead-avatar" style="background: var(--blue-dim); color: var(--blue);">L</div>
+                    <div class="lead-name-text">
+                      <strong>Lagoon Salon</strong>
+                      <span>Hair Salon &middot; Wood St</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span style="font-weight: 600; color: var(--text);">203</span>
+                  <span style="font-size: 11px; color: var(--text-muted);"> reviews</span>
+                </td>
+                <td>
+                  <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                  <span style="font-size: 12px; color: var(--text-dim);">4.7</span>
+                </td>
+                <td><span class="badge badge-paying"><span class="badge-dot"></span>Paying</span></td>
+                <td><span class="lead-score high">88</span></td>
+                <td>
+                  <div class="lead-actions">
+                    <button class="lead-action-btn" title="View Details">&#9998;</button>
+                    <button class="lead-action-btn" title="Send Message">&#9993;</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="lead-name">
+                    <div class="lead-avatar" style="background: var(--accent-dim); color: var(--accent);">P</div>
+                    <div class="lead-name-text">
+                      <strong>Pressed 2 Perfection</strong>
+                      <span>Dry Cleaning &middot; Forest Rd</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span style="font-weight: 600; color: var(--text);">312</span>
+                  <span style="font-size: 11px; color: var(--text-muted);"> reviews</span>
+                </td>
+                <td>
+                  <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                  <span style="font-size: 12px; color: var(--text-dim);">4.9</span>
+                </td>
+                <td><span class="badge badge-paying"><span class="badge-dot"></span>Paying</span></td>
+                <td><span class="lead-score high">94</span></td>
+                <td>
+                  <div class="lead-actions">
+                    <button class="lead-action-btn" title="View Details">&#9998;</button>
+                    <button class="lead-action-btn" title="Send Message">&#9993;</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="lead-name">
+                    <div class="lead-avatar" style="background: var(--purple-dim); color: var(--purple);">A</div>
+                    <div class="lead-name-text">
+                      <strong>Apollo Barbers</strong>
+                      <span>Barbershop &middot; Hoe St</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span style="font-weight: 600; color: var(--text);">67</span>
+                  <span style="font-size: 11px; color: var(--text-muted);"> reviews</span>
+                </td>
+                <td>
+                  <div class="stars">&#9733;&#9733;&#9733;&#9733;<span class="empty">&#9733;</span></div>
+                  <span style="font-size: 12px; color: var(--text-dim);">4.5</span>
+                </td>
+                <td><span class="badge badge-paying"><span class="badge-dot"></span>Paying</span></td>
+                <td><span class="lead-score medium">75</span></td>
+                <td>
+                  <div class="lead-actions">
+                    <button class="lead-action-btn" title="View Details">&#9998;</button>
+                    <button class="lead-action-btn" title="Send Message">&#9993;</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="lead-name">
+                    <div class="lead-avatar" style="background: var(--accent-dim); color: var(--accent);">S</div>
+                    <div class="lead-name-text">
+                      <strong>Supreme Dry Cleaners</strong>
+                      <span>Dry Cleaning &middot; Hoe St</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span style="font-weight: 600; color: var(--text);">423</span>
+                  <span style="font-size: 11px; color: var(--text-muted);"> reviews</span>
+                </td>
+                <td>
+                  <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                  <span style="font-size: 12px; color: var(--text-dim);">4.8</span>
+                </td>
+                <td><span class="badge badge-paying"><span class="badge-dot"></span>Paying</span></td>
+                <td><span class="lead-score high">96</span></td>
+                <td>
+                  <div class="lead-actions">
+                    <button class="lead-action-btn" title="View Details">&#9998;</button>
+                    <button class="lead-action-btn" title="Send Message">&#9993;</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Revenue Projection -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Revenue Projection</h2>
+          <span class="section-badge">&pound;290/client/mo</span>
+        </div>
+        <div class="revenue-section">
+          <div class="revenue-grid">
+            <div class="revenue-card">
+              <div class="revenue-card-label">Current MRR</div>
+              <div class="revenue-card-value" style="color: var(--green);">&pound;1,740</div>
+              <div class="revenue-card-sub">6 clients &middot; avg &pound;290/mo</div>
+            </div>
+            <div class="revenue-card">
+              <div class="revenue-card-label">Pipeline Value</div>
+              <div class="revenue-card-value" style="color: var(--yellow);">&pound;897</div>
+              <div class="revenue-card-sub">3 warm leads in pipeline</div>
+            </div>
+            <div class="revenue-card">
+              <div class="revenue-card-label">3-Month Target</div>
+              <div class="revenue-card-value" style="color: var(--accent);">&pound;2,990</div>
+              <div class="revenue-card-sub">10 clients by Q2 2026</div>
+            </div>
+            <div class="revenue-card">
+              <div class="revenue-card-label">Annual Potential</div>
+              <div class="revenue-card-value" style="color: var(--purple);">&pound;35,880</div>
+              <div class="revenue-card-sub">ARR at 10 clients steady</div>
+            </div>
+          </div>
+
+          <!-- Monthly Revenue Chart -->
+          <div style="margin-top: 8px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--text-dim); margin-bottom: 12px;">Monthly Revenue Trajectory</div>
+            <div class="revenue-chart">
+              <div class="chart-bar-group">
+                <div class="chart-bar actual" style="height: 8%;"></div>
+                <div class="chart-label">Oct</div>
+              </div>
+              <div class="chart-bar-group">
+                <div class="chart-bar actual" style="height: 8%;"></div>
+                <div class="chart-label">Nov</div>
+              </div>
+              <div class="chart-bar-group">
+                <div class="chart-bar actual" style="height: 10%;"></div>
+                <div class="chart-label">Dec</div>
+              </div>
+              <div class="chart-bar-group">
+                <div class="chart-bar actual" style="height: 20%;"></div>
+                <div class="chart-label">Jan</div>
+              </div>
+              <div class="chart-bar-group">
+                <div class="chart-bar actual" style="height: 40%;"></div>
+                <div class="chart-label">Feb</div>
+              </div>
+              <div class="chart-bar-group">
+                <div class="chart-bar projected" style="height: 55%;"></div>
+                <div class="chart-label">Mar</div>
+              </div>
+              <div class="chart-bar-group">
+                <div class="chart-bar projected" style="height: 70%;"></div>
+                <div class="chart-label">Apr</div>
+              </div>
+              <div class="chart-bar-group">
+                <div class="chart-bar projected" style="height: 85%;"></div>
+                <div class="chart-label">May</div>
+              </div>
+              <div class="chart-bar-group">
+                <div class="chart-bar projected" style="height: 100%;"></div>
+                <div class="chart-label">Jun</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 16px; margin-top: 10px; font-size: 11px; color: var(--text-muted);">
+              <span><span style="display:inline-block; width:12px; height:3px; background:var(--accent); border-radius:2px; vertical-align:middle; margin-right:4px;"></span>Actual</span>
+              <span><span style="display:inline-block; width:12px; height:3px; border: 1px dashed var(--accent); border-radius:2px; vertical-align:middle; margin-right:4px;"></span>Projected</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion Funnel -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Conversion Funnel</h2>
+          <span class="section-badge">40% overall</span>
+        </div>
+        <div class="funnel">
+          <div class="funnel-step">
+            <div class="funnel-label">Discovered</div>
+            <div class="funnel-bar-track">
+              <div class="funnel-bar-fill" style="width: 100%; background: var(--blue);">15</div>
+            </div>
+            <div class="funnel-pct" style="color: var(--blue);">100%</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Contacted</div>
+            <div class="funnel-bar-track">
+              <div class="funnel-bar-fill" style="width: 60%; background: var(--orange);">9</div>
+            </div>
+            <div class="funnel-pct" style="color: var(--orange);">60%</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Preview Sent</div>
+            <div class="funnel-bar-track">
+              <div class="funnel-bar-fill" style="width: 47%; background: var(--yellow);">7</div>
+            </div>
+            <div class="funnel-pct" style="color: var(--yellow);">47%</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Replied</div>
+            <div class="funnel-bar-track">
+              <div class="funnel-bar-fill" style="width: 47%; background: var(--purple);">7</div>
+            </div>
+            <div class="funnel-pct" style="color: var(--purple);">47%</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Paying</div>
+            <div class="funnel-bar-track">
+              <div class="funnel-bar-fill" style="width: 40%; background: var(--green);">6</div>
+            </div>
+            <div class="funnel-pct" style="color: var(--green);">40%</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ──── RIGHT COLUMN (ASIDE) ──── -->
+    <div class="content-aside">
+
+      <!-- Activity Feed -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Activity Feed</h2>
+          <span class="section-badge">Today</span>
+        </div>
+        <div class="activity-feed">
+          <div class="activity-item">
+            <div class="activity-icon payment">&pound;</div>
+            <div class="activity-content">
+              <div class="activity-text"><strong>Morris Dry Cleaners</strong> first payment received &mdash; &pound;49</div>
+              <div class="activity-time">2 hours ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon reply">&#8617;</div>
+            <div class="activity-content">
+              <div class="activity-text"><strong>Fresh Cuts</strong> replied on WhatsApp &mdash; wants pricing info</div>
+              <div class="activity-time">4 hours ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon view">&#9673;</div>
+            <div class="activity-content">
+              <div class="activity-text"><strong>Pressed 2 Perfection</strong> viewed their preview site 3 times today</div>
+              <div class="activity-time">5 hours ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon sent">&#10148;</div>
+            <div class="activity-content">
+              <div class="activity-text">Outreach sent to <strong>6 new businesses</strong> via WhatsApp</div>
+              <div class="activity-time">6 hours ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon build">&#9881;</div>
+            <div class="activity-content">
+              <div class="activity-text">Preview site built for <strong>Lagoon Salon</strong></div>
+              <div class="activity-time">Yesterday</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon reply">&#8617;</div>
+            <div class="activity-content">
+              <div class="activity-text"><strong>E17 Pet Grooming</strong> replied &mdash; wants a demo call</div>
+              <div class="activity-time">Yesterday</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon view">&#9673;</div>
+            <div class="activity-content">
+              <div class="activity-text"><strong>Vanish Cleaners</strong> opened preview link for the first time</div>
+              <div class="activity-time">2 days ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon sent">&#10148;</div>
+            <div class="activity-content">
+              <div class="activity-text">Follow-up emails sent to <strong>4 leads</strong></div>
+              <div class="activity-time">2 days ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Quick Actions</h2>
+        </div>
+        <div class="quick-actions">
+          <a href="/outreach/" class="quick-action-btn">
+            <span class="qa-icon">&#9993;</span>
+            Start New Outreach
+            <span class="qa-arrow">&#8594;</span>
+          </a>
+          <a href="/admin/roi-calculator.html" class="quick-action-btn">
+            <span class="qa-icon">&#9736;</span>
+            Calculate ROI
+            <span class="qa-arrow">&#8594;</span>
+          </a>
+          <a href="/admin/competitor-analysis.html" class="quick-action-btn">
+            <span class="qa-icon">&#8982;</span>
+            Run Competitor Scan
+            <span class="qa-arrow">&#8594;</span>
+          </a>
+          <a href="/admin/whatsapp-templates.html" class="quick-action-btn">
+            <span class="qa-icon">&#9742;</span>
+            WhatsApp Templates
+            <span class="qa-arrow">&#8594;</span>
+          </a>
+          <a href="/e17studios/audit.html" class="quick-action-btn">
+            <span class="qa-icon">&#10003;</span>
+            Free Audit Tool
+            <span class="qa-arrow">&#8594;</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Pipeline Health -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Pipeline Health</h2>
+        </div>
+        <div style="padding: 20px;">
+          <div style="margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+              <span style="color: var(--text-dim); font-weight: 600;">Contacted Rate</span>
+              <span style="color: var(--green); font-weight: 700;">60%</span>
+            </div>
+            <div style="height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden;">
+              <div style="width: 60%; height: 100%; background: var(--green); border-radius: 3px;"></div>
+            </div>
+          </div>
+          <div style="margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+              <span style="color: var(--text-dim); font-weight: 600;">Reply Rate</span>
+              <span style="color: var(--yellow); font-weight: 700;">47%</span>
+            </div>
+            <div style="height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden;">
+              <div style="width: 47%; height: 100%; background: var(--yellow); border-radius: 3px;"></div>
+            </div>
+          </div>
+          <div style="margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+              <span style="color: var(--text-dim); font-weight: 600;">Close Rate</span>
+              <span style="color: var(--accent); font-weight: 700;">40%</span>
+            </div>
+            <div style="height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden;">
+              <div style="width: 40%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+              <span style="color: var(--text-dim); font-weight: 600;">Avg Lead Score</span>
+              <span style="color: var(--purple); font-weight: 700;">82/100</span>
+            </div>
+            <div style="height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden;">
+              <div style="width: 82%; height: 100%; background: var(--purple); border-radius: 3px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Opportunities -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Hot Opportunities</h2>
+        </div>
+        <div style="padding: 16px 20px;">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border);">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; animation: pulse 2s infinite;"></div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 13px; font-weight: 600; color: var(--text);">E17 Pet Grooming</div>
+              <div style="font-size: 11px; color: var(--text-muted);">Wants pricing &middot; Score: 85</div>
+            </div>
+            <div style="font-size: 12px; font-weight: 700; color: var(--yellow);">warm</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border);">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); flex-shrink: 0;"></div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 13px; font-weight: 600; color: var(--text);">Star Dry Cleaners</div>
+              <div style="font-size: 11px; color: var(--text-muted);">Preview viewed 2x &middot; Score: 76</div>
+            </div>
+            <div style="font-size: 12px; font-weight: 700; color: var(--yellow);">warm</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); flex-shrink: 0;"></div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 13px; font-weight: 600; color: var(--text);">Fresh Cuts Barber</div>
+              <div style="font-size: 11px; color: var(--text-muted);">Has questions &middot; Score: 68</div>
+            </div>
+            <div style="font-size: 12px; font-weight: 700; color: var(--yellow);">warm</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<style>
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+</style>
+
+</body>
+</html>

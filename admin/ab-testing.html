@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E17Studios — A/B Testing Dashboard</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #09090f;
+    --surface: #111118;
+    --surface-2: #16161f;
+    --surface-3: #1c1c28;
+    --border: #25253a;
+    --border-light: #2e2e45;
+    --text: #e8e8f0;
+    --text-dim: #8888a0;
+    --text-muted: #55556a;
+    --accent: #e74c3c;
+    --accent-dim: rgba(231, 76, 60, 0.15);
+    --accent-glow: rgba(231, 76, 60, 0.3);
+    --green: #2ecc71;
+    --green-dim: rgba(46, 204, 113, 0.15);
+    --blue: #3498db;
+    --blue-dim: rgba(52, 152, 219, 0.15);
+    --yellow: #f39c12;
+    --yellow-dim: rgba(243, 156, 18, 0.15);
+    --purple: #9b59b6;
+    --purple-dim: rgba(155, 89, 182, 0.15);
+    --orange: #e67e22;
+    --orange-dim: rgba(230, 126, 34, 0.15);
+    --sidebar-w: 260px;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sidebar-logo .logo-icon {
+    width: 38px;
+    height: 38px;
+    background: var(--accent);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    color: #fff;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo .logo-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-logo .logo-text strong {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .sidebar-logo .logo-text span {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 1px;
+  }
+
+  .sidebar-nav { padding: 16px 0; flex: 1; }
+  .nav-group { margin-bottom: 8px; }
+
+  .nav-group-label {
+    padding: 6px 20px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .nav-link:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+
+  .nav-link.active {
+    color: var(--accent);
+    background: var(--accent-dim);
+    border-left-color: var(--accent);
+  }
+
+  .nav-link .nav-icon {
+    width: 18px;
+    text-align: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sidebar-footer .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer .user-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-footer .user-info strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .sidebar-footer .user-info span {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ── Main Content ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    padding: 0;
+    min-width: 0;
+  }
+
+  .top-header {
+    padding: 24px 32px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .top-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .top-header h1 span { color: var(--accent); }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    color: var(--text-dim);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+  }
+
+  .btn:hover {
+    border-color: var(--border-light);
+    color: var(--text);
+    background: var(--surface-3);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: #d44235;
+    border-color: #d44235;
+    color: #fff;
+  }
+
+  /* ── Stats Bar ── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 24px 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .stat-card.red::before { background: var(--accent); }
+  .stat-card.green::before { background: var(--green); }
+  .stat-card.blue::before { background: var(--blue); }
+  .stat-card.yellow::before { background: var(--yellow); }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .stat-card.red .stat-value { color: var(--accent); }
+  .stat-card.green .stat-value { color: var(--green); }
+  .stat-card.blue .stat-value { color: var(--blue); }
+  .stat-card.yellow .stat-value { color: var(--yellow); }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* ── Content Area ── */
+  .content { padding: 0 32px 48px; }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+  }
+
+  .section-title span { color: var(--accent); }
+
+  /* ── Test Cards ── */
+  .test-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s ease;
+  }
+
+  .test-card:hover { border-color: var(--border-light); }
+
+  .test-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .test-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .status-badge.running {
+    background: var(--green-dim);
+    color: var(--green);
+    border: 1px solid rgba(46, 204, 113, 0.25);
+  }
+
+  .status-badge.running::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  .status-badge.complete {
+    background: var(--blue-dim);
+    color: var(--blue);
+    border: 1px solid rgba(52, 152, 219, 0.25);
+  }
+
+  .status-badge.draft {
+    background: var(--yellow-dim);
+    color: var(--yellow);
+    border: 1px solid rgba(243, 156, 18, 0.25);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .variants-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .variant {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    position: relative;
+  }
+
+  .variant.winner {
+    border-color: var(--green);
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.08);
+  }
+
+  .variant-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .variant-tag {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 4px;
+  }
+
+  .variant-tag.a {
+    background: var(--accent-dim);
+    color: var(--accent);
+  }
+
+  .variant-tag.b {
+    background: var(--blue-dim);
+    color: var(--blue);
+  }
+
+  .winner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--green-dim);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(46, 204, 113, 0.25);
+  }
+
+  .subject-line {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    background: var(--surface-3);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--border-light);
+    line-height: 1.4;
+  }
+
+  .variant.winner .subject-line {
+    border-left-color: var(--green);
+  }
+
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .metric {
+    text-align: center;
+  }
+
+  .metric-val {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .metric-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* Progress bars */
+  .progress-section { margin-top: 4px; }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .progress-row-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    width: 70px;
+    flex-shrink: 0;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--surface);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  .progress-fill.open { background: var(--accent); }
+  .progress-fill.click { background: var(--blue); }
+
+  .variant.winner .progress-fill.open { background: var(--green); }
+  .variant.winner .progress-fill.click { background: var(--green); }
+
+  .progress-pct {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
+    width: 38px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ── Best Practices ── */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .tip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+
+  .tip-card:hover { border-color: var(--border-light); }
+
+  .tip-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .tip-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .tip-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* ── Create New Test Form ── */
+  .create-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .form-group { margin-bottom: 16px; }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.15s ease;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .form-group textarea { resize: vertical; min-height: 60px; }
+
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  /* ── Mobile ── */
+  .mobile-toggle {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 200;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    font-size: 18px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 1024px) {
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .variants-grid { grid-template-columns: 1fr; }
+    .tips-grid { grid-template-columns: 1fr 1fr; }
+    .metrics-row { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .mobile-toggle { display: flex; }
+    .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .top-header { padding: 24px 20px 0; padding-top: 64px; }
+    .stats-bar { padding: 24px 20px; grid-template-columns: 1fr 1fr; }
+    .content { padding: 0 20px 48px; }
+    .form-row { grid-template-columns: 1fr; }
+    .tips-grid { grid-template-columns: 1fr; }
+    .metrics-row { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Mobile Toggle -->
+<button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+
+<!-- ════════════ SIDEBAR ════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">E17</div>
+    <div class="logo-text">
+      <strong>E17Studios</strong>
+      <span>Admin Panel</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <!-- Pipeline -->
+    <div class="nav-group">
+      <div class="nav-group-label">Pipeline</div>
+      <a href="/admin/" class="nav-link">
+        <span class="nav-icon">&#9633;</span> CRM Dashboard
+      </a>
+      <a href="/admin/analytics.html" class="nav-link">
+        <span class="nav-icon">&#9672;</span> Analytics
+      </a>
+      <a href="/admin/lead-scoring.html" class="nav-link">
+        <span class="nav-icon">&#9733;</span> Lead Scoring
+      </a>
+    </div>
+
+    <!-- Sales Tools -->
+    <div class="nav-group">
+      <div class="nav-group-label">Sales Tools</div>
+      <a href="/admin/roi-calculator.html" class="nav-link">
+        <span class="nav-icon">&#9736;</span> ROI Calculator
+      </a>
+      <a href="/admin/competitor-analysis.html" class="nav-link">
+        <span class="nav-icon">&#8982;</span> Competitor Analysis
+      </a>
+      <a href="/admin/whatsapp-templates.html" class="nav-link">
+        <span class="nav-icon">&#9742;</span> WhatsApp Templates
+      </a>
+      <a href="/admin/sales-script.html" class="nav-link">
+        <span class="nav-icon">&#9998;</span> Sales Script
+      </a>
+      <a href="/admin/sequence-builder.html" class="nav-link">
+        <span class="nav-icon">&#9993;</span> Sequence Builder
+      </a>
+    </div>
+
+    <!-- Client Tools -->
+    <div class="nav-group">
+      <div class="nav-group-label">Client Tools</div>
+      <a href="/admin/client-success.html" class="nav-link">
+        <span class="nav-icon">&#9650;</span> Success Metrics
+      </a>
+      <a href="/admin/client-report.html" class="nav-link">
+        <span class="nav-icon">&#9635;</span> Client Report
+      </a>
+      <a href="/admin/expansion-planner.html" class="nav-link">
+        <span class="nav-icon">&#8862;</span> Expansion Planner
+      </a>
+      <a href="/admin/client-dashboard.html" class="nav-link">
+        <span class="nav-icon">&#9638;</span> Client Dashboard
+      </a>
+      <a href="/admin/social-calendar.html" class="nav-link">
+        <span class="nav-icon">&#9783;</span> Social Calendar
+      </a>
+      <a href="/admin/ab-testing.html" class="nav-link active">
+        <span class="nav-icon">&#8660;</span> A/B Testing
+      </a>
+    </div>
+
+    <!-- Public Site -->
+    <div class="nav-group">
+      <div class="nav-group-label">Public Site</div>
+      <a href="/e17studios/" class="nav-link">
+        <span class="nav-icon">&#9750;</span> Landing Page
+      </a>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-group">
+      <div class="nav-group-label">Navigation</div>
+      <a href="/sitemap.html" class="nav-link">
+        <span class="nav-icon">&#9776;</span> Sitemap
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="avatar">LH</div>
+    <div class="user-info">
+      <strong>Leath Sheridan</strong>
+      <span>Founder</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ════════════ MAIN CONTENT ════════════ -->
+<main class="main">
+
+  <!-- Top Header -->
+  <div class="top-header">
+    <h1>A/B Testing <span>Dashboard</span></h1>
+    <div class="header-actions">
+      <button class="btn" onclick="document.getElementById('create-section').scrollIntoView({behavior:'smooth'})">&#43; New Test</button>
+      <button class="btn btn-primary" onclick="exportResults()">&#8681; Export Results</button>
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-card red">
+      <div class="stat-label">Tests Run</div>
+      <div class="stat-value">6</div>
+      <div class="stat-sub">Across all campaigns</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Winner Accuracy</div>
+      <div class="stat-value">67%</div>
+      <div class="stat-sub">4 of 6 had clear winners</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-label">Avg Improvement</div>
+      <div class="stat-value">+12%</div>
+      <div class="stat-sub">Open rate lift from winners</div>
+    </div>
+    <div class="stat-card yellow">
+      <div class="stat-label">Active Tests</div>
+      <div class="stat-value">2</div>
+      <div class="stat-sub">Currently running</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ Active Tests ═══ -->
+    <h2 class="section-title">Active <span>Tests</span></h2>
+
+    <!-- Test 1 — Running -->
+    <div class="test-card">
+      <div class="test-header">
+        <div class="test-name">Subject Line Test #1 — Morris Pitch</div>
+        <span class="status-badge running">Running</span>
+      </div>
+      <div class="variants-grid">
+        <div class="variant">
+          <div class="variant-label">
+            <span class="variant-tag a">Variant A</span>
+          </div>
+          <div class="subject-line">"Morris & Co — Your Website Is Losing You Customers"</div>
+          <div class="metrics-row">
+            <div class="metric">
+              <div class="metric-val">248</div>
+              <div class="metric-label">Sent</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">61</div>
+              <div class="metric-label">Opened</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">24.6%</div>
+              <div class="metric-label">Open Rate</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">14</div>
+              <div class="metric-label">Clicked</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">5.6%</div>
+              <div class="metric-label">Click Rate</div>
+            </div>
+          </div>
+          <div class="progress-section">
+            <div class="progress-row">
+              <span class="progress-row-label">Open Rate</span>
+              <div class="progress-track"><div class="progress-fill open" style="width: 24.6%"></div></div>
+              <span class="progress-pct">24.6%</span>
+            </div>
+            <div class="progress-row">
+              <span class="progress-row-label">Click Rate</span>
+              <div class="progress-track"><div class="progress-fill click" style="width: 56%"></div></div>
+              <span class="progress-pct">5.6%</span>
+            </div>
+          </div>
+        </div>
+        <div class="variant winner">
+          <div class="variant-label">
+            <span class="variant-tag b">Variant B</span>
+            <span class="winner-badge">&#9733; Winner</span>
+          </div>
+          <div class="subject-line">"Quick Question About Morris & Co's Online Presence"</div>
+          <div class="metrics-row">
+            <div class="metric">
+              <div class="metric-val">247</div>
+              <div class="metric-label">Sent</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">84</div>
+              <div class="metric-label">Opened</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">34.0%</div>
+              <div class="metric-label">Open Rate</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">22</div>
+              <div class="metric-label">Clicked</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">8.9%</div>
+              <div class="metric-label">Click Rate</div>
+            </div>
+          </div>
+          <div class="progress-section">
+            <div class="progress-row">
+              <span class="progress-row-label">Open Rate</span>
+              <div class="progress-track"><div class="progress-fill open" style="width: 34%"></div></div>
+              <span class="progress-pct">34.0%</span>
+            </div>
+            <div class="progress-row">
+              <span class="progress-row-label">Click Rate</span>
+              <div class="progress-track"><div class="progress-fill click" style="width: 89%"></div></div>
+              <span class="progress-pct">8.9%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Test 2 — Complete -->
+    <div class="test-card">
+      <div class="test-header">
+        <div class="test-name">Subject Line Test #2 — Restaurant Cold Outreach</div>
+        <span class="status-badge complete">Complete</span>
+      </div>
+      <div class="variants-grid">
+        <div class="variant winner">
+          <div class="variant-label">
+            <span class="variant-tag a">Variant A</span>
+            <span class="winner-badge">&#9733; Winner</span>
+          </div>
+          <div class="subject-line">"I Found 3 Issues With Your Restaurant's Google Listing"</div>
+          <div class="metrics-row">
+            <div class="metric">
+              <div class="metric-val">312</div>
+              <div class="metric-label">Sent</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">118</div>
+              <div class="metric-label">Opened</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">37.8%</div>
+              <div class="metric-label">Open Rate</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">31</div>
+              <div class="metric-label">Clicked</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">9.9%</div>
+              <div class="metric-label">Click Rate</div>
+            </div>
+          </div>
+          <div class="progress-section">
+            <div class="progress-row">
+              <span class="progress-row-label">Open Rate</span>
+              <div class="progress-track"><div class="progress-fill open" style="width: 37.8%"></div></div>
+              <span class="progress-pct">37.8%</span>
+            </div>
+            <div class="progress-row">
+              <span class="progress-row-label">Click Rate</span>
+              <div class="progress-track"><div class="progress-fill click" style="width: 99%"></div></div>
+              <span class="progress-pct">9.9%</span>
+            </div>
+          </div>
+        </div>
+        <div class="variant">
+          <div class="variant-label">
+            <span class="variant-tag b">Variant B</span>
+          </div>
+          <div class="subject-line">"Boost Your Restaurant Bookings This Month"</div>
+          <div class="metrics-row">
+            <div class="metric">
+              <div class="metric-val">311</div>
+              <div class="metric-label">Sent</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">72</div>
+              <div class="metric-label">Opened</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">23.2%</div>
+              <div class="metric-label">Open Rate</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">15</div>
+              <div class="metric-label">Clicked</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">4.8%</div>
+              <div class="metric-label">Click Rate</div>
+            </div>
+          </div>
+          <div class="progress-section">
+            <div class="progress-row">
+              <span class="progress-row-label">Open Rate</span>
+              <div class="progress-track"><div class="progress-fill open" style="width: 23.2%"></div></div>
+              <span class="progress-pct">23.2%</span>
+            </div>
+            <div class="progress-row">
+              <span class="progress-row-label">Click Rate</span>
+              <div class="progress-track"><div class="progress-fill click" style="width: 48%"></div></div>
+              <span class="progress-pct">4.8%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Test 3 — Running -->
+    <div class="test-card">
+      <div class="test-header">
+        <div class="test-name">Subject Line Test #3 — Salon & Barber Follow-Up</div>
+        <span class="status-badge running">Running</span>
+      </div>
+      <div class="variants-grid">
+        <div class="variant winner">
+          <div class="variant-label">
+            <span class="variant-tag a">Variant A</span>
+            <span class="winner-badge">&#9733; Leading</span>
+          </div>
+          <div class="subject-line">"[Name], Your Competitors Are Getting Booked Online — Are You?"</div>
+          <div class="metrics-row">
+            <div class="metric">
+              <div class="metric-val">189</div>
+              <div class="metric-label">Sent</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">68</div>
+              <div class="metric-label">Opened</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">36.0%</div>
+              <div class="metric-label">Open Rate</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">19</div>
+              <div class="metric-label">Clicked</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">10.1%</div>
+              <div class="metric-label">Click Rate</div>
+            </div>
+          </div>
+          <div class="progress-section">
+            <div class="progress-row">
+              <span class="progress-row-label">Open Rate</span>
+              <div class="progress-track"><div class="progress-fill open" style="width: 36%"></div></div>
+              <span class="progress-pct">36.0%</span>
+            </div>
+            <div class="progress-row">
+              <span class="progress-row-label">Click Rate</span>
+              <div class="progress-track"><div class="progress-fill click" style="width: 100%"></div></div>
+              <span class="progress-pct">10.1%</span>
+            </div>
+          </div>
+        </div>
+        <div class="variant">
+          <div class="variant-label">
+            <span class="variant-tag b">Variant B</span>
+          </div>
+          <div class="subject-line">"Free Audit: How Your Salon Looks Online Right Now"</div>
+          <div class="metrics-row">
+            <div class="metric">
+              <div class="metric-val">190</div>
+              <div class="metric-label">Sent</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">53</div>
+              <div class="metric-label">Opened</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">27.9%</div>
+              <div class="metric-label">Open Rate</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">11</div>
+              <div class="metric-label">Clicked</div>
+            </div>
+            <div class="metric">
+              <div class="metric-val">5.8%</div>
+              <div class="metric-label">Click Rate</div>
+            </div>
+          </div>
+          <div class="progress-section">
+            <div class="progress-row">
+              <span class="progress-row-label">Open Rate</span>
+              <div class="progress-track"><div class="progress-fill open" style="width: 27.9%"></div></div>
+              <span class="progress-pct">27.9%</span>
+            </div>
+            <div class="progress-row">
+              <span class="progress-row-label">Click Rate</span>
+              <div class="progress-track"><div class="progress-fill click" style="width: 58%"></div></div>
+              <span class="progress-pct">5.8%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Best Practices ═══ -->
+    <h2 class="section-title" style="margin-top: 40px;">Subject Line <span>Best Practices</span></h2>
+
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-num">1</div>
+        <div class="tip-title">Personalise with [Name]</div>
+        <div class="tip-desc">Subject lines with the recipient's first name or company name see 18-26% higher open rates. Always use merge tags.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">2</div>
+        <div class="tip-title">Lead with Curiosity</div>
+        <div class="tip-desc">Questions and open loops outperform statements. "Quick question about..." consistently beats "We can help you with..."</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">3</div>
+        <div class="tip-title">Keep Under 50 Characters</div>
+        <div class="tip-desc">Short subject lines display fully on mobile. Aim for 6-10 words. Truncated subjects lose up to 15% of opens.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">4</div>
+        <div class="tip-title">Avoid Spam Triggers</div>
+        <div class="tip-desc">Words like "FREE", "ACT NOW", all caps, and excessive punctuation trip spam filters. Keep it natural and conversational.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">5</div>
+        <div class="tip-title">Use Specificity</div>
+        <div class="tip-desc">Concrete numbers and details build trust. "I found 3 issues..." beats "We noticed some problems..." every time.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">6</div>
+        <div class="tip-title">Test One Variable at a Time</div>
+        <div class="tip-desc">Change only the subject line between variants. If you alter body copy too, you cannot attribute the difference to the subject.</div>
+      </div>
+    </div>
+
+    <!-- ═══ Create New Test ═══ -->
+    <h2 class="section-title" id="create-section">Create <span>New Test</span></h2>
+
+    <div class="create-form">
+      <div class="form-group">
+        <label>Test Name</label>
+        <input type="text" id="testName" placeholder="e.g., Subject Line Test #4 — Plumber Outreach">
+      </div>
+      <div class="form-group">
+        <label>Campaign / Audience</label>
+        <input type="text" id="testAudience" placeholder="e.g., London plumbers, batch 2">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Variant A — Subject Line</label>
+          <textarea id="variantA" placeholder="Enter subject line for Variant A..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Variant B — Subject Line</label>
+          <textarea id="variantB" placeholder="Enter subject line for Variant B..."></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Split Ratio</label>
+          <select id="splitRatio">
+            <option value="50/50">50 / 50</option>
+            <option value="60/40">60 / 40</option>
+            <option value="70/30">70 / 30</option>
+            <option value="80/20">80 / 20 (winner-takes-rest)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Test Duration</label>
+          <select id="testDuration">
+            <option value="24h">24 Hours</option>
+            <option value="48h" selected>48 Hours</option>
+            <option value="72h">72 Hours</option>
+            <option value="7d">7 Days</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="createTest()">&#9654; Launch Test</button>
+        <button class="btn" onclick="saveDraft()">&#9998; Save as Draft</button>
+        <button class="btn" onclick="clearForm()">&#10005; Clear</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  function createTest() {
+    const name = document.getElementById('testName').value.trim();
+    const a = document.getElementById('variantA').value.trim();
+    const b = document.getElementById('variantB').value.trim();
+    if (!name || !a || !b) {
+      showToast('Please fill in test name and both variant subject lines.', 'error');
+      return;
+    }
+    showToast('Test "' + name + '" launched successfully!', 'success');
+    clearForm();
+  }
+
+  function saveDraft() {
+    const name = document.getElementById('testName').value.trim();
+    if (!name) {
+      showToast('Please enter a test name before saving.', 'error');
+      return;
+    }
+    showToast('Draft saved: "' + name + '"', 'info');
+  }
+
+  function clearForm() {
+    document.getElementById('testName').value = '';
+    document.getElementById('testAudience').value = '';
+    document.getElementById('variantA').value = '';
+    document.getElementById('variantB').value = '';
+    document.getElementById('splitRatio').selectedIndex = 0;
+    document.getElementById('testDuration').selectedIndex = 1;
+  }
+
+  function exportResults() {
+    showToast('Results exported to CSV.', 'success');
+  }
+
+  /* ── Toast Notification ── */
+  function showToast(message, type) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    const colors = { success: '#2ecc71', error: '#e74c3c', info: '#3498db' };
+    toast.style.cssText = 'position:fixed;bottom:32px;right:32px;padding:14px 24px;border-radius:8px;font-size:14px;font-weight:500;color:#fff;z-index:9999;opacity:0;transform:translateY(12px);transition:all .3s ease;background:' + (colors[type] || colors.info) + ';box-shadow:0 8px 32px rgba(0,0,0,.4);';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+    });
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(12px)';
+      setTimeout(() => toast.remove(), 300);
+    }, 3500);
+  }
+</script>
+</body>
+</html>

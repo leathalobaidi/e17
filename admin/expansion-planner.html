@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Territory Expansion Planner — E17Studios Admin</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#09090f;--surface:#111118;--border:rgba(255,255,255,.08);--text:#e8e8f0;--text-muted:#8888a0;--text-dim:#55556a;--accent:#e74c3c;--green:#27ae60;--blue:#3498db;--gold:#f39c12;--radius:12px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+        a{text-decoration:none;color:inherit}
+        .sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:20px 0;position:fixed;top:0;left:0;bottom:0;overflow-y:auto}
+        .sidebar-logo{padding:0 20px 20px;font-weight:800;font-size:1.1rem;border-bottom:1px solid var(--border)}.sidebar-logo span{color:var(--accent)}
+        .sidebar-section{padding:16px 12px 4px;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+        .sidebar a{display:block;padding:8px 20px;font-size:.85rem;color:var(--text-muted);border-left:2px solid transparent;transition:all .15s}
+        .sidebar a:hover{color:var(--text);background:rgba(255,255,255,.03)}
+        .sidebar a.active{color:var(--accent);border-left-color:var(--accent);background:rgba(231,76,60,.05)}
+        .main{margin-left:220px;flex:1;padding:32px}
+        .page-title{font-size:1.8rem;font-weight:800;margin-bottom:4px}
+        .page-sub{color:var(--text-muted);margin-bottom:32px}
+
+        .status-card{background:linear-gradient(135deg,var(--accent),#c0392b);border-radius:var(--radius);padding:28px 32px;margin-bottom:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+        .status-card h3{color:#fff;font-size:1.1rem;margin-bottom:4px}
+        .status-card p{color:rgba(255,255,255,.7);font-size:.9rem}
+        .status-stats{display:flex;gap:32px}
+        .status-stat{text-align:center}
+        .status-stat-num{font-size:1.6rem;font-weight:900;color:#fff}
+        .status-stat-label{font-size:.7rem;color:rgba(255,255,255,.6);text-transform:uppercase}
+
+        .territory-table{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:32px}
+        .territory-table h2{padding:20px 24px;font-size:1.1rem;font-weight:800;border-bottom:1px solid var(--border)}
+        table{width:100%;border-collapse:collapse;font-size:.88rem}
+        th{text-align:left;font-weight:600;padding:12px 16px;border-bottom:1px solid var(--border);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim)}
+        td{padding:12px 16px;border-bottom:1px solid var(--border)}
+        tr:last-child td{border-bottom:none}
+        tr:hover td{background:rgba(255,255,255,.02)}
+        .badge{padding:4px 12px;border-radius:50px;font-size:.75rem;font-weight:600}
+        .badge-active{background:rgba(39,174,96,.15);color:var(--green)}
+        .badge-next{background:rgba(243,156,18,.15);color:var(--gold)}
+        .badge-future{background:rgba(136,136,160,.1);color:var(--text-muted)}
+        .progress-bar{width:100px;height:6px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+        .progress-fill{height:100%;border-radius:3px;background:var(--green)}
+
+        .phases{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+        .phase-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;position:relative}
+        .phase-card.active-phase{border-color:var(--accent);box-shadow:0 0 20px rgba(231,76,60,.1)}
+        .phase-num{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim);margin-bottom:8px}
+        .phase-card h3{font-size:1rem;font-weight:700;margin-bottom:8px}
+        .phase-card p{color:var(--text-muted);font-size:.82rem;line-height:1.5}
+        .phase-timeline{font-size:.75rem;color:var(--accent);margin-top:12px;font-weight:600}
+
+        .revenue-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:32px}
+        .revenue-section h2{font-size:1.1rem;font-weight:800;margin-bottom:20px}
+        .revenue-chart{display:flex;align-items:flex-end;gap:8px;height:200px;padding:0 16px}
+        .rev-bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+        .rev-bar-fill{width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--accent),#c0392b);transition:height .3s;min-height:2px}
+        .rev-bar-label{font-size:.65rem;color:var(--text-dim);margin-top:8px;text-align:center}
+        .rev-bar-value{font-size:.7rem;color:var(--text-muted);margin-bottom:4px;font-weight:700}
+
+        .verticals{margin-bottom:32px}
+        .verticals h2{font-size:1.1rem;font-weight:800;margin-bottom:16px}
+        .vert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+        .vert-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;gap:12px;align-items:center}
+        .vert-icon{font-size:1.8rem}
+        .vert-info h4{font-size:.9rem;font-weight:700;margin-bottom:2px}
+        .vert-info p{font-size:.78rem;color:var(--text-muted)}
+
+        @media(max-width:768px){.sidebar{display:none}.main{margin-left:0}.phases,.vert-grid{grid-template-columns:1fr}.status-card{flex-direction:column}.revenue-chart{height:150px}}
+    </style>
+</head>
+<body>
+<nav class="sidebar">
+    <div class="sidebar-logo">E17<span>Studios</span></div>
+    <div class="sidebar-section">Pipeline</div>
+    <a href="/admin/">CRM Dashboard</a>
+    <a href="/admin/analytics.html">Analytics</a>
+    <a href="/admin/lead-scoring.html">Lead Scoring</a>
+    <div class="sidebar-section">Sales Tools</div>
+    <a href="/admin/roi-calculator.html">ROI Calculator</a>
+    <a href="/admin/competitor-analysis.html">Competitor Analysis</a>
+    <a href="/admin/whatsapp-templates.html">WhatsApp Templates</a>
+    <a href="/emails/preview.html">Email Templates</a>
+    <a href="/admin/sales-script.html">Sales Script</a>
+    <a href="/admin/sequence-builder.html">Sequence Builder</a>
+    <div class="sidebar-section">Client Tools</div>
+    <a href="/admin/client-success.html">Success Metrics</a>
+    <a href="/admin/client-report.html">Client Report</a>
+    <a href="/admin/expansion-planner.html" class="active">Expansion Planner</a>
+    <a href="/admin/client-dashboard.html">Client Dashboard</a>
+    <div class="sidebar-section">Public Site</div>
+    <a href="/e17studios/">Landing Page</a>
+    <a href="/e17studios/audit.html">Free Audit Tool</a>
+    <div class="sidebar-section">Navigation</div>
+    <a href="/sitemap.html">Sitemap</a>
+</nav>
+
+<main class="main">
+    <h1 class="page-title">Territory Expansion Planner</h1>
+    <p class="page-sub">Growth roadmap from E17 to all of East London — 12-month projection</p>
+
+    <div class="status-card">
+        <div><h3>Current Territory: E17 Walthamstow</h3><p>Phase 1 active — deep-dive into E17 dry cleaners market</p></div>
+        <div class="status-stats">
+            <div class="status-stat"><div class="status-stat-num">34</div><div class="status-stat-label">Found</div></div>
+            <div class="status-stat"><div class="status-stat-num">22</div><div class="status-stat-label">No Website</div></div>
+            <div class="status-stat"><div class="status-stat-num">6</div><div class="status-stat-label">Built</div></div>
+            <div class="status-stat"><div class="status-stat-num">£1,740</div><div class="status-stat-label">MRR</div></div>
+        </div>
+    </div>
+
+    <div class="territory-table">
+        <h2>East London Postcode Opportunities</h2>
+        <table>
+            <thead><tr><th>Postcode</th><th>Area</th><th>Est. Businesses</th><th>Revenue Potential</th><th>Status</th><th>Progress</th></tr></thead>
+            <tbody>
+                <tr><td><strong>E17</strong></td><td>Walthamstow</td><td>34</td><td>£12,936/yr</td><td><span class="badge badge-active">Active</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:27%"></div></div></td></tr>
+                <tr><td><strong>E10</strong></td><td>Leyton</td><td>~28</td><td>£10,080/yr</td><td><span class="badge badge-next">Q2 2026</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div></td></tr>
+                <tr><td><strong>E11</strong></td><td>Leytonstone</td><td>~22</td><td>£7,920/yr</td><td><span class="badge badge-next">Q2 2026</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div></td></tr>
+                <tr><td><strong>E15</strong></td><td>Stratford</td><td>~40</td><td>£14,400/yr</td><td><span class="badge badge-future">Q3 2026</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div></td></tr>
+                <tr><td><strong>E5</strong></td><td>Clapton</td><td>~18</td><td>£6,480/yr</td><td><span class="badge badge-future">Q3 2026</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div></td></tr>
+                <tr><td><strong>E4</strong></td><td>Chingford</td><td>~15</td><td>£5,400/yr</td><td><span class="badge badge-future">Q4 2026</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div></td></tr>
+                <tr><td><strong>N17</strong></td><td>Tottenham</td><td>~35</td><td>£12,600/yr</td><td><span class="badge badge-future">Q4 2026</span></td><td><div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="phases">
+        <div class="phase-card active-phase">
+            <div class="phase-num">Phase 1 — Now</div>
+            <h3>E17 Deep Dive</h3>
+            <p>Dominate Walthamstow. Convert 10+ dry cleaners. Build case studies and referral engine.</p>
+            <div class="phase-timeline">Month 1-6 (current)</div>
+        </div>
+        <div class="phase-card">
+            <div class="phase-num">Phase 2</div>
+            <h3>Leyton & Leytonstone</h3>
+            <p>Expand to adjacent postcodes E10 and E11. Use E17 case studies as social proof.</p>
+            <div class="phase-timeline">Month 4-6</div>
+        </div>
+        <div class="phase-card">
+            <div class="phase-num">Phase 3</div>
+            <h3>Stratford & Clapton</h3>
+            <p>Enter higher-density areas E15 and E5. Consider expanding beyond dry cleaners.</p>
+            <div class="phase-timeline">Month 7-9</div>
+        </div>
+        <div class="phase-card">
+            <div class="phase-num">Phase 4</div>
+            <h3>North & Beyond</h3>
+            <p>Chingford E4, Tottenham N17. By now, brand recognition drives inbound leads.</p>
+            <div class="phase-timeline">Month 10-12</div>
+        </div>
+    </div>
+
+    <div class="revenue-section">
+        <h2>12-Month Revenue Projection (MRR)</h2>
+        <div class="revenue-chart">
+            <div class="rev-bar"><div class="rev-bar-value">£98</div><div class="rev-bar-fill" style="height:2%"></div><div class="rev-bar-label">Mar</div></div>
+            <div class="rev-bar"><div class="rev-bar-value">£196</div><div class="rev-bar-fill" style="height:4%"></div><div class="rev-bar-label">Apr</div></div>
+            <div class="rev-bar"><div class="rev-bar-value">£392</div><div class="rev-bar-fill" style="height:9%"></div><div class="rev-bar-label">May</div></div>
+            <div class="rev-bar"><div class="rev-bar-value">£637</div><div class="rev-bar-fill" style="height:14%"></div><div class="rev-bar-label">Jun</div></div>
+            <div class="rev-bar"><div class="rev-bar-value">£931</div><div class="rev-bar-fill" style="height:20%"></div><div class="rev-bar-label">Jul</div></div>
+            <div class="rev-bar"><div class="rev-bar-value">£1,274</div><div class="rev-bar-fill" style="height:28%"></div><div class="rev-bar-label">Aug</div></div>
+            <div class="rev-bar"><div class="rev-bar-value">£1,666</div><div class="rev-bar-fill" style="height:36%"></div><div class="rev-bar-label">Sep</div></div>
+            <div class="rev-bar"><div class="rev-bar-value">£2,107</div><div class="rev-bar-fill" style="height:46%"></div><div class="rev-bar-label">Oct</div></div>
+            <div class="rev-bar"><div class="rev-bar-value">£2,597</div><div class="rev-bar-fill" style="height:56%"></div><div class="rev-bar-label">Nov</div></div>
+            <div class="rev-bar"><div class="rev-bar-value">£3,136</div><div class="rev-bar-fill" style="height:68%"></div><div class="rev-bar-label">Dec</div></div>
+            <div class="rev-bar"><div class="rev-bar-value">£3,724</div><div class="rev-bar-fill" style="height:81%"></div><div class="rev-bar-label">Jan</div></div>
+            <div class="rev-bar"><div class="rev-bar-value">£4,606</div><div class="rev-bar-fill" style="height:100%"></div><div class="rev-bar-label">Feb</div></div>
+        </div>
+        <p style="text-align:center;margin-top:16px;color:var(--text-dim);font-size:.85rem">Projected ARR by Feb 2027: <strong style="color:var(--accent)">£55,272</strong></p>
+    </div>
+
+    <div class="verticals">
+        <h2>Business Verticals to Explore</h2>
+        <div class="vert-grid">
+            <div class="vert-card"><div class="vert-icon">👔</div><div class="vert-info"><h4>Dry Cleaners</h4><p>Current focus. 22 targets in E17 alone.</p></div></div>
+            <div class="vert-card"><div class="vert-icon">💈</div><div class="vert-info"><h4>Barbers</h4><p>Est. 45+ in E17. High walk-in, low web presence.</p></div></div>
+            <div class="vert-card"><div class="vert-icon">🍕</div><div class="vert-info"><h4>Takeaways</h4><p>Est. 60+. Many rely on Deliveroo, need direct presence.</p></div></div>
+            <div class="vert-card"><div class="vert-icon">🔧</div><div class="vert-info"><h4>Plumbers</h4><p>Est. 30+. High job value (£100+), desperate for leads.</p></div></div>
+            <div class="vert-card"><div class="vert-icon">💅</div><div class="vert-info"><h4>Nail Salons</h4><p>Est. 25+. Visual-heavy, perfect for website showcase.</p></div></div>
+            <div class="vert-card"><div class="vert-icon">🌸</div><div class="vert-info"><h4>Florists</h4><p>Est. 12+. Seasonal demand, needs online ordering.</p></div></div>
+            <div class="vert-card"><div class="vert-icon">🏋️</div><div class="vert-info"><h4>Personal Trainers</h4><p>Est. 40+. Solopreneurs needing professional web presence.</p></div></div>
+            <div class="vert-card"><div class="vert-icon">🐕</div><div class="vert-info"><h4>Dog Groomers</h4><p>Est. 15+. Growing market, few have proper websites.</p></div></div>
+            <div class="vert-card"><div class="vert-icon">🦷</div><div class="vert-info"><h4>Dentists</h4><p>Est. 20+. Higher budget, need compliance-ready sites.</p></div></div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Sales Call Script — E17Studios Admin</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#09090f;--surface:#111118;--border:rgba(255,255,255,.08);--text:#e8e8f0;--text-muted:#8888a0;--text-dim:#55556a;--accent:#e74c3c;--green:#27ae60;--blue:#3498db;--gold:#f39c12;--purple:#9b59b6;--radius:12px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+        a{text-decoration:none;color:inherit}
+        .sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:20px 0;position:fixed;top:0;left:0;bottom:0;overflow-y:auto}
+        .sidebar-logo{padding:0 20px 20px;font-weight:800;font-size:1.1rem;border-bottom:1px solid var(--border)}.sidebar-logo span{color:var(--accent)}
+        .sidebar-section{padding:16px 12px 4px;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+        .sidebar a{display:block;padding:8px 20px;font-size:.85rem;color:var(--text-muted);transition:all .15s;border-left:2px solid transparent}
+        .sidebar a:hover{color:var(--text);background:rgba(255,255,255,.03)}
+        .sidebar a.active{color:var(--accent);border-left-color:var(--accent);background:rgba(231,76,60,.05)}
+        .main{margin-left:220px;flex:1;padding:32px;max-width:900px}
+        .page-title{font-size:1.8rem;font-weight:800;margin-bottom:4px}
+        .page-sub{color:var(--text-muted);margin-bottom:32px}
+
+        .timeline{display:flex;gap:8px;margin-bottom:40px;flex-wrap:wrap}
+        .timeline-step{flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center;cursor:pointer;transition:all .2s}
+        .timeline-step:hover,.timeline-step.active{border-color:var(--accent);background:rgba(231,76,60,.05)}
+        .timeline-step .step-num{font-size:1.4rem;font-weight:900;color:var(--accent);margin-bottom:4px}
+        .timeline-step .step-name{font-size:.8rem;font-weight:600;margin-bottom:2px}
+        .timeline-step .step-time{font-size:.7rem;color:var(--text-dim)}
+
+        .script-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
+        .script-header{padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s}
+        .script-header:hover{background:rgba(255,255,255,.02)}
+        .script-header h3{font-size:1rem;font-weight:700}
+        .script-header .toggle{color:var(--text-dim);font-size:1.2rem;transition:transform .2s}
+        .script-section.open .toggle{transform:rotate(45deg);color:var(--accent)}
+        .script-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+        .script-section.open .script-body{max-height:2000px}
+        .script-content{padding:0 20px 20px}
+
+        .line{margin-bottom:16px;padding:12px 16px;border-radius:8px;font-size:.92rem;line-height:1.6}
+        .line-you{background:rgba(231,76,60,.08);border-left:3px solid var(--accent)}
+        .line-them{background:rgba(52,152,219,.08);border-left:3px solid var(--blue)}
+        .line-tip{background:rgba(243,156,18,.08);border-left:3px solid var(--gold)}
+        .line-objection{background:rgba(155,89,182,.08);border-left:3px solid var(--purple)}
+        .line-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+        .line-you .line-label{color:var(--accent)}
+        .line-them .line-label{color:var(--blue)}
+        .line-tip .line-label{color:var(--gold)}
+        .line-objection .line-label{color:var(--purple)}
+
+        .objections{margin-top:40px}
+        .objections h2{font-size:1.4rem;font-weight:800;margin-bottom:20px}
+        .obj-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+        .obj-header{padding:14px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+        .obj-header:hover{background:rgba(255,255,255,.02)}
+        .obj-header h4{color:var(--purple);font-size:.95rem}
+        .obj-body{max-height:0;overflow:hidden;transition:max-height .3s}
+        .obj-card.open .obj-body{max-height:500px}
+        .obj-content{padding:0 20px 16px}
+
+        .cheat-sheet{margin-top:40px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+        .cheat-sheet h2{font-size:1.2rem;font-weight:800;margin-bottom:16px;color:var(--accent)}
+        .cheat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+        .cheat-item h4{font-size:.8rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+        .cheat-item p{font-size:.9rem;color:var(--text-muted);line-height:1.5}
+
+        @media(max-width:768px){.sidebar{display:none}.main{margin-left:0}.cheat-grid,.timeline{grid-template-columns:1fr;flex-direction:column}}
+    </style>
+</head>
+<body>
+
+<nav class="sidebar">
+    <div class="sidebar-logo">E17<span>Studios</span></div>
+    <div class="sidebar-section">Pipeline</div>
+    <a href="/admin/">CRM Dashboard</a>
+    <a href="/admin/analytics.html">Analytics</a>
+    <a href="/admin/lead-scoring.html">Lead Scoring</a>
+    <div class="sidebar-section">Sales Tools</div>
+    <a href="/admin/roi-calculator.html">ROI Calculator</a>
+    <a href="/admin/competitor-analysis.html">Competitor Analysis</a>
+    <a href="/admin/whatsapp-templates.html">WhatsApp Templates</a>
+    <a href="/emails/preview.html">Email Templates</a>
+    <a href="/admin/sales-script.html" class="active">Sales Script</a>
+    <a href="/admin/sequence-builder.html">Sequence Builder</a>
+    <div class="sidebar-section">Client Tools</div>
+    <a href="/admin/client-success.html">Success Metrics</a>
+    <a href="/admin/client-report.html">Client Report</a>
+    <a href="/admin/expansion-planner.html">Expansion Planner</a>
+    <a href="/admin/client-dashboard.html">Client Dashboard</a>
+    <div class="sidebar-section">Public Site</div>
+    <a href="/e17studios/">Landing Page</a>
+    <a href="/e17studios/audit.html">Free Audit Tool</a>
+    <div class="sidebar-section">Navigation</div>
+    <a href="/sitemap.html">Sitemap</a>
+</nav>
+
+<main class="main">
+    <h1 class="page-title">Sales Call Script</h1>
+    <p class="page-sub">5-step SPIN-based call framework — total call time ~6 minutes</p>
+
+    <div class="timeline">
+        <div class="timeline-step active"><div class="step-num">1</div><div class="step-name">Opening</div><div class="step-time">~30 sec</div></div>
+        <div class="timeline-step"><div class="step-num">2</div><div class="step-name">Discovery</div><div class="step-time">~2 min</div></div>
+        <div class="timeline-step"><div class="step-num">3</div><div class="step-name">Demo</div><div class="step-time">~2 min</div></div>
+        <div class="timeline-step"><div class="step-num">4</div><div class="step-name">Pricing</div><div class="step-time">~1 min</div></div>
+        <div class="timeline-step"><div class="step-num">5</div><div class="step-name">Close</div><div class="step-time">~1 min</div></div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="script-section open">
+        <div class="script-header" onclick="this.parentElement.classList.toggle('open')">
+            <h3>Step 1: Opening (30 seconds)</h3>
+            <span class="toggle">+</span>
+        </div>
+        <div class="script-body"><div class="script-content">
+            <div class="line line-you"><div class="line-label">You say</div>"Hi, is this {{OWNER_NAME}}? My name's [Your Name] from E17Studios. I'm a local web designer based in Walthamstow. I noticed {{BUSINESS_NAME}} has fantastic reviews on Google — {{REVIEW_COUNT}} reviews at {{RATING}} stars — but doesn't have a website yet. I actually built a free preview of what one could look like for you. Do you have 5 minutes?"</div>
+            <div class="line line-them"><div class="line-label">They might say</div>"I'm busy right now" → "No worries at all! When's a better time to call back? I'll send you the preview link on WhatsApp in the meantime."</div>
+            <div class="line line-tip"><div class="line-label">Tip</div>Lead with their review count. It's a genuine compliment and shows you did your research. Never start with "I'm selling websites."</div>
+        </div></div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="script-section">
+        <div class="script-header" onclick="this.parentElement.classList.toggle('open')">
+            <h3>Step 2: Discovery — SPIN Questions (2 minutes)</h3>
+            <span class="toggle">+</span>
+        </div>
+        <div class="script-body"><div class="script-content">
+            <div class="line line-you"><div class="line-label">Situation</div>"How do most of your customers find you right now? Is it mainly word of mouth, walk-ins, or Google?"</div>
+            <div class="line line-you"><div class="line-label">Problem</div>"Have you ever had anyone tell you they couldn't find you online? Or tried to look you up and couldn't find a website?"</div>
+            <div class="line line-you"><div class="line-label">Implication</div>"When someone searches 'dry cleaners near me' and can't find your website, they usually just go to the first result that does have one. That's potentially {{LOST_CUSTOMERS}} customers a month going to competitors."</div>
+            <div class="line line-you"><div class="line-label">Need-Payoff</div>"If you had a professional website that showed up on Google with all your great reviews front and centre, how much extra business do you think that could bring in?"</div>
+            <div class="line line-tip"><div class="line-label">Tip</div>Listen more than you talk. The goal is to get THEM to say they need a website, not to tell them they do.</div>
+        </div></div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="script-section">
+        <div class="script-header" onclick="this.parentElement.classList.toggle('open')">
+            <h3>Step 3: Demo — Show the Preview (2 minutes)</h3>
+            <span class="toggle">+</span>
+        </div>
+        <div class="script-body"><div class="script-content">
+            <div class="line line-you"><div class="line-label">You say</div>"Let me send you the link right now — have a look on your phone while we chat. I've already set it up with your real Google reviews, your address, opening hours, and an embedded map."</div>
+            <div class="line line-tip"><div class="line-label">Tip</div>Send the WhatsApp link while on the phone. Wait for their reaction. Their first "wow" or "oh nice" is your buying signal.</div>
+            <div class="line line-you"><div class="line-label">Walk through</div>"As you can see, it's mobile-friendly — most of your customers will find you on their phone. The click-to-call button means they can ring you with one tap. And the Google Map at the bottom helps people get directions straight away."</div>
+            <div class="line line-them"><div class="line-label">Common reaction</div>"This looks really good actually" → "Thank you! And this is just the preview — once activated, it'll be on your own domain with SSL security and SEO optimisation."</div>
+        </div></div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="script-section">
+        <div class="script-header" onclick="this.parentElement.classList.toggle('open')">
+            <h3>Step 4: Pricing (1 minute)</h3>
+            <span class="toggle">+</span>
+        </div>
+        <div class="script-body"><div class="script-content">
+            <div class="line line-you"><div class="line-label">You say</div>"So the way it works is really simple. There's no upfront cost — I've already built it for you for free. If you want to keep it live, it's just £49 a month. That includes hosting, SSL, SEO, monthly reports, and any changes you need. No contract — cancel anytime."</div>
+            <div class="line line-tip"><div class="line-label">Anchor</div>"Most freelancers would charge £2,000+ just to build something like this, plus £30/month hosting. With us, you get everything for less than £1.65 a day."</div>
+            <div class="line line-you"><div class="line-label">ROI Pitch</div>"If your average job is £35 and the website brings in just 2 extra customers a month, that's £70 in revenue from a £49 investment. It pays for itself with the first customer."</div>
+        </div></div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="script-section">
+        <div class="script-header" onclick="this.parentElement.classList.toggle('open')">
+            <h3>Step 5: Close (1 minute)</h3>
+            <span class="toggle">+</span>
+        </div>
+        <div class="script-body"><div class="script-content">
+            <div class="line line-you"><div class="line-label">Assumptive close</div>"So shall I get this activated for you? I can have it live on your own domain by tomorrow."</div>
+            <div class="line line-you"><div class="line-label">Alternative close</div>"Would you prefer the £29 Starter plan or the £49 Professional with the review showcase and reports?"</div>
+            <div class="line line-them"><div class="line-label">If yes</div>"Brilliant! I'll send you a quick setup form on WhatsApp — takes 2 minutes to fill in. Your site will be live within 48 hours."</div>
+            <div class="line line-them"><div class="line-label">If not yet</div>"No problem at all. The preview stays live for 30 days. Have a think and I'll check in next week. No pressure whatsoever."</div>
+            <div class="line line-tip"><div class="line-label">Tip</div>Always leave the door open. Many conversions happen on the 2nd or 3rd touchpoint, not the first call.</div>
+        </div></div>
+    </div>
+
+    <!-- OBJECTIONS -->
+    <div class="objections">
+        <h2>Objection Handlers</h2>
+
+        <div class="obj-card">
+            <div class="obj-header" onclick="this.parentElement.classList.toggle('open')"><h4>"It's too expensive"</h4><span class="toggle" style="color:var(--text-dim)">+</span></div>
+            <div class="obj-body"><div class="obj-content">
+                <div class="line line-you"><div class="line-label">Response</div>"I totally understand. Let me put it this way — £49 a month is about £1.65 a day. If your average job is £35, the website only needs to bring you ONE extra customer a month to pay for itself twice over. And with your {{REVIEW_COUNT}} reviews, you're already more trusted than competitors — you just need to be visible online."</div>
+            </div></div>
+        </div>
+
+        <div class="obj-card">
+            <div class="obj-header" onclick="this.parentElement.classList.toggle('open')"><h4>"I need to think about it"</h4><span class="toggle" style="color:var(--text-dim)">+</span></div>
+            <div class="obj-body"><div class="obj-content">
+                <div class="line line-you"><div class="line-label">Response</div>"Absolutely, take your time. The preview stays live for 30 days so there's no rush. Can I ask — is there anything specific you're unsure about? Sometimes I can clear things up right now and save you the thinking."</div>
+            </div></div>
+        </div>
+
+        <div class="obj-card">
+            <div class="obj-header" onclick="this.parentElement.classList.toggle('open')"><h4>"I don't need a website"</h4><span class="toggle" style="color:var(--text-dim)">+</span></div>
+            <div class="obj-body"><div class="obj-content">
+                <div class="line line-you"><div class="line-label">Response</div>"I hear you — and your business has clearly done well without one! But 97% of people search online before visiting a local business. Right now, when someone searches 'dry cleaners Walthamstow', your competitors with websites show up first. A website isn't about replacing what works — it's about catching the customers you're currently missing."</div>
+            </div></div>
+        </div>
+
+        <div class="obj-card">
+            <div class="obj-header" onclick="this.parentElement.classList.toggle('open')"><h4>"My nephew can build one"</h4><span class="toggle" style="color:var(--text-dim)">+</span></div>
+            <div class="obj-body"><div class="obj-content">
+                <div class="line line-you"><div class="line-label">Response</div>"That's great that you have someone who can help! The thing is, building a site is the easy part — maintaining it, keeping it secure, optimising it for Google, and making sure it loads fast on mobile is the ongoing work. That's what the £49 covers. Plus if anything breaks or you need changes, you just message me."</div>
+            </div></div>
+        </div>
+
+        <div class="obj-card">
+            <div class="obj-header" onclick="this.parentElement.classList.toggle('open')"><h4>"What if I want to cancel?"</h4><span class="toggle" style="color:var(--text-dim)">+</span></div>
+            <div class="obj-body"><div class="obj-content">
+                <div class="line line-you"><div class="line-label">Response</div>"You can cancel anytime — literally just send me a message. No notice period, no exit fees, no questions asked. If you cancel, your site goes offline but I'll export all your content and give it to you. Zero risk."</div>
+            </div></div>
+        </div>
+    </div>
+
+    <!-- CHEAT SHEET -->
+    <div class="cheat-sheet">
+        <h2>Quick Reference Cheat Sheet</h2>
+        <div class="cheat-grid">
+            <div class="cheat-item"><h4>Pricing</h4><p>Starter £29/mo · Pro £49/mo · Premium £99/mo · No setup fee · Cancel anytime</p></div>
+            <div class="cheat-item"><h4>Key Stats</h4><p>97% search online · 70% won't use no-website businesses · avg £18/day lost</p></div>
+            <div class="cheat-item"><h4>Turnaround</h4><p>Preview: already built · Activation: 48 hours · Changes: same day</p></div>
+            <div class="cheat-item"><h4>Social Proof</h4><p>5 live sites · 1,096 total client reviews · avg 4.7★ rating</p></div>
+            <div class="cheat-item"><h4>What's Included</h4><p>Hosting, SSL, SEO, Schema, Maps, Reviews, Click-to-call, Monthly report</p></div>
+            <div class="cheat-item"><h4>ROI Anchor</h4><p>1 extra customer/month at £35 = £420/yr from £588 investment = 71% ROI</p></div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

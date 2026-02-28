@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Builder Agent — E17Studios</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    background: #09090f;
+    color: #e0e0e8;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+  a { color: #e74c3c; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header {
+    background: #111118;
+    border-bottom: 1px solid #1e1e2a;
+    padding: 18px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .header h1 span { color: #e74c3c; }
+  .header-nav a {
+    font-size: 14px;
+    color: #888;
+    transition: color .2s;
+  }
+  .header-nav a:hover { color: #e74c3c; }
+
+  /* Stats Bar */
+  .stats-bar {
+    display: flex;
+    background: #111118;
+    border-bottom: 1px solid #1e1e2a;
+    padding: 0 32px;
+  }
+  .stat-item {
+    flex: 1;
+    padding: 20px 24px;
+    border-right: 1px solid #1e1e2a;
+    text-align: center;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-number {
+    font-size: 32px;
+    font-weight: 800;
+    color: #e74c3c;
+    display: block;
+    line-height: 1.1;
+  }
+  .stat-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #777;
+    margin-top: 4px;
+  }
+  .stat-check {
+    font-size: 28px;
+    font-weight: 800;
+    color: #2ecc71;
+    display: block;
+    line-height: 1.1;
+  }
+
+  /* Main Content */
+  .main { padding: 32px; }
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+
+  /* Site Cards Grid */
+  .sites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 24px;
+  }
+  .site-card {
+    background: #111118;
+    border: 1px solid #1e1e2a;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .site-card:hover {
+    border-color: #e74c3c44;
+    box-shadow: 0 0 24px #e74c3c11;
+  }
+
+  /* Iframe Preview */
+  .preview-frame {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    background: #0a0a12;
+    overflow: hidden;
+    border-bottom: 1px solid #1e1e2a;
+  }
+  .preview-frame iframe {
+    width: 200%;
+    height: 200%;
+    transform: scale(0.5);
+    transform-origin: top left;
+    border: none;
+    pointer-events: none;
+  }
+  .preview-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    transition: background .2s;
+  }
+  .preview-overlay:hover {
+    background: #e74c3c15;
+  }
+  .preview-overlay .view-label {
+    opacity: 0;
+    background: #e74c3c;
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: opacity .2s;
+  }
+  .preview-overlay:hover .view-label { opacity: 1; }
+
+  /* Card Body */
+  .card-body { padding: 20px 24px; }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .business-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .review-badge {
+    background: #e74c3c18;
+    color: #e74c3c;
+    border: 1px solid #e74c3c33;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .colour-scheme {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .colour-scheme .label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+  }
+  .colour-swatches {
+    display: flex;
+    gap: 6px;
+  }
+  .swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid #2a2a3a;
+  }
+
+  /* Features Checklist */
+  .features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .feature-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #09090f;
+    border: 1px solid #1e1e2a;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #aaa;
+  }
+  .feature-tag .check {
+    color: #2ecc71;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .stats-bar { flex-wrap: wrap; }
+    .stat-item { flex: 1 1 50%; border-bottom: 1px solid #1e1e2a; }
+    .sites-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <h1>Builder Agent <span>— E17Studios</span></h1>
+  <nav class="header-nav">
+    <a href="/admin/">Admin Dashboard</a>
+  </nav>
+</header>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-number">5</span>
+    <div class="stat-label">Sites Generated</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-number">4.2<small style="font-size:16px;color:#999">min</small></span>
+    <div class="stat-label">Avg Build Time</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-check">&#10003;</span>
+    <div class="stat-label">All Responsive</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-check">&#10003;</span>
+    <div class="stat-label">All SEO-Ready</div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<main class="main">
+  <h2 class="section-title">Generated Sites</h2>
+  <div class="sites-grid" id="sitesGrid"></div>
+</main>
+
+<script>
+const sites = [
+  {
+    name: 'Morris Dry Cleaners',
+    path: '/morris-dry-cleaners/',
+    reviews: 669,
+    colours: ['#1a1a2e', '#e74c3c', '#ffffff'],
+    features: ['Schema', 'Maps', 'Reviews', 'Mobile', 'Click-to-call']
+  },
+  {
+    name: 'Vanish Dry Cleaners',
+    path: '/vanish-dry-cleaners/',
+    reviews: 175,
+    colours: ['#0d1b2a', '#3498db', '#ecf0f1'],
+    features: ['Schema', 'Maps', 'Reviews', 'Mobile', 'Click-to-call']
+  },
+  {
+    name: 'Lagoon Eco-Friendly',
+    path: '/lagoon-eco-friendly/',
+    reviews: 99,
+    colours: ['#0a1a12', '#27ae60', '#f0f5f1'],
+    features: ['Schema', 'Maps', 'Reviews', 'Mobile', 'Click-to-call']
+  },
+  {
+    name: 'Pressed 2 Perfection',
+    path: '/pressed-2-perfection/',
+    reviews: 90,
+    colours: ['#1a0a2e', '#9b59b6', '#f5f0fa'],
+    features: ['Schema', 'Maps', 'Reviews', 'Mobile', 'Click-to-call']
+  },
+  {
+    name: 'Apollo Dry Cleaners',
+    path: '/apollo-dry-cleaners/',
+    reviews: 63,
+    colours: ['#2a1a0a', '#e67e22', '#fdf5ec'],
+    features: ['Schema', 'Maps', 'Reviews', 'Mobile', 'Click-to-call']
+  }
+];
+
+function renderSites() {
+  const grid = document.getElementById('sitesGrid');
+  grid.innerHTML = sites.map(s => `
+    <div class="site-card">
+      <div class="preview-frame">
+        <iframe src="${s.path}" loading="lazy" sandbox="allow-same-origin" title="${s.name} preview"></iframe>
+        <a href="${s.path}" class="preview-overlay" target="_blank">
+          <span class="view-label">View Full Site</span>
+        </a>
+      </div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="business-name">${s.name}</div>
+          <div class="review-badge">${s.reviews} reviews</div>
+        </div>
+        <div class="colour-scheme">
+          <span class="label">Colours</span>
+          <div class="colour-swatches">
+            ${s.colours.map(c => `<div class="swatch" style="background:${c}" title="${c}"></div>`).join('')}
+          </div>
+        </div>
+        <div class="features">
+          ${s.features.map(f => `<span class="feature-tag"><span class="check">&#10003;</span> ${f}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+renderSites();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Blog — E17Studios | Local Business Tips & Insights</title>
+    <meta name="description" content="Practical tips, case studies, and insights to help local businesses in East London grow online. From SEO to web design — actionable advice from E17Studios.">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#09090f;--surface:#111118;--border:rgba(255,255,255,.06);--text:#e8e8f0;--text-muted:#8888a0;--text-dim:#55556a;--accent:#e74c3c;--accent-hover:#c0392b;--accent-glow:rgba(231,76,60,.15);--green:#27ae60;--blue:#3498db;--gold:#f39c12;--radius:16px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+        .container{max-width:1140px;margin:0 auto;padding:0 24px}
+        a{text-decoration:none;color:inherit}
+
+        /* NAV */
+        .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 24px;transition:all .3s}
+        .nav.scrolled{background:rgba(9,9,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+        .nav-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:72px}
+        .nav-logo{display:flex;align-items:center;gap:12px}
+        .nav-logo-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),#c0392b);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.8rem;color:#fff}
+        .nav-logo-text{font-weight:800;font-size:1.15rem}
+        .nav-logo-text span{color:var(--accent)}
+        .nav-links{display:flex;align-items:center;gap:8px;list-style:none}
+        .nav-links a{padding:8px 16px;font-size:.88rem;font-weight:500;color:var(--text-muted);border-radius:8px;transition:all .2s}
+        .nav-links a:hover{color:var(--text);background:rgba(255,255,255,.04)}
+        .nav-links a.active{color:var(--text);background:rgba(255,255,255,.06)}
+        .nav-cta{background:var(--accent)!important;color:#fff!important;font-weight:700!important;padding:9px 22px!important;border-radius:9px!important}
+        .nav-cta:hover{background:var(--accent-hover)!important;transform:translateY(-1px)}
+        .nav-mobile{display:none;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer}
+
+        /* HERO */
+        .blog-hero{padding:140px 0 60px;text-align:center;position:relative;overflow:hidden}
+        .blog-hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,var(--accent-glow),transparent 70%);pointer-events:none}
+        .blog-hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--accent-glow);border:1px solid rgba(231,76,60,.2);padding:8px 20px;border-radius:50px;font-size:.85rem;color:var(--accent);margin-bottom:28px}
+        .blog-hero h1{font-size:3.2rem;font-weight:900;letter-spacing:-.04em;line-height:1.1;margin-bottom:20px}
+        .blog-hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),#e67e22);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .blog-hero p{font-size:1.15rem;color:var(--text-muted);max-width:580px;margin:0 auto;line-height:1.6}
+
+        /* CATEGORY FILTERS */
+        .category-filters{padding:32px 0 48px;border-bottom:1px solid var(--border)}
+        .filter-tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+        .filter-tab{padding:10px 22px;border-radius:50px;font-size:.88rem;font-weight:600;color:var(--text-muted);background:transparent;border:1px solid var(--border);cursor:pointer;transition:all .25s;font-family:inherit}
+        .filter-tab:hover{color:var(--text);border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.03)}
+        .filter-tab.active{color:#fff;background:var(--accent);border-color:var(--accent)}
+
+        /* FEATURED ARTICLE */
+        .featured{padding:48px 0}
+        .featured-card{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s}
+        .featured-card:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+        .featured-img{background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;min-height:320px;padding:48px;position:relative;overflow:hidden}
+        .featured-img::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(231,76,60,.12),rgba(231,76,60,.03));pointer-events:none}
+        .featured-stat{text-align:center;position:relative;z-index:1}
+        .featured-stat-num{font-size:5rem;font-weight:900;color:var(--accent);line-height:1}
+        .featured-stat-pct{font-size:2.5rem;font-weight:900;color:var(--accent)}
+        .featured-stat-label{font-size:1rem;color:var(--text-muted);margin-top:8px}
+        .featured-content{padding:48px 40px;display:flex;flex-direction:column;justify-content:center}
+        .featured-tag{display:inline-block;background:var(--accent-glow);border:1px solid rgba(231,76,60,.2);color:var(--accent);padding:4px 14px;border-radius:50px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:20px;width:fit-content}
+        .featured-content h2{font-size:1.7rem;font-weight:800;line-height:1.25;margin-bottom:16px;letter-spacing:-.02em}
+        .featured-content .excerpt{color:var(--text-muted);font-size:.95rem;line-height:1.65;margin-bottom:24px}
+        .featured-meta{display:flex;align-items:center;gap:16px;font-size:.82rem;color:var(--text-dim)}
+        .featured-meta .dot{width:3px;height:3px;background:var(--text-dim);border-radius:50%}
+        .read-more-link{display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-weight:700;font-size:.9rem;margin-top:16px;transition:gap .2s}
+        .read-more-link:hover{gap:12px}
+
+        /* ARTICLE GRID */
+        .articles-section{padding:48px 0 80px}
+        .articles-section h2{font-size:1.6rem;font-weight:800;margin-bottom:32px}
+        .articles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+        .article-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s,opacity .4s;display:flex;flex-direction:column}
+        .article-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+        .article-card.hidden{opacity:0;pointer-events:none;position:absolute;visibility:hidden}
+        .article-card.fading{opacity:0;transform:translateY(8px)}
+        .article-thumb{height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+        .article-thumb-icon{font-size:3rem;position:relative;z-index:1}
+        .article-thumb::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none}
+        .thumb-blue{background:linear-gradient(135deg,#0f1b2d,#1a2744)}.thumb-blue::before{background:linear-gradient(135deg,rgba(52,152,219,.12),rgba(52,152,219,.03))}
+        .thumb-green{background:linear-gradient(135deg,#0f2d1b,#1a4427)}.thumb-green::before{background:linear-gradient(135deg,rgba(39,174,96,.12),rgba(39,174,96,.03))}
+        .thumb-red{background:linear-gradient(135deg,#2d0f0f,#441a1a)}.thumb-red::before{background:linear-gradient(135deg,rgba(231,76,60,.12),rgba(231,76,60,.03))}
+        .thumb-purple{background:linear-gradient(135deg,#1a0f2d,#2d1a44)}.thumb-purple::before{background:linear-gradient(135deg,rgba(142,68,173,.12),rgba(142,68,173,.03))}
+        .thumb-gold{background:linear-gradient(135deg,#2d250f,#44381a)}.thumb-gold::before{background:linear-gradient(135deg,rgba(243,156,18,.12),rgba(243,156,18,.03))}
+        .thumb-teal{background:linear-gradient(135deg,#0f2d2d,#1a4444)}.thumb-teal::before{background:linear-gradient(135deg,rgba(26,188,156,.12),rgba(26,188,156,.03))}
+        .article-body{padding:24px;flex:1;display:flex;flex-direction:column}
+        .article-tag{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px;width:fit-content}
+        .tag-getting-started{background:rgba(52,152,219,.12);color:#5dade2;border:1px solid rgba(52,152,219,.15)}
+        .tag-seo{background:rgba(39,174,96,.12);color:#58d68d;border:1px solid rgba(39,174,96,.15)}
+        .tag-case-study{background:rgba(231,76,60,.12);color:#ec7063;border:1px solid rgba(231,76,60,.15)}
+        .tag-industry{background:rgba(142,68,173,.12);color:#bb8fce;border:1px solid rgba(142,68,173,.15)}
+        .article-body h3{font-size:1.05rem;font-weight:700;line-height:1.35;margin-bottom:10px;letter-spacing:-.01em}
+        .article-excerpt{color:var(--text-muted);font-size:.85rem;line-height:1.55;margin-bottom:20px;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+        .article-footer{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--border)}
+        .article-author{font-size:.78rem;color:var(--text-dim)}
+        .article-read-time{font-size:.78rem;color:var(--text-dim)}
+        .article-read-more{color:var(--accent);font-size:.82rem;font-weight:700;display:inline-flex;align-items:center;gap:4px;transition:gap .2s}
+        .article-read-more:hover{gap:8px}
+
+        /* NEWSLETTER */
+        .newsletter{padding:80px 0;border-top:1px solid var(--border)}
+        .newsletter-inner{max-width:600px;margin:0 auto;text-align:center}
+        .newsletter-icon{font-size:2.5rem;margin-bottom:20px}
+        .newsletter h2{font-size:1.8rem;font-weight:800;margin-bottom:12px;letter-spacing:-.02em}
+        .newsletter p{color:var(--text-muted);font-size:.95rem;line-height:1.6;margin-bottom:32px}
+        .newsletter-form{display:flex;gap:12px;max-width:460px;margin:0 auto 16px}
+        .newsletter-input{flex:1;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:.95rem;font-family:inherit;outline:none;transition:border-color .2s}
+        .newsletter-input:focus{border-color:var(--accent)}
+        .newsletter-input::placeholder{color:var(--text-dim)}
+        .newsletter-btn{padding:14px 28px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-weight:700;font-size:.95rem;cursor:pointer;transition:background .2s;font-family:inherit;white-space:nowrap}
+        .newsletter-btn:hover{background:var(--accent-hover)}
+        .newsletter-note{font-size:.78rem;color:var(--text-dim)}
+
+        /* ARTICLE MODAL */
+        .article-modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto}
+        .article-modal-overlay.open{opacity:1;pointer-events:auto}
+        .article-modal{max-width:760px;margin:40px auto;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transform:translateY(30px);transition:transform .35s;position:relative}
+        .article-modal-overlay.open .article-modal{transform:translateY(0)}
+        .modal-header{padding:32px 40px 0}
+        .modal-back{display:inline-flex;align-items:center;gap:6px;color:var(--text-muted);font-size:.88rem;font-weight:500;cursor:pointer;background:none;border:none;font-family:inherit;transition:color .2s;margin-bottom:24px}
+        .modal-back:hover{color:var(--text)}
+        .modal-tag-row{margin-bottom:16px}
+        .modal-title{font-size:2rem;font-weight:900;line-height:1.2;margin-bottom:16px;letter-spacing:-.03em}
+        .modal-meta{display:flex;align-items:center;gap:16px;font-size:.85rem;color:var(--text-dim);margin-bottom:32px;flex-wrap:wrap}
+        .modal-meta .dot{width:3px;height:3px;background:var(--text-dim);border-radius:50%;flex-shrink:0}
+        .modal-content{padding:0 40px 40px}
+        .modal-content p{color:var(--text-muted);font-size:1rem;line-height:1.75;margin-bottom:20px}
+        .modal-content p:first-child{color:var(--text);font-size:1.08rem}
+        .modal-content h3{font-size:1.2rem;font-weight:700;margin:32px 0 12px;color:var(--text)}
+        .modal-content ul{list-style:none;margin:0 0 20px;padding:0}
+        .modal-content ul li{padding:8px 0 8px 24px;position:relative;color:var(--text-muted);font-size:.95rem;line-height:1.6}
+        .modal-content ul li::before{content:'';position:absolute;left:0;top:16px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+        .modal-share{display:flex;align-items:center;gap:12px;padding:24px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:32px 0}
+        .modal-share-label{font-size:.85rem;font-weight:600;color:var(--text-dim)}
+        .share-btn{padding:8px 18px;border-radius:8px;font-size:.82rem;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;font-family:inherit}
+        .share-btn:hover{border-color:var(--accent);color:var(--accent)}
+        .modal-cta{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center;margin-top:32px}
+        .modal-cta h3{font-size:1.2rem;font-weight:800;margin-bottom:8px}
+        .modal-cta p{color:var(--text-muted);font-size:.9rem;margin-bottom:20px}
+        .modal-cta-btn{display:inline-block;background:var(--accent);color:#fff;padding:14px 36px;border-radius:var(--radius);font-weight:700;font-size:.95rem;transition:all .2s}
+        .modal-cta-btn:hover{background:var(--accent-hover);transform:translateY(-2px)}
+
+        /* FOOTER */
+        .footer{border-top:1px solid var(--border);padding:48px 0 32px}
+        .footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
+        .footer-logo{display:flex;align-items:center;gap:10px}
+        .footer-logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),#c0392b);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.65rem;color:#fff}
+        .footer-logo-text{font-weight:700;font-size:.95rem;color:var(--text-muted)}
+        .footer-links{display:flex;gap:24px;list-style:none}
+        .footer-links a{color:var(--text-dim);font-size:.85rem;transition:color .2s}
+        .footer-links a:hover{color:var(--text)}
+        .footer-bottom{text-align:center;margin-top:32px;padding-top:24px;border-top:1px solid var(--border);font-size:.8rem;color:var(--text-dim)}
+
+        @media(max-width:900px){
+            .articles-grid{grid-template-columns:repeat(2,1fr)}
+            .featured-card{grid-template-columns:1fr}
+            .featured-img{min-height:200px}
+        }
+        @media(max-width:768px){
+            .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:rgba(9,9,15,.97);flex-direction:column;padding:16px 24px;border-bottom:1px solid var(--border)}
+            .nav-links.mobile-open{display:flex}
+            .nav-mobile{display:block}
+            .blog-hero h1{font-size:2.2rem}
+            .blog-hero{padding:120px 0 48px}
+            .articles-grid{grid-template-columns:1fr}
+            .featured-card{grid-template-columns:1fr}
+            .featured-content{padding:28px 24px}
+            .featured-content h2{font-size:1.3rem}
+            .filter-tabs{gap:6px}
+            .filter-tab{padding:8px 16px;font-size:.82rem}
+            .newsletter-form{flex-direction:column}
+            .footer-inner{flex-direction:column;text-align:center}
+            .footer-links{flex-wrap:wrap;justify-content:center}
+            .modal-header{padding:24px 24px 0}
+            .modal-content{padding:0 24px 24px}
+            .modal-title{font-size:1.5rem}
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav scrolled" id="nav">
+    <div class="nav-inner">
+        <a href="/e17studios/" class="nav-logo">
+            <div class="nav-logo-mark">E17</div>
+            <div class="nav-logo-text">E17<span>Studios</span></div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="/e17studios/#how">How It Works</a></li>
+            <li><a href="/e17studios/#pricing">Pricing</a></li>
+            <li><a href="/e17studios/case-studies.html">Case Studies</a></li>
+            <li><a href="/e17studios/blog.html" class="active">Blog</a></li>
+            <li><a href="/e17studios/audit.html">Free Audit</a></li>
+            <li><a href="/e17studios/#contact" class="nav-cta">Get Your Free Preview</a></li>
+        </ul>
+        <button class="nav-mobile" onclick="document.getElementById('navLinks').classList.toggle('mobile-open')">&#9776;</button>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="blog-hero">
+    <div class="container">
+        <div class="blog-hero-badge">&#9997;&#65039; Tips, Case Studies & Insights</div>
+        <h1>Insights for <em>Local Businesses</em></h1>
+        <p>Practical advice to help E17 businesses get found online, win more customers, and grow. No jargon, no fluff — just what works.</p>
+    </div>
+</section>
+
+<!-- CATEGORY FILTERS -->
+<div class="category-filters">
+    <div class="container">
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-category="all">All</button>
+            <button class="filter-tab" data-category="getting-started">Getting Started</button>
+            <button class="filter-tab" data-category="seo">SEO Tips</button>
+            <button class="filter-tab" data-category="case-study">Case Studies</button>
+            <button class="filter-tab" data-category="industry">Industry Insights</button>
+        </div>
+    </div>
+</div>
+
+<!-- FEATURED ARTICLE -->
+<section class="featured">
+    <div class="container">
+        <div class="featured-card" data-category="industry" onclick="openArticle('featured')">
+            <div class="featured-img">
+                <div class="featured-stat">
+                    <span class="featured-stat-num">73</span><span class="featured-stat-pct">%</span>
+                    <div class="featured-stat-label">won't visit without a website</div>
+                </div>
+            </div>
+            <div class="featured-content">
+                <div class="featured-tag">Industry Insights</div>
+                <h2>Why 73% of Customers Won't Visit a Business Without a Website in 2026</h2>
+                <p class="excerpt">Consumer behaviour has shifted permanently. Today's customers research online before they spend offline — and if you don't show up, your competitor does. Here's what the data really says about running a business without a web presence.</p>
+                <div class="featured-meta">
+                    <span>E17Studios Team</span>
+                    <span class="dot"></span>
+                    <span>Feb 25, 2026</span>
+                    <span class="dot"></span>
+                    <span>5 min read</span>
+                </div>
+                <span class="read-more-link">Read More &rarr;</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ARTICLES GRID -->
+<section class="articles-section">
+    <div class="container">
+        <h2>Latest Articles</h2>
+        <div class="articles-grid" id="articlesGrid">
+
+            <!-- Article 1 -->
+            <div class="article-card" data-category="getting-started" onclick="openArticle('article-1')">
+                <div class="article-thumb thumb-blue">
+                    <span class="article-thumb-icon">&#9745;&#65039;</span>
+                </div>
+                <div class="article-body">
+                    <span class="article-tag tag-getting-started">Getting Started</span>
+                    <h3>5 Things Every Dry Cleaner's Website Needs</h3>
+                    <p class="article-excerpt">Most dry cleaner websites miss the basics. Here's a simple checklist that turns browsers into paying customers — from mobile-friendly design to click-to-call buttons.</p>
+                    <div class="article-footer">
+                        <span class="article-author">E17Studios Team &middot; Feb 22, 2026</span>
+                        <span class="article-read-time">4 min</span>
+                    </div>
+                    <span class="article-read-more">Read More &rarr;</span>
+                </div>
+            </div>
+
+            <!-- Article 2 -->
+            <div class="article-card" data-category="case-study" onclick="openArticle('article-2')">
+                <div class="article-thumb thumb-red">
+                    <span class="article-thumb-icon">&#128200;</span>
+                </div>
+                <div class="article-body">
+                    <span class="article-tag tag-case-study">Case Study</span>
+                    <h3>How Morris Dry Cleaners Got 34 Phone Calls From Their Website Last Month</h3>
+                    <p class="article-excerpt">A real breakdown of how a Walthamstow dry cleaner went from zero online presence to 34 inbound calls in their first month with a professional website.</p>
+                    <div class="article-footer">
+                        <span class="article-author">E17Studios Team &middot; Feb 18, 2026</span>
+                        <span class="article-read-time">6 min</span>
+                    </div>
+                    <span class="article-read-more">Read More &rarr;</span>
+                </div>
+            </div>
+
+            <!-- Article 3 -->
+            <div class="article-card" data-category="seo" onclick="openArticle('article-3')">
+                <div class="article-thumb thumb-green">
+                    <span class="article-thumb-icon">&#128269;</span>
+                </div>
+                <div class="article-body">
+                    <span class="article-tag tag-seo">SEO Tips</span>
+                    <h3>Local SEO: The Free Marketing Channel You're Ignoring</h3>
+                    <p class="article-excerpt">You're paying for flyers and social ads, but ignoring the one channel that brings customers who are actively searching for what you sell. Here's how to fix that.</p>
+                    <div class="article-footer">
+                        <span class="article-author">E17Studios Team &middot; Feb 14, 2026</span>
+                        <span class="article-read-time">5 min</span>
+                    </div>
+                    <span class="article-read-more">Read More &rarr;</span>
+                </div>
+            </div>
+
+            <!-- Article 4 -->
+            <div class="article-card" data-category="industry" onclick="openArticle('article-4')">
+                <div class="article-thumb thumb-purple">
+                    <span class="article-thumb-icon">&#9878;&#65039;</span>
+                </div>
+                <div class="article-body">
+                    <span class="article-tag tag-industry">Industry Insights</span>
+                    <h3>Website vs Facebook Page: Which One Actually Gets You Customers?</h3>
+                    <p class="article-excerpt">Many small businesses think a Facebook page is enough. We compare the two head-to-head on the metrics that actually matter: calls, footfall, and revenue.</p>
+                    <div class="article-footer">
+                        <span class="article-author">E17Studios Team &middot; Feb 10, 2026</span>
+                        <span class="article-read-time">5 min</span>
+                    </div>
+                    <span class="article-read-more">Read More &rarr;</span>
+                </div>
+            </div>
+
+            <!-- Article 5 -->
+            <div class="article-card" data-category="industry" onclick="openArticle('article-5')">
+                <div class="article-thumb thumb-gold">
+                    <span class="article-thumb-icon">&#128176;</span>
+                </div>
+                <div class="article-body">
+                    <span class="article-tag tag-industry">Industry Insights</span>
+                    <h3>The Real Cost of Not Having a Website (It's More Than You Think)</h3>
+                    <p class="article-excerpt">You're not saving money by skipping a website — you're losing it. We break down the hidden costs: missed customers, weaker trust, and the competitors who benefit.</p>
+                    <div class="article-footer">
+                        <span class="article-author">E17Studios Team &middot; Feb 6, 2026</span>
+                        <span class="article-read-time">4 min</span>
+                    </div>
+                    <span class="article-read-more">Read More &rarr;</span>
+                </div>
+            </div>
+
+            <!-- Article 6 -->
+            <div class="article-card" data-category="seo" onclick="openArticle('article-6')">
+                <div class="article-thumb thumb-teal">
+                    <span class="article-thumb-icon">&#11088;</span>
+                </div>
+                <div class="article-body">
+                    <span class="article-tag tag-seo">SEO Tips</span>
+                    <h3>How to Get More Google Reviews (Without Being Annoying)</h3>
+                    <p class="article-excerpt">Google reviews are the single biggest trust signal for local businesses. Here's a practical, non-pushy system for getting more of them consistently.</p>
+                    <div class="article-footer">
+                        <span class="article-author">E17Studios Team &middot; Feb 2, 2026</span>
+                        <span class="article-read-time">4 min</span>
+                    </div>
+                    <span class="article-read-more">Read More &rarr;</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+    <div class="container">
+        <div class="newsletter-inner">
+            <div class="newsletter-icon">&#128232;</div>
+            <h2>Get Local Business Tips in Your Inbox</h2>
+            <p>One practical tip every week to help your business get found online, win more customers, and save time. Written for busy business owners who want results, not theory.</p>
+            <form class="newsletter-form" onsubmit="handleSubscribe(event)">
+                <input type="email" class="newsletter-input" placeholder="you@yourbusiness.co.uk" required>
+                <button type="submit" class="newsletter-btn">Subscribe</button>
+            </form>
+            <p class="newsletter-note">Weekly tips. Unsubscribe anytime. We hate spam more than you do.</p>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-inner">
+            <div class="footer-logo">
+                <div class="footer-logo-mark">E17</div>
+                <span class="footer-logo-text">E17Studios.com</span>
+            </div>
+            <ul class="footer-links">
+                <li><a href="/e17studios/#how">How It Works</a></li>
+                <li><a href="/e17studios/#pricing">Pricing</a></li>
+                <li><a href="/e17studios/case-studies.html">Case Studies</a></li>
+                <li><a href="/e17studios/blog.html">Blog</a></li>
+                <li><a href="/e17studios/audit.html">Free Audit</a></li>
+                <li><a href="/e17studios/#contact">Contact</a></li>
+                <li><a href="/e17studios/terms.html">Terms & Privacy</a></li>
+            </ul>
+        </div>
+        <div class="footer-bottom">&copy; 2026 E17Studios.com &mdash; Professional websites for East London businesses. Based in Walthamstow, E17.</div>
+    </div>
+</footer>
+
+<!-- ARTICLE MODAL -->
+<div class="article-modal-overlay" id="articleModal">
+    <div class="article-modal">
+        <div class="modal-header">
+            <button class="modal-back" onclick="closeArticle()">&larr; Back to all articles</button>
+            <div class="modal-tag-row" id="modalTag"></div>
+            <h1 class="modal-title" id="modalTitle"></h1>
+            <div class="modal-meta" id="modalMeta"></div>
+        </div>
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+</div>
+
+<script>
+// ─── ARTICLE DATA ───
+const articles = {
+    'featured': {
+        title: "Why 73% of Customers Won't Visit a Business Without a Website in 2026",
+        tag: 'Industry Insights',
+        tagClass: 'tag-industry',
+        author: 'E17Studios Team',
+        date: 'Feb 25, 2026',
+        readTime: '5 min read',
+        content: `
+            <p>Think about the last time you needed a local service — a plumber, a dry cleaner, a takeaway. What did you do first? You searched online. And if one of those businesses didn't have a website, you probably didn't give them a second thought. You're not alone. Research consistently shows that roughly three-quarters of consumers will not engage with a business that has no online presence. In 2026, that number has only grown.</p>
+
+            <p>This shift isn't just about younger, tech-savvy consumers. People aged 45 to 65 now use Google to find local businesses at nearly the same rate as millennials. They're checking opening hours, reading reviews, comparing prices, and looking at photos of your shop — all before they ever walk through your door. If you're not there when they search, you're invisible. And being invisible in 2026 means losing revenue every single day.</p>
+
+            <h3>It's Not Just About Looking Professional</h3>
+            <p>Many business owners think of a website as a digital business card — something nice to have, but not essential. The reality is very different. A website is a 24/7 shopfront. It captures customers while you sleep. When someone searches "dry cleaner near me" at 10pm on a Sunday, they're planning their Monday morning. If your website shows up with your address, services, and a "Call Now" button, you've just won a customer before your competitor even opens their door.</p>
+
+            <p>The data tells a clear story. Businesses with websites receive, on average, 3 to 5 times more enquiries than those relying solely on Google Business listings or social media. That's not a marginal improvement — it's the difference between a quiet week and a fully booked one. And the cost? For less than the price of a single newspaper advert, you can have a professional website running year-round.</p>
+
+            <h3>What This Means for E17 Businesses</h3>
+            <p>East London is competitive. Within a one-mile radius of Walthamstow High Street, there are dozens of businesses competing for the same local customers. The ones winning are the ones that show up when people search. They have websites with clear calls to action, genuine customer reviews, and mobile-friendly designs. They're not doing anything complicated — they're just present where their customers are looking. If you're not online yet, every day you wait is a day your competitors are capturing the customers who should be calling you.</p>
+        `
+    },
+    'article-1': {
+        title: "5 Things Every Dry Cleaner's Website Needs",
+        tag: 'Getting Started',
+        tagClass: 'tag-getting-started',
+        author: 'E17Studios Team',
+        date: 'Feb 22, 2026',
+        readTime: '4 min read',
+        content: `
+            <p>If you run a dry cleaning business and you're thinking about getting a website, you might be wondering what actually needs to be on it. The good news: you don't need anything fancy. But there are five things that, if you get them right, will turn your website from a digital placeholder into something that genuinely brings you customers every week.</p>
+
+            <h3>1. A Click-to-Call Button That's Impossible to Miss</h3>
+            <p>More than 60% of local business website visits happen on a mobile phone. That means your customer is literally holding a phone in their hand when they find you. If your phone number isn't a tappable button right at the top of the page, you're making them work too hard. The best-performing local business websites put a prominent "Call Now" button in the header that stays visible as you scroll. It sounds simple because it is — and it works.</p>
+
+            <h3>2. Your Full List of Services with Prices</h3>
+            <p>People want to know what you do and what it costs before they call. Don't make them guess. List your services clearly — suits, shirts, duvets, alterations, wedding dresses, whatever you offer. And if you can include prices, do it. Businesses that display pricing on their website see significantly higher conversion rates than those that say "call for a quote." Transparency builds trust, and trust is what turns a searcher into a customer.</p>
+
+            <h3>3. Your Google Reviews, Front and Centre</h3>
+            <p>If you've built up a healthy collection of Google reviews, your website should show them off. Social proof is the most powerful persuasion tool you have. When a potential customer sees 200 five-star reviews from real people in their neighbourhood, their decision is already made before they finish reading. Embed your reviews directly on your homepage — don't hide them on a separate page nobody visits.</p>
+
+            <h3>4. Your Location and Opening Hours</h3>
+            <p>This sounds obvious, but you'd be surprised how many business websites bury this information or leave it out entirely. Your address, a Google Map embed, and your opening hours should be visible without scrolling on your homepage. People searching for "dry cleaner near me" need to confirm you're actually near them. Make it effortless for them to find you, and they'll walk through your door.</p>
+
+            <h3>5. A Mobile-Friendly Design That Loads Fast</h3>
+            <p>Your website must look good and load quickly on a phone. Not "okay" — good. If it takes more than three seconds to load, roughly half of visitors will leave before they see anything. Use a clean, modern design with large text, big buttons, and no clutter. Skip the flashy animations and stock photos. Your customers want information, not a design portfolio. Keep it fast, keep it clear, and the results will follow.</p>
+        `
+    },
+    'article-2': {
+        title: "How Morris Dry Cleaners Got 34 Phone Calls From Their Website Last Month",
+        tag: 'Case Study',
+        tagClass: 'tag-case-study',
+        author: 'E17Studios Team',
+        date: 'Feb 18, 2026',
+        readTime: '6 min read',
+        content: `
+            <p>Morris Dry Cleaners has been a fixture on Hoe Street in Walthamstow for over 15 years. They had a loyal customer base, strong reviews on Google, and a reputation built entirely on word of mouth. What they didn't have was a website. When we built one for them, neither they nor we expected the results to come so quickly. Within their first 30 days, the site generated 34 phone calls from new customers who found them through Google.</p>
+
+            <h3>The Starting Point</h3>
+            <p>Before their website went live, Morris Dry Cleaners existed online only as a Google Business listing. It was a good listing — 669 reviews, a 4.9-star rating — but it was competing against other listings in the same panel, with no way to stand out. Potential customers could see the reviews but had no way to learn about specific services, see the shop, or feel confident about choosing Morris over the competition down the road. The website changed that.</p>
+
+            <h3>What We Built</h3>
+            <p>The site was deliberately simple: a single-page design with their services and prices clearly listed, their Google reviews embedded and updating automatically, a prominent click-to-call button in the header, their location on an interactive map, and their opening hours displayed right on the homepage. We used their actual brand colours — gold and navy — and made sure the site loaded in under two seconds on mobile. No stock photos, no filler text, no unnecessary pages. Just the information a potential customer needs to pick up the phone.</p>
+
+            <h3>The Results</h3>
+            <p>Within the first week, Morris started receiving calls from customers who mentioned finding them "on Google." By the end of the month, they tracked 34 calls that came directly through the website's click-to-call button. But the real impact went beyond phone calls. The website also improved their visibility in Google search results. Because the site included location-specific content and was linked to their Google Business profile, they began appearing higher in local search results for terms like "dry cleaner Walthamstow" and "suit cleaning E17."</p>
+
+            <p>The owner told us something that stuck: most of those 34 callers were people who lived within a mile of the shop but had never walked in before. They existed in a blind spot — people who searched online rather than walking the high street. The website simply made Morris visible to an audience they were previously invisible to. At a cost of less than one pound per new customer enquiry, it became the most cost-effective marketing Morris had ever done.</p>
+        `
+    },
+    'article-3': {
+        title: "Local SEO: The Free Marketing Channel You're Ignoring",
+        tag: 'SEO Tips',
+        tagClass: 'tag-seo',
+        author: 'E17Studios Team',
+        date: 'Feb 14, 2026',
+        readTime: '5 min read',
+        content: `
+            <p>Every week, thousands of people in your area type something like "plumber near me" or "best dry cleaner in Walthamstow" into Google. These aren't casual browsers. These are people with money in their hand, ready to spend, actively looking for a business like yours. And here's the thing: showing up in those search results doesn't cost you a penny. It's called local SEO, and most small businesses are completely ignoring it.</p>
+
+            <h3>What Local SEO Actually Means</h3>
+            <p>Local SEO is simply the practice of making sure your business appears when people in your area search for what you offer. It involves three things: having a complete and accurate Google Business profile, having a website that mentions your location and services, and earning genuine reviews from your customers. That's it. You don't need to be a tech expert. You don't need to spend money on ads. You just need to do the basics properly.</p>
+
+            <h3>Why It Beats Every Other Marketing Channel</h3>
+            <p>Compare local SEO to a flyer drop. Printing and distributing 1,000 flyers might cost you a hundred pounds and generate two or three calls if you're lucky. Those flyers interrupt people who weren't looking for you. Local SEO does the opposite — it puts you in front of people who are already searching for exactly what you sell. The intent is completely different, and that's why the conversion rate is so much higher. A person who searched "emergency plumber E17" at 9pm needs a plumber right now. If your website appears, you don't need to convince them of anything. You just need to be there.</p>
+
+            <h3>Three Steps to Get Started Today</h3>
+            <p>First, claim and complete your Google Business profile if you haven't already. Add your correct address, phone number, opening hours, photos of your shop, and a description of your services. Second, get a simple website that mentions your location, your services, and links back to your Google Business listing. Third, start asking happy customers to leave you a Google review. Even five new reviews per month will make a meaningful difference in how often you appear in local search results. Within 60 to 90 days, you should start seeing an increase in calls and visits from people who found you on Google — and it won't have cost you a thing.</p>
+        `
+    },
+    'article-4': {
+        title: "Website vs Facebook Page: Which One Actually Gets You Customers?",
+        tag: 'Industry Insights',
+        tagClass: 'tag-industry',
+        author: 'E17Studios Team',
+        date: 'Feb 10, 2026',
+        readTime: '5 min read',
+        content: `
+            <p>It's a question we hear constantly from small business owners: "I already have a Facebook page — do I really need a website?" The short answer is yes. The longer answer involves understanding the fundamental difference between a platform you control and one you don't, and looking at the data on which one actually drives paying customers through your door.</p>
+
+            <h3>The Reach Problem</h3>
+            <p>Facebook's organic reach — the number of your followers who actually see your posts — has been declining steadily for years. Today, a typical business page post reaches only about 2 to 5 per cent of your followers. If you have 500 followers, that means roughly 10 to 25 people see each post. And those are people who already know you exist. Compare that to a website optimised for local search: it puts you in front of people who have never heard of you but are actively looking for what you offer. A website doesn't wait for someone to open Facebook and scroll past your post. It appears exactly when someone searches for your service.</p>
+
+            <h3>Ownership and Control</h3>
+            <p>Your Facebook page belongs to Facebook. They control who sees your content, they can change the rules at any time, and they can suspend or delete your page without notice. It happens more often than you'd think. Your website, on the other hand, is yours. You control the design, the content, the messaging, and the calls to action. You're not competing with cat videos and political arguments for your customer's attention. When someone lands on your website, the only thing they're looking at is your business.</p>
+
+            <h3>The Numbers Don't Lie</h3>
+            <p>We tracked the performance of several local businesses that had both a Facebook page and a website. The results were consistent: websites generated between four and eight times more inbound enquiries than Facebook pages. The reason is intent. Someone on Facebook is browsing, socialising, or killing time. Someone on Google searching "shoe repair near me" wants to get their shoes fixed today. That difference in intent translates directly into revenue.</p>
+
+            <p>This doesn't mean you should abandon Facebook entirely. It's still useful for community engagement and sharing updates with existing customers. But treating it as your primary online presence is a strategy that leaves significant money on the table. A simple, well-designed website that appears in Google search results will consistently outperform a Facebook page when it comes to the metric that matters most: new customers walking through your door.</p>
+        `
+    },
+    'article-5': {
+        title: "The Real Cost of Not Having a Website (It's More Than You Think)",
+        tag: 'Industry Insights',
+        tagClass: 'tag-industry',
+        author: 'E17Studios Team',
+        date: 'Feb 6, 2026',
+        readTime: '4 min read',
+        content: `
+            <p>When a business owner tells us they don't need a website, what they usually mean is they don't want to spend money on one. That's completely understandable. But the real question isn't "What does a website cost?" — it's "What is not having one costing you?" When you run the numbers, the answer is almost always more than you'd expect.</p>
+
+            <h3>The Customers You Never See</h3>
+            <p>Every day, people in your area search Google for the services you provide. If you don't have a website, you don't appear in those results. Those customers don't know you exist, so they go to your competitor instead. This isn't theoretical — it's measurable. A typical local business website generates between 15 and 50 enquiries per month from people who found the business through search. If you're not online, those 15 to 50 potential customers are going elsewhere. At an average transaction value of even twenty pounds, that's three hundred to a thousand pounds per month in missed revenue.</p>
+
+            <h3>The Trust Tax</h3>
+            <p>Even when people do find your business — through a recommendation, a Google listing, or by walking past your shop — the first thing many of them do is search for you online. If they find a professional website, their confidence in your business increases. If they find nothing, doubt creeps in. Is this place legitimate? Are they still open? Do they actually provide quality service? Studies show that consumers trust businesses with websites significantly more than those without. That lack of trust doesn't just cost you the occasional customer — it reduces the perceived value of your service, making it harder to charge what you're worth.</p>
+
+            <h3>The Compound Effect</h3>
+            <p>Here's what makes this particularly painful: the cost of not having a website isn't a one-off expense. It compounds over time. Every month without a website is another month of missed calls, lost customers, and competitors strengthening their online position. Those competitors are accumulating reviews, building search visibility, and capturing the customers who should be yours. The longer you wait, the bigger the gap becomes and the harder it is to close.</p>
+
+            <p>A professional local business website costs less than a pound a day. Compare that to the revenue you're losing by not being visible online, and the decision becomes straightforward. The most expensive website is the one you never build.</p>
+        `
+    },
+    'article-6': {
+        title: "How to Get More Google Reviews (Without Being Annoying)",
+        tag: 'SEO Tips',
+        tagClass: 'tag-seo',
+        author: 'E17Studios Team',
+        date: 'Feb 2, 2026',
+        readTime: '4 min read',
+        content: `
+            <p>Google reviews are the single most important trust signal for a local business. When someone searches for a service and sees two businesses — one with 12 reviews and one with 200 — the choice is obvious. But getting those reviews feels awkward. You don't want to nag your customers, and you certainly don't want to come across as desperate. The good news is that there's a system for generating a steady stream of genuine reviews that feels natural for both you and your customers.</p>
+
+            <h3>Make It Ridiculously Easy</h3>
+            <p>The biggest reason customers don't leave reviews isn't that they don't want to — it's that the process has too many steps. Finding your business on Google, clicking the right buttons, and writing something takes effort. Remove that friction entirely by creating a direct review link. Google provides a short URL that takes customers straight to the review form for your business. Put that link everywhere: print it on your receipts, add it to a small card you hand to customers, include it in any text or email follow-ups. When leaving a review takes ten seconds instead of two minutes, the number of people who actually do it goes up dramatically.</p>
+
+            <h3>Ask at the Right Moment</h3>
+            <p>Timing matters more than the words you use. The best moment to ask for a review is when the customer has just expressed satisfaction. They've just picked up their freshly cleaned suit and said it looks great. They've complimented your work. That's your window. A simple "Thank you — if you have a moment, a Google review really helps us out" is all it takes. Don't ask when people are in a rush, don't ask at the point of payment, and never ask someone who seems unhappy. The goal is to make the request feel like a natural part of a positive interaction.</p>
+
+            <h3>Build a Routine, Not a Campaign</h3>
+            <p>The businesses with the most reviews don't run review campaigns. They have a routine. Every satisfied customer gets a gentle ask. Every receipt has the review link. Every follow-up message includes a reminder. It's not a one-off push — it's a consistent habit baked into the daily operation of the business. Aim for two to three new reviews per week rather than trying to get fifty in one burst. Consistency signals authenticity to both Google and potential customers, and it keeps your review profile looking natural and current.</p>
+
+            <p>One final point: never buy fake reviews, never offer incentives for reviews, and never ask people to write reviews who haven't genuinely used your service. Google's detection systems are sophisticated, and the penalties for fake reviews — including having your listing suspended — far outweigh any short-term benefit. Real reviews from real customers, collected consistently over time, will always win.</p>
+        `
+    }
+};
+
+// ─── CATEGORY FILTER ───
+const filterTabs = document.querySelectorAll('.filter-tab');
+const articleCards = document.querySelectorAll('.article-card');
+const featuredCard = document.querySelector('.featured-card');
+
+filterTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        const category = tab.dataset.category;
+
+        // Update active tab
+        filterTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        // Filter featured
+        if (category === 'all' || featuredCard.dataset.category === category) {
+            featuredCard.closest('.featured').style.display = '';
+            featuredCard.style.opacity = '1';
+            featuredCard.style.transform = 'translateY(0)';
+        } else {
+            featuredCard.closest('.featured').style.display = 'none';
+        }
+
+        // Filter grid articles
+        articleCards.forEach(card => {
+            if (category === 'all' || card.dataset.category === category) {
+                card.classList.remove('hidden');
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(12px)';
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    });
+                });
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+    });
+});
+
+// ─── ARTICLE MODAL ───
+function openArticle(id) {
+    const article = articles[id];
+    if (!article) return;
+
+    document.getElementById('modalTag').innerHTML = `<span class="article-tag ${article.tagClass}">${article.tag}</span>`;
+    document.getElementById('modalTitle').textContent = article.title;
+    document.getElementById('modalMeta').innerHTML = `
+        <span>${article.author}</span>
+        <span class="dot"></span>
+        <span>${article.date}</span>
+        <span class="dot"></span>
+        <span>${article.readTime}</span>
+    `;
+
+    const shareTitle = encodeURIComponent(article.title);
+    const shareUrl = encodeURIComponent(window.location.href);
+    const shareText = encodeURIComponent(article.title + ' — E17Studios Blog');
+
+    document.getElementById('modalContent').innerHTML = `
+        ${article.content}
+        <div class="modal-share">
+            <span class="modal-share-label">Share:</span>
+            <a href="https://api.whatsapp.com/send?text=${shareText}%20${shareUrl}" target="_blank" rel="noopener" class="share-btn">WhatsApp</a>
+            <a href="https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}" target="_blank" rel="noopener" class="share-btn">Twitter</a>
+            <a href="mailto:?subject=${shareTitle}&body=${shareText}%20${shareUrl}" class="share-btn">Email</a>
+        </div>
+        <div class="modal-cta">
+            <h3>Want results like these for your business?</h3>
+            <p>We'll build you a professional website for free. If you love it, activate from just &pound;29/month.</p>
+            <a href="/e17studios/audit.html" class="modal-cta-btn">Get your free website audit &rarr;</a>
+        </div>
+    `;
+
+    const modal = document.getElementById('articleModal');
+    modal.classList.add('open');
+    modal.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+}
+
+function closeArticle() {
+    document.getElementById('articleModal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+// Close on overlay click
+document.getElementById('articleModal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeArticle();
+});
+
+// Close on Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeArticle();
+});
+
+// ─── NAV SCROLL ───
+window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ─── NEWSLETTER ───
+function handleSubscribe(e) {
+    e.preventDefault();
+    const input = e.target.querySelector('input');
+    const btn = e.target.querySelector('button');
+    const email = input.value;
+
+    btn.textContent = 'Subscribed!';
+    btn.style.background = '#27ae60';
+    input.value = '';
+    input.placeholder = 'You\'re in! Check your inbox.';
+    input.disabled = true;
+    btn.disabled = true;
+
+    setTimeout(() => {
+        btn.textContent = 'Subscribe';
+        btn.style.background = '';
+        input.placeholder = 'you@yourbusiness.co.uk';
+        input.disabled = false;
+        btn.disabled = false;
+    }, 4000);
+}
+</script>
+
+</body>
+</html>

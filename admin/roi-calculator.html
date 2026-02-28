@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROI Calculator | E17Studios Admin</title>
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #09090f;
+            --surface: #111118;
+            --surface-2: #1a1a24;
+            --surface-3: #222230;
+            --accent: #e74c3c;
+            --accent-hover: #ff5c4d;
+            --accent-glow: rgba(231, 76, 60, 0.25);
+            --text: #e8e8ef;
+            --text-muted: #8888a0;
+            --text-dim: #55556a;
+            --border: #2a2a3a;
+            --green: #2ecc71;
+            --green-dim: rgba(46, 204, 113, 0.15);
+            --blue: #3498db;
+            --blue-dim: rgba(52, 152, 219, 0.15);
+            --orange: #e67e22;
+            --orange-dim: rgba(230, 126, 34, 0.15);
+            --purple: #9b59b6;
+            --purple-dim: rgba(155, 89, 182, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-brand .logo {
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand span {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+
+        .sidebar-brand small {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-top: 1px;
+        }
+
+        .sidebar-nav {
+            padding: 12px 10px;
+            flex: 1;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: 2px;
+        }
+
+        .sidebar-nav a:hover {
+            color: var(--text);
+            background: var(--surface-2);
+        }
+
+        .sidebar-nav a.active {
+            color: #fff;
+            background: var(--accent);
+        }
+
+        .sidebar-nav a .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-nav .nav-section {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-dim);
+            padding: 16px 14px 6px;
+        }
+
+        /* ── Main Content ── */
+        .main {
+            margin-left: 250px;
+            flex: 1;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            padding: 20px 36px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topbar h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .topbar .breadcrumb {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .topbar .breadcrumb a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .topbar .breadcrumb a:hover {
+            color: var(--accent);
+        }
+
+        .content {
+            padding: 32px 36px;
+            max-width: 1400px;
+        }
+
+        /* ── Layout Grid ── */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 28px;
+            margin-bottom: 32px;
+        }
+
+        /* ── Cards ── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 28px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .card-header .icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .card-header .icon.red { background: var(--accent-glow); }
+        .card-header .icon.green { background: var(--green-dim); }
+        .card-header .icon.blue { background: var(--blue-dim); }
+        .card-header .icon.orange { background: var(--orange-dim); }
+        .card-header .icon.purple { background: var(--purple-dim); }
+
+        .card-header h2 {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+
+        .card-header p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 1px;
+        }
+
+        /* ── Slider Controls ── */
+        .slider-group {
+            margin-bottom: 22px;
+        }
+
+        .slider-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+
+        .slider-label span {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .slider-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.5px;
+        }
+
+        .slider-track {
+            position: relative;
+            width: 100%;
+            height: 42px;
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--surface-3);
+            outline: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            border: 3px solid var(--surface);
+            box-shadow: 0 0 0 2px var(--accent), 0 2px 8px rgba(231, 76, 60, 0.4);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 0 2px var(--accent-hover), 0 2px 12px rgba(231, 76, 60, 0.6);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            border: 3px solid var(--surface);
+            box-shadow: 0 0 0 2px var(--accent), 0 2px 8px rgba(231, 76, 60, 0.4);
+        }
+
+        .slider-ticks {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 2px;
+            margin-top: -4px;
+        }
+
+        .slider-ticks span {
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        /* Cost selector buttons */
+        .cost-selector {
+            display: flex;
+            gap: 8px;
+        }
+
+        .cost-btn {
+            flex: 1;
+            padding: 12px 8px;
+            background: var(--surface-2);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .cost-btn:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        .cost-btn.active {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+            color: #fff;
+        }
+
+        .cost-btn small {
+            display: block;
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--text-dim);
+            margin-top: 3px;
+        }
+
+        .cost-btn.active small {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* ── Results Panel ── */
+        .results-panel {
+            position: sticky;
+            top: 20px;
+        }
+
+        .result-item {
+            padding: 18px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .result-item:first-child {
+            padding-top: 0;
+        }
+
+        .result-item label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .result-item .value {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .result-item .value.green { color: var(--green); }
+        .result-item .value.blue { color: var(--blue); }
+        .result-item .value.accent { color: var(--accent); }
+        .result-item .value.orange { color: var(--orange); }
+        .result-item .value.purple { color: var(--purple); }
+
+        .result-item .sub {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        .result-highlight {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.08), rgba(231, 76, 60, 0.02));
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .result-highlight label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .result-highlight .big-value {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--accent);
+            letter-spacing: -2px;
+            line-height: 1.1;
+            margin-top: 4px;
+        }
+
+        .result-highlight .big-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* ── Scenario Cards ── */
+        .scenarios-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.3px;
+        }
+
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .scenario-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scenario-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .scenario-card.conservative::before { background: var(--blue); }
+        .scenario-card.moderate::before { background: var(--green); }
+        .scenario-card.aggressive::before { background: var(--orange); }
+
+        .scenario-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .scenario-card .scenario-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+        }
+
+        .scenario-card.conservative .scenario-badge {
+            background: var(--blue-dim);
+            color: var(--blue);
+        }
+
+        .scenario-card.moderate .scenario-badge {
+            background: var(--green-dim);
+            color: var(--green);
+        }
+
+        .scenario-card.aggressive .scenario-badge {
+            background: var(--orange-dim);
+            color: var(--orange);
+        }
+
+        .scenario-card h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .scenario-card .scenario-percent {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .scenario-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 8px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .scenario-stat span {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .scenario-stat strong {
+            font-size: 14px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .scenario-card.conservative .scenario-stat strong { color: var(--blue); }
+        .scenario-card.moderate .scenario-stat strong { color: var(--green); }
+        .scenario-card.aggressive .scenario-stat strong { color: var(--orange); }
+
+        /* ── Sales Pitch ── */
+        .pitch-card {
+            background: linear-gradient(135deg, var(--surface), var(--surface-2));
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pitch-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--orange), var(--green));
+        }
+
+        .pitch-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .pitch-header .icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: var(--accent-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .pitch-header h2 {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .pitch-header p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .pitch-text {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text);
+            background: var(--surface);
+            border-radius: 10px;
+            padding: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .pitch-text .highlight {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .pitch-text .highlight-green {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .pitch-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 4px 14px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--surface-2);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            color: var(--text);
+            border-color: var(--text-dim);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 1100px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .scenarios-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .content {
+                padding: 20px 16px;
+            }
+
+            .topbar {
+                padding: 16px 20px;
+            }
+
+            .result-highlight .big-value {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="logo">E17</div>
+            <div>
+                <span>E17Studios</span>
+                <small>Sales Platform</small>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section">Main</div>
+            <a href="/admin/">
+                <span class="nav-icon">&#9635;</span> CRM Dashboard
+            </a>
+            <a href="/admin/analytics.html">
+                <span class="nav-icon">&#9636;</span> Analytics
+            </a>
+    <a href="/admin/lead-scoring.html">Lead Scoring</a>
+            <a href="/admin/roi-calculator.html" class="active">
+                <span class="nav-icon">&#9655;</span> ROI Calculator
+            </a>
+            <a href="/admin/competitor-analysis.html">
+                <span class="nav-icon">&#9670;</span> Competitor Analysis
+            </a>
+
+            <div class="nav-section">Sales Tools</div>
+            <a href="/admin/whatsapp-templates.html">
+                <span class="nav-icon">&#9993;</span> WhatsApp Templates
+            </a>
+            <a href="/admin/sales-script.html">
+                <span class="nav-icon">&#9998;</span> Sales Script
+            </a>
+    <a href="/admin/sequence-builder.html">Sequence Builder</a>
+    <a href="/admin/client-success.html">Success Metrics</a>
+            <a href="/admin/client-report.html">
+                <span class="nav-icon">&#9783;</span> Client Report
+            </a>
+            <a href="/admin/expansion-planner.html">
+                <span class="nav-icon">&#9733;</span> Expansion Planner
+            </a>
+
+            <div class="nav-section">Resources</div>
+            <a href="/sitemap.html">
+                <span class="nav-icon">&#9776;</span> Sitemap
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main">
+        <div class="topbar">
+            <div>
+                <div class="breadcrumb"><a href="/admin/">Admin</a> / ROI Calculator</div>
+                <h1>ROI Calculator</h1>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- Calculator + Results Grid -->
+            <div class="calculator-grid">
+
+                <!-- Sliders Panel -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon red">&#9655;</div>
+                        <div>
+                            <h2>Business Inputs</h2>
+                            <p>Adjust the sliders to match the client's business</p>
+                        </div>
+                    </div>
+
+                    <!-- Average Job Value -->
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Average Job Value</span>
+                            <span class="slider-value" id="jobValueDisplay">&pound;35</span>
+                        </div>
+                        <div class="slider-track">
+                            <input type="range" id="jobValue" min="10" max="200" value="35" step="1">
+                        </div>
+                        <div class="slider-ticks">
+                            <span>&pound;10</span><span>&pound;50</span><span>&pound;100</span><span>&pound;150</span><span>&pound;200</span>
+                        </div>
+                    </div>
+
+                    <!-- Jobs Per Day -->
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Jobs Per Day</span>
+                            <span class="slider-value" id="jobsPerDayDisplay">8</span>
+                        </div>
+                        <div class="slider-track">
+                            <input type="range" id="jobsPerDay" min="1" max="30" value="8" step="1">
+                        </div>
+                        <div class="slider-ticks">
+                            <span>1</span><span>8</span><span>15</span><span>22</span><span>30</span>
+                        </div>
+                    </div>
+
+                    <!-- Days Open Per Week -->
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Days Open Per Week</span>
+                            <span class="slider-value" id="daysPerWeekDisplay">6</span>
+                        </div>
+                        <div class="slider-track">
+                            <input type="range" id="daysPerWeek" min="1" max="7" value="6" step="1">
+                        </div>
+                        <div class="slider-ticks">
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
+                        </div>
+                    </div>
+
+                    <!-- % Customers From Web -->
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Customers From Website</span>
+                            <span class="slider-value" id="webPercentDisplay">15%</span>
+                        </div>
+                        <div class="slider-track">
+                            <input type="range" id="webPercent" min="5" max="80" value="15" step="1">
+                        </div>
+                        <div class="slider-ticks">
+                            <span>5%</span><span>20%</span><span>40%</span><span>60%</span><span>80%</span>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Website Cost -->
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Monthly Website Cost</span>
+                            <span class="slider-value" id="monthlyCostDisplay">&pound;49/mo</span>
+                        </div>
+                        <div class="cost-selector">
+                            <button class="cost-btn" data-value="29" onclick="setCost(29)">
+                                &pound;29
+                                <small>Starter</small>
+                            </button>
+                            <button class="cost-btn active" data-value="49" onclick="setCost(49)">
+                                &pound;49
+                                <small>Growth</small>
+                            </button>
+                            <button class="cost-btn" data-value="99" onclick="setCost(99)">
+                                &pound;99
+                                <small>Pro</small>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Months to Calculate -->
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Calculation Period</span>
+                            <span class="slider-value" id="monthsDisplay">12 months</span>
+                        </div>
+                        <div class="slider-track">
+                            <input type="range" id="months" min="1" max="24" value="12" step="1">
+                        </div>
+                        <div class="slider-ticks">
+                            <span>1</span><span>6</span><span>12</span><span>18</span><span>24</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Panel -->
+                <div class="results-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="icon green">&#9650;</div>
+                            <div>
+                                <h2>Projected Returns</h2>
+                                <p>Based on your inputs</p>
+                            </div>
+                        </div>
+
+                        <div class="result-item">
+                            <label>Monthly Web Revenue</label>
+                            <div class="value green" id="monthlyRevenue">&pound;0</div>
+                            <div class="sub" id="monthlyRevenueSub">0 web customers per month</div>
+                        </div>
+
+                        <div class="result-item">
+                            <label>Annual Web Revenue</label>
+                            <div class="value blue" id="annualRevenue">&pound;0</div>
+                            <div class="sub" id="annualRevenueSub">Over 12 months</div>
+                        </div>
+
+                        <div class="result-item">
+                            <label>Payback Period</label>
+                            <div class="value orange" id="paybackPeriod">0 days</div>
+                            <div class="sub" id="paybackSub">Time to recoup monthly website cost</div>
+                        </div>
+
+                        <div class="result-item">
+                            <label>Net Profit After Website Cost</label>
+                            <div class="value purple" id="netProfit">&pound;0</div>
+                            <div class="sub" id="netProfitSub">Revenue minus total website fees</div>
+                        </div>
+
+                        <div class="result-highlight">
+                            <label>Return on Investment</label>
+                            <div class="big-value" id="roiPercent">0%</div>
+                            <div class="big-sub" id="roiSub">For every &pound;1 spent</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario Cards -->
+            <div class="scenarios-title">Compare Scenarios</div>
+            <div class="scenarios-grid">
+
+                <!-- Conservative -->
+                <div class="scenario-card conservative" onclick="applyScenario(10)">
+                    <span class="scenario-badge">Conservative</span>
+                    <h3>Cautious Estimate</h3>
+                    <p class="scenario-percent">10% of customers from website</p>
+                    <div class="scenario-stat">
+                        <span>Monthly Revenue</span>
+                        <strong id="scenario-conservative-monthly">&pound;0</strong>
+                    </div>
+                    <div class="scenario-stat">
+                        <span>Annual Revenue</span>
+                        <strong id="scenario-conservative-annual">&pound;0</strong>
+                    </div>
+                    <div class="scenario-stat">
+                        <span>ROI</span>
+                        <strong id="scenario-conservative-roi">0%</strong>
+                    </div>
+                </div>
+
+                <!-- Moderate -->
+                <div class="scenario-card moderate" onclick="applyScenario(20)">
+                    <span class="scenario-badge">Moderate</span>
+                    <h3>Realistic Estimate</h3>
+                    <p class="scenario-percent">20% of customers from website</p>
+                    <div class="scenario-stat">
+                        <span>Monthly Revenue</span>
+                        <strong id="scenario-moderate-monthly">&pound;0</strong>
+                    </div>
+                    <div class="scenario-stat">
+                        <span>Annual Revenue</span>
+                        <strong id="scenario-moderate-annual">&pound;0</strong>
+                    </div>
+                    <div class="scenario-stat">
+                        <span>ROI</span>
+                        <strong id="scenario-moderate-roi">0%</strong>
+                    </div>
+                </div>
+
+                <!-- Aggressive -->
+                <div class="scenario-card aggressive" onclick="applyScenario(35)">
+                    <span class="scenario-badge">Aggressive</span>
+                    <h3>Optimistic Estimate</h3>
+                    <p class="scenario-percent">35% of customers from website</p>
+                    <div class="scenario-stat">
+                        <span>Monthly Revenue</span>
+                        <strong id="scenario-aggressive-monthly">&pound;0</strong>
+                    </div>
+                    <div class="scenario-stat">
+                        <span>Annual Revenue</span>
+                        <strong id="scenario-aggressive-annual">&pound;0</strong>
+                    </div>
+                    <div class="scenario-stat">
+                        <span>ROI</span>
+                        <strong id="scenario-aggressive-roi">0%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Pitch -->
+            <div class="pitch-card">
+                <div class="pitch-header">
+                    <div class="icon">&#128172;</div>
+                    <div>
+                        <h2>Auto-Generated Sales Pitch</h2>
+                        <p>Copy this and use it in conversations with prospects</p>
+                    </div>
+                </div>
+                <div class="pitch-text" id="salesPitch">
+                    Loading pitch...
+                </div>
+                <div class="pitch-actions">
+                    <button class="btn btn-primary" onclick="copyPitch()">Copy to Clipboard</button>
+                    <button class="btn btn-secondary" onclick="resetDefaults()">Reset to Defaults</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ── State ──
+        let monthlyCost = 49;
+
+        // ── Elements ──
+        const sliders = {
+            jobValue: document.getElementById('jobValue'),
+            jobsPerDay: document.getElementById('jobsPerDay'),
+            daysPerWeek: document.getElementById('daysPerWeek'),
+            webPercent: document.getElementById('webPercent'),
+            months: document.getElementById('months')
+        };
+
+        const displays = {
+            jobValue: document.getElementById('jobValueDisplay'),
+            jobsPerDay: document.getElementById('jobsPerDayDisplay'),
+            daysPerWeek: document.getElementById('daysPerWeekDisplay'),
+            webPercent: document.getElementById('webPercentDisplay'),
+            months: document.getElementById('monthsDisplay'),
+            monthlyCost: document.getElementById('monthlyCostDisplay')
+        };
+
+        // ── Slider fill styling ──
+        function updateSliderFill(slider) {
+            const min = parseFloat(slider.min);
+            const max = parseFloat(slider.max);
+            const val = parseFloat(slider.value);
+            const pct = ((val - min) / (max - min)) * 100;
+            slider.style.background = `linear-gradient(to right, var(--accent) 0%, var(--accent) ${pct}%, var(--surface-3) ${pct}%, var(--surface-3) 100%)`;
+        }
+
+        // ── Event listeners ──
+        Object.values(sliders).forEach(slider => {
+            slider.addEventListener('input', () => {
+                updateSliderFill(slider);
+                calculate();
+            });
+            updateSliderFill(slider);
+        });
+
+        // ── Cost selector ──
+        function setCost(value) {
+            monthlyCost = value;
+            document.querySelectorAll('.cost-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.value) === value);
+            });
+            displays.monthlyCost.textContent = `\u00A3${value}/mo`;
+            calculate();
+        }
+
+        // ── Apply scenario ──
+        function applyScenario(percent) {
+            sliders.webPercent.value = percent;
+            updateSliderFill(sliders.webPercent);
+            calculate();
+        }
+
+        // ── Reset defaults ──
+        function resetDefaults() {
+            sliders.jobValue.value = 35;
+            sliders.jobsPerDay.value = 8;
+            sliders.daysPerWeek.value = 6;
+            sliders.webPercent.value = 15;
+            sliders.months.value = 12;
+            setCost(49);
+            Object.values(sliders).forEach(updateSliderFill);
+            calculate();
+        }
+
+        // ── Format currency ──
+        function formatCurrency(n) {
+            if (n >= 1000) {
+                return '\u00A3' + n.toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            }
+            return '\u00A3' + n.toFixed(0);
+        }
+
+        // ── Core calculation ──
+        function calculate() {
+            const jobValue = parseFloat(sliders.jobValue.value);
+            const jobsPerDay = parseInt(sliders.jobsPerDay.value);
+            const daysPerWeek = parseInt(sliders.daysPerWeek.value);
+            const webPercent = parseInt(sliders.webPercent.value);
+            const months = parseInt(sliders.months.value);
+
+            // Update displays
+            displays.jobValue.textContent = `\u00A3${jobValue}`;
+            displays.jobsPerDay.textContent = jobsPerDay;
+            displays.daysPerWeek.textContent = daysPerWeek;
+            displays.webPercent.textContent = `${webPercent}%`;
+            displays.months.textContent = `${months} month${months !== 1 ? 's' : ''}`;
+
+            // Calculations
+            const weeksPerMonth = 4.33;
+            const jobsPerMonth = jobsPerDay * daysPerWeek * weeksPerMonth;
+            const totalMonthlyRevenue = jobsPerMonth * jobValue;
+            const webMonthlyRevenue = totalMonthlyRevenue * (webPercent / 100);
+            const webCustomersPerMonth = Math.round(jobsPerMonth * (webPercent / 100));
+            const periodRevenue = webMonthlyRevenue * months;
+            const totalCost = monthlyCost * months;
+            const netProfit = periodRevenue - totalCost;
+            const roiPercent = totalCost > 0 ? ((netProfit / totalCost) * 100) : 0;
+
+            // Payback period in days
+            const dailyWebRevenue = webMonthlyRevenue / 30;
+            const paybackDays = dailyWebRevenue > 0 ? Math.ceil(monthlyCost / dailyWebRevenue) : Infinity;
+
+            // Update results
+            document.getElementById('monthlyRevenue').textContent = formatCurrency(Math.round(webMonthlyRevenue));
+            document.getElementById('monthlyRevenueSub').textContent = `~${webCustomersPerMonth} web customers per month`;
+
+            document.getElementById('annualRevenue').textContent = formatCurrency(Math.round(periodRevenue));
+            document.getElementById('annualRevenueSub').textContent = `Over ${months} month${months !== 1 ? 's' : ''}`;
+
+            if (paybackDays === Infinity || paybackDays > 365) {
+                document.getElementById('paybackPeriod').textContent = 'N/A';
+            } else if (paybackDays <= 1) {
+                document.getElementById('paybackPeriod').textContent = '< 1 day';
+            } else {
+                document.getElementById('paybackPeriod').textContent = `${paybackDays} day${paybackDays !== 1 ? 's' : ''}`;
+            }
+
+            document.getElementById('netProfit').textContent = formatCurrency(Math.round(netProfit));
+            document.getElementById('netProfitSub').textContent = `Revenue minus \u00A3${totalCost} in website fees`;
+
+            document.getElementById('roiPercent').textContent = `${Math.round(roiPercent).toLocaleString()}%`;
+            const returnPerPound = totalCost > 0 ? (periodRevenue / totalCost).toFixed(2) : '0.00';
+            document.getElementById('roiSub').textContent = `\u00A3${returnPerPound} back for every \u00A31 spent`;
+
+            // Update scenarios
+            updateScenarios(jobValue, jobsPerDay, daysPerWeek, months);
+
+            // Update pitch
+            updatePitch(jobValue, jobsPerDay, daysPerWeek, webPercent, months, webMonthlyRevenue, periodRevenue, netProfit, roiPercent, paybackDays, webCustomersPerMonth);
+        }
+
+        function updateScenarios(jobValue, jobsPerDay, daysPerWeek, months) {
+            const weeksPerMonth = 4.33;
+            const scenarios = [
+                { key: 'conservative', pct: 10 },
+                { key: 'moderate', pct: 20 },
+                { key: 'aggressive', pct: 35 }
+            ];
+
+            scenarios.forEach(s => {
+                const jobsPerMonth = jobsPerDay * daysPerWeek * weeksPerMonth;
+                const monthlyRev = jobsPerMonth * jobValue * (s.pct / 100);
+                const periodRev = monthlyRev * months;
+                const totalCost = monthlyCost * months;
+                const roi = totalCost > 0 ? (((periodRev - totalCost) / totalCost) * 100) : 0;
+
+                document.getElementById(`scenario-${s.key}-monthly`).textContent = formatCurrency(Math.round(monthlyRev));
+                document.getElementById(`scenario-${s.key}-annual`).textContent = formatCurrency(Math.round(periodRev));
+                document.getElementById(`scenario-${s.key}-roi`).textContent = `${Math.round(roi).toLocaleString()}%`;
+            });
+        }
+
+        function updatePitch(jobValue, jobsPerDay, daysPerWeek, webPercent, months, webMonthlyRevenue, periodRevenue, netProfit, roiPercent, paybackDays, webCustomersPerMonth) {
+            const totalCost = monthlyCost * months;
+            const dailyWebJobs = (jobsPerDay * (webPercent / 100));
+
+            let paybackStr;
+            if (paybackDays === Infinity || paybackDays > 365) {
+                paybackStr = 'a long time';
+            } else if (paybackDays <= 1) {
+                paybackStr = 'less than a day';
+            } else {
+                paybackStr = `just ${paybackDays} day${paybackDays !== 1 ? 's' : ''}`;
+            }
+
+            const planName = monthlyCost === 29 ? 'Starter' : monthlyCost === 49 ? 'Growth' : 'Pro';
+
+            const pitch = `Right now your business is doing around <span class="highlight">${jobsPerDay} jobs a day</span>, ${daysPerWeek} days a week, at an average of <span class="highlight">\u00A3${jobValue} per job</span>. If we conservatively estimate that just <span class="highlight">${webPercent}% of your customers</span> come through your new website, that's roughly <span class="highlight-green">${webCustomersPerMonth} extra bookings a month</span> driven by your online presence \u2014 generating around <span class="highlight-green">${formatCurrency(Math.round(webMonthlyRevenue))} per month</span> in web-attributed revenue.`
+                + `<br><br>`
+                + `Over ${months} month${months !== 1 ? 's' : ''}, that adds up to <span class="highlight-green">${formatCurrency(Math.round(periodRevenue))} in total web revenue</span>. After subtracting your \u00A3${monthlyCost}/month ${planName} plan (just \u00A3${totalCost} total), your <span class="highlight-green">net profit is ${formatCurrency(Math.round(netProfit))}</span>. That's an ROI of <span class="highlight">${Math.round(roiPercent).toLocaleString()}%</span>. Your website pays for itself in ${paybackStr}, and everything after that is pure profit flowing straight into your business.`
+                + `<br><br>`
+                + `The question isn't whether you can afford a website \u2014 it's whether you can afford <em>not</em> to have one. Every day without it is money left on the table.`;
+
+            document.getElementById('salesPitch').innerHTML = pitch;
+        }
+
+        // ── Copy pitch ──
+        function copyPitch() {
+            const el = document.getElementById('salesPitch');
+            const text = el.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.btn-primary');
+                const original = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = 'var(--green)';
+                setTimeout(() => {
+                    btn.textContent = original;
+                    btn.style.background = '';
+                }, 2000);
+            });
+        }
+
+        // ── Initial calculation ──
+        calculate();
+    </script>
+</body>
+</html>

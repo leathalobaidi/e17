@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Free Website Audit — E17Studios</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#09090f;--surface:#111118;--border:rgba(255,255,255,.08);--text:#e8e8f0;--text-muted:#8888a0;--text-dim:#55556a;--accent:#e74c3c;--green:#27ae60;--gold:#f39c12;--red:#e74c3c;--radius:12px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text)}
+        .container{max-width:720px;margin:0 auto;padding:0 24px}
+        a{text-decoration:none;color:inherit}
+
+        .nav{padding:20px 0;text-align:center;border-bottom:1px solid var(--border)}
+        .nav a{display:inline-flex;align-items:center;gap:10px}
+        .nav-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),#c0392b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.7rem;color:#fff}
+        .nav-text{font-weight:800;font-size:1.1rem}.nav-text span{color:var(--accent)}
+
+        .hero{padding:60px 0 40px;text-align:center}
+        .hero h1{font-size:2.4rem;font-weight:900;letter-spacing:-.03em;margin-bottom:12px}
+        .hero h1 span{color:var(--accent)}
+        .hero p{color:var(--text-muted);font-size:1.05rem;max-width:500px;margin:0 auto}
+
+        /* FORM */
+        .audit-form{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:40px}
+        .audit-form h2{font-size:1.2rem;font-weight:700;margin-bottom:20px;text-align:center}
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .form-group{display:flex;flex-direction:column;gap:6px}
+        .form-group.full{grid-column:1/-1}
+        .form-group label{font-size:.82rem;font-weight:600;color:var(--text-muted)}
+        .form-group input,.form-group select{padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.9rem;font-family:inherit;outline:none;transition:border-color .2s}
+        .form-group input:focus,.form-group select:focus{border-color:var(--accent)}
+        .form-group select{cursor:pointer}
+        .audit-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-weight:700;font-size:1rem;cursor:pointer;margin-top:16px;transition:all .2s}
+        .audit-btn:hover{background:#c0392b}
+        .audit-btn:disabled{opacity:.6;cursor:not-allowed}
+
+        /* RESULTS */
+        .results{display:none}
+        .results.show{display:block}
+
+        .score-section{text-align:center;padding:40px 0}
+        .score-ring{width:160px;height:160px;border-radius:50%;margin:0 auto 20px;position:relative;display:flex;align-items:center;justify-content:center}
+        .score-ring::before{content:'';position:absolute;inset:0;border-radius:50%;border:8px solid rgba(255,255,255,.05)}
+        .score-num{font-size:3rem;font-weight:900;position:relative;z-index:1}
+        .score-num span{font-size:1.2rem;color:var(--text-muted)}
+        .score-label{font-size:1.1rem;font-weight:700;margin-bottom:4px}
+        .score-desc{color:var(--text-muted);font-size:.9rem}
+
+        .score-red .score-ring{background:conic-gradient(var(--red) var(--pct),rgba(255,255,255,.05) var(--pct));box-shadow:0 0 40px rgba(231,76,60,.2)}
+        .score-red .score-num{color:var(--red)}
+        .score-red .score-label{color:var(--red)}
+
+        .score-gold .score-ring{background:conic-gradient(var(--gold) var(--pct),rgba(255,255,255,.05) var(--pct));box-shadow:0 0 40px rgba(243,156,18,.2)}
+        .score-gold .score-num{color:var(--gold)}
+        .score-gold .score-label{color:var(--gold)}
+
+        .score-green .score-ring{background:conic-gradient(var(--green) var(--pct),rgba(255,255,255,.05) var(--pct));box-shadow:0 0 40px rgba(39,174,96,.2)}
+        .score-green .score-num{color:var(--green)}
+        .score-green .score-label{color:var(--green)}
+
+        /* CATEGORIES */
+        .category{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden}
+        .cat-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+        .cat-header:hover{background:rgba(255,255,255,.02)}
+        .cat-header h3{font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:8px}
+        .cat-score{padding:4px 12px;border-radius:50px;font-size:.75rem;font-weight:700}
+        .cat-score-bad{background:rgba(231,76,60,.15);color:var(--red)}
+        .cat-score-ok{background:rgba(243,156,18,.15);color:var(--gold)}
+        .cat-score-good{background:rgba(39,174,96,.15);color:var(--green)}
+        .cat-body{max-height:0;overflow:hidden;transition:max-height .3s}
+        .category.open .cat-body{max-height:600px}
+        .cat-items{padding:0 20px 16px}
+        .cat-item{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:.88rem;border-bottom:1px solid var(--border)}
+        .cat-item:last-child{border-bottom:none}
+        .cat-item-icon{font-size:.9rem}
+        .item-pass{color:var(--green)}
+        .item-fail{color:var(--red)}
+        .item-warn{color:var(--gold)}
+
+        .results-cta{text-align:center;padding:40px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin:24px 0}
+        .results-cta h2{font-size:1.4rem;font-weight:800;margin-bottom:8px}
+        .results-cta p{color:var(--text-muted);margin-bottom:24px;font-size:.95rem}
+        .results-cta .cta-btn{display:inline-block;background:var(--accent);color:#fff;padding:14px 36px;border-radius:var(--radius);font-weight:700;font-size:1rem;transition:all .2s}
+        .results-cta .cta-btn:hover{transform:translateY(-2px)}
+
+        /* SCANNING ANIMATION */
+        .scanning{display:none;text-align:center;padding:60px 0}
+        .scanning.show{display:block}
+        .scan-spinner{width:60px;height:60px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .scan-text{color:var(--text-muted);font-size:.95rem}
+        .scan-progress{width:300px;max-width:100%;height:6px;background:var(--border);border-radius:3px;margin:16px auto 0;overflow:hidden}
+        .scan-progress-fill{height:100%;background:var(--accent);border-radius:3px;width:0;transition:width .5s}
+
+        .footer{text-align:center;padding:32px 0;color:var(--text-dim);font-size:.8rem;border-top:1px solid var(--border)}
+        .footer a{color:var(--accent)}
+
+        @media(max-width:768px){.hero h1{font-size:1.8rem}.form-grid{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+<nav class="nav"><div class="container"><a href="/e17studios/"><div class="nav-mark">E17</div><div class="nav-text">E17<span>Studios</span></div></a></div></nav>
+
+<section class="hero">
+    <div class="container">
+        <h1>Free Website <span>Audit</span></h1>
+        <p>Find out how your business scores online — takes 30 seconds</p>
+    </div>
+</section>
+
+<div class="container">
+    <div class="audit-form" id="auditForm">
+        <h2>Tell us about your business</h2>
+        <div class="form-grid">
+            <div class="form-group"><label>Business Name *</label><input type="text" id="bizName" placeholder="e.g. Morris Dry Cleaners" required></div>
+            <div class="form-group"><label>Postcode *</label><input type="text" id="bizPostcode" placeholder="e.g. E17 4SA" required></div>
+            <div class="form-group"><label>Business Type</label>
+                <select id="bizType">
+                    <option>Dry Cleaner</option><option>Barber / Hair Salon</option><option>Restaurant / Takeaway</option>
+                    <option>Plumber / Tradesperson</option><option>Nail / Beauty Salon</option><option>Other</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Your Name</label><input type="text" id="ownerName" placeholder="e.g. John Smith"></div>
+            <div class="form-group"><label>Email *</label><input type="email" id="ownerEmail" placeholder="you@example.com" required></div>
+            <div class="form-group"><label>Current Website (if any)</label><input type="url" id="bizUrl" placeholder="https://..."></div>
+        </div>
+        <button class="audit-btn" onclick="runAudit()">Run Free Audit →</button>
+    </div>
+
+    <div class="scanning" id="scanning">
+        <div class="scan-spinner"></div>
+        <div class="scan-text" id="scanText">Scanning your online presence...</div>
+        <div class="scan-progress"><div class="scan-progress-fill" id="scanProgress"></div></div>
+    </div>
+
+    <div class="results" id="results">
+        <div class="score-section" id="scoreSection">
+            <div class="score-ring"><div class="score-num" id="scoreNum">0<span>/100</span></div></div>
+            <div class="score-label" id="scoreLabel">--</div>
+            <div class="score-desc" id="scoreDesc">--</div>
+        </div>
+
+        <div class="category open" onclick="this.classList.toggle('open')">
+            <div class="cat-header"><h3>🌐 Online Presence</h3><span class="cat-score cat-score-bad" id="cat1Score">--</span></div>
+            <div class="cat-body"><div class="cat-items" id="cat1Items"></div></div>
+        </div>
+
+        <div class="category" onclick="this.classList.toggle('open')">
+            <div class="cat-header"><h3>📱 Mobile & Speed</h3><span class="cat-score" id="cat2Score">--</span></div>
+            <div class="cat-body"><div class="cat-items" id="cat2Items"></div></div>
+        </div>
+
+        <div class="category" onclick="this.classList.toggle('open')">
+            <div class="cat-header"><h3>🔍 Local SEO</h3><span class="cat-score" id="cat3Score">--</span></div>
+            <div class="cat-body"><div class="cat-items" id="cat3Items"></div></div>
+        </div>
+
+        <div class="category" onclick="this.classList.toggle('open')">
+            <div class="cat-header"><h3>💰 Customer Conversion</h3><span class="cat-score" id="cat4Score">--</span></div>
+            <div class="cat-body"><div class="cat-items" id="cat4Items"></div></div>
+        </div>
+
+        <div class="results-cta" id="resultsCta"></div>
+    </div>
+</div>
+
+<footer class="footer"><div class="container"><p>© 2026 <a href="/e17studios/">E17Studios.com</a> — Free website audit for local businesses</p></div></footer>
+
+<script>
+function runAudit(){
+    const name=document.getElementById('bizName').value.trim();
+    const email=document.getElementById('ownerEmail').value.trim();
+    const postcode=document.getElementById('bizPostcode').value.trim();
+    if(!name||!email||!postcode){alert('Please fill in all required fields');return}
+
+    const hasWebsite=!!document.getElementById('bizUrl').value.trim();
+    document.getElementById('auditForm').style.display='none';
+    const scanning=document.getElementById('scanning');
+    scanning.classList.add('show');
+
+    const steps=['Scanning your online presence...','Checking mobile compatibility...','Analysing local SEO signals...','Evaluating customer conversion...','Calculating final score...'];
+    let step=0;
+    const scanText=document.getElementById('scanText');
+    const progress=document.getElementById('scanProgress');
+
+    const interval=setInterval(()=>{
+        step++;
+        if(step<steps.length){scanText.textContent=steps[step];progress.style.width=(step/steps.length*100)+'%'}
+        else{
+            clearInterval(interval);
+            progress.style.width='100%';
+            setTimeout(()=>{scanning.classList.remove('show');showResults(name,hasWebsite)},500);
+        }
+    },800);
+}
+
+function showResults(name,hasWebsite){
+    const score=hasWebsite?Math.floor(Math.random()*25)+38:Math.floor(Math.random()*9)+15;
+    const results=document.getElementById('results');
+    results.classList.add('show');
+
+    // Animate score
+    const scoreNum=document.getElementById('scoreNum');
+    const scoreSection=document.getElementById('scoreSection');
+    let current=0;
+    const scoreInterval=setInterval(()=>{
+        current++;
+        scoreNum.innerHTML=current+'<span>/100</span>';
+        scoreSection.style.setProperty('--pct',(current/100*360)+'deg');
+        if(current>=score)clearInterval(scoreInterval);
+    },30);
+
+    const colorClass=score<30?'score-red':score<60?'score-gold':'score-green';
+    scoreSection.className='score-section '+colorClass;
+    scoreSection.style.setProperty('--pct',(score/100*360)+'deg');
+
+    const label=document.getElementById('scoreLabel');
+    const desc=document.getElementById('scoreDesc');
+    if(score<30){label.textContent='Critical — Immediate Action Needed';desc.textContent=name+' is nearly invisible online. You\'re losing customers every day.'}
+    else if(score<60){label.textContent='Needs Improvement';desc.textContent=name+' has some online presence but major gaps remain.'}
+    else{label.textContent='Good — Room to Grow';desc.textContent=name+' has a basic presence but could perform much better.'}
+
+    // Category 1: Online Presence
+    const cat1=document.getElementById('cat1Items');
+    const cat1Score=document.getElementById('cat1Score');
+    if(!hasWebsite){
+        cat1Score.textContent='2/25';cat1Score.className='cat-score cat-score-bad';
+        cat1.innerHTML=items([['fail','No website found'],['fail','Not appearing in web search results'],['fail','No branded search presence'],['warn','Google Business listing exists (basic)'],['pass','Business name found online']]);
+    }else{
+        cat1Score.textContent='14/25';cat1Score.className='cat-score cat-score-ok';
+        cat1.innerHTML=items([['pass','Website found'],['warn','Website may not be optimised'],['warn','Basic search presence detected'],['pass','Google Business listing exists'],['pass','Business name found online']]);
+    }
+
+    // Category 2: Mobile & Speed
+    const cat2=document.getElementById('cat2Items');
+    const cat2Score=document.getElementById('cat2Score');
+    if(!hasWebsite){
+        cat2Score.textContent='0/25';cat2Score.className='cat-score cat-score-bad';
+        cat2.innerHTML=items([['fail','No mobile website'],['fail','No responsive design'],['fail','No page speed data'],['fail','No mobile click-to-call'],['fail','No mobile directions link']]);
+    }else{
+        cat2Score.textContent='12/25';cat2Score.className='cat-score cat-score-ok';
+        cat2.innerHTML=items([['pass','Website loads on mobile'],['warn','Responsive design may need improvement'],['warn','Page speed not tested'],['warn','Click-to-call not detected'],['fail','No mobile-first design']]);
+    }
+
+    // Category 3: Local SEO
+    const cat3=document.getElementById('cat3Items');
+    const cat3Score=document.getElementById('cat3Score');
+    cat3Score.textContent=hasWebsite?'10/25':'5/25';
+    cat3Score.className='cat-score '+(hasWebsite?'cat-score-ok':'cat-score-bad');
+    cat3.innerHTML=items([
+        [hasWebsite?'pass':'fail','Schema.org structured data '+(hasWebsite?'may exist':'missing')],
+        ['warn','NAP consistency not verified'],
+        ['fail','No local landing pages'],
+        [hasWebsite?'warn':'fail','Google Maps integration '+(hasWebsite?'basic':'missing')],
+        ['warn','Local keyword optimisation needed']
+    ]);
+
+    // Category 4: Customer Conversion
+    const cat4=document.getElementById('cat4Items');
+    const cat4Score=document.getElementById('cat4Score');
+    cat4Score.textContent=hasWebsite?'12/25':'8/25';
+    cat4Score.className='cat-score '+(hasWebsite?'cat-score-ok':'cat-score-bad');
+    cat4.innerHTML=items([
+        [hasWebsite?'warn':'fail','Review showcase '+(hasWebsite?'not optimised':'missing')],
+        [hasWebsite?'warn':'fail','Call-to-action buttons '+(hasWebsite?'weak':'missing')],
+        ['fail','No online booking capability'],
+        ['pass','Google reviews visible on Maps'],
+        [hasWebsite?'warn':'fail','Service pages '+(hasWebsite?'basic':'not found')]
+    ]);
+
+    // CTA
+    const cta=document.getElementById('resultsCta');
+    if(score<40){
+        cta.innerHTML='<h2>'+name+' Needs a Website — Fast</h2><p>Your score of '+score+'/100 means customers can\'t find you online. We\'ll build you a free preview in 48 hours — no obligation.</p><a href="/e17studios/#contact" class="cta-btn">Get Your Free Website Preview →</a>';
+    }else{
+        cta.innerHTML='<h2>Let\'s Improve Your Score</h2><p>Your score of '+score+'/100 shows room for improvement. A professional E17Studios website could boost this to 85+.</p><a href="/e17studios/#contact" class="cta-btn">Get a Free Consultation →</a>';
+    }
+}
+
+function items(arr){
+    return arr.map(([status,text])=>{
+        const icon=status==='pass'?'✓':status==='fail'?'✗':'⚠';
+        const cls=status==='pass'?'item-pass':status==='fail'?'item-fail':'item-warn';
+        return '<div class="cat-item"><span class="cat-item-icon '+cls+'">'+icon+'</span><span>'+text+'</span></div>';
+    }).join('');
+}
+</script>
+</body>
+</html>

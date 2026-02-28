@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Why Your Business Needs a Website — E17Studios</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#09090f;--surface:#111118;--border:rgba(255,255,255,.08);--text:#e8e8f0;--text-muted:#8888a0;--text-dim:#55556a;--accent:#e74c3c;--green:#27ae60;--red:#e74c3c;--radius:12px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text)}
+        .container{max-width:1100px;margin:0 auto;padding:0 24px}
+        a{text-decoration:none;color:inherit}
+
+        .nav{padding:20px 0;text-align:center;border-bottom:1px solid var(--border)}
+        .nav a{display:inline-flex;align-items:center;gap:10px}
+        .nav-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),#c0392b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.7rem;color:#fff}
+        .nav-text{font-weight:800;font-size:1.1rem}.nav-text span{color:var(--accent)}
+
+        .hero{padding:80px 0 60px;text-align:center}
+        .hero h1{font-size:2.8rem;font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:16px}
+        .hero h1 span{color:var(--accent)}
+        .hero p{font-size:1.15rem;color:var(--text-muted);max-width:600px;margin:0 auto}
+
+        .stats-bar{display:flex;justify-content:center;gap:32px;padding:40px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+        .stat-block{text-align:center;padding:20px 32px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+        .stat-block .num{font-size:2.2rem;font-weight:900;color:var(--accent)}
+        .stat-block .label{font-size:.8rem;color:var(--text-dim);margin-top:4px}
+
+        .money-loss{text-align:center;padding:60px 0;background:var(--surface);margin:40px 0;border-radius:var(--radius);border:1px solid var(--border)}
+        .money-loss h2{font-size:1.4rem;font-weight:700;color:var(--text-muted);margin-bottom:8px}
+        .money-counter{font-size:3.5rem;font-weight:900;color:var(--red);font-variant-numeric:tabular-nums}
+        .money-loss p{color:var(--text-dim);font-size:.85rem;margin-top:8px}
+
+        .comparison{padding:60px 0}
+        .comparison h2{text-align:center;font-size:1.8rem;font-weight:800;margin-bottom:40px}
+        .compare-table{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+        .compare-table table{width:100%;border-collapse:collapse;font-size:.9rem}
+        .compare-table th{padding:14px 20px;text-align:left;font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim);border-bottom:1px solid var(--border)}
+        .compare-table th:nth-child(2){color:var(--red);text-align:center}
+        .compare-table th:nth-child(3){color:var(--green);text-align:center}
+        .compare-table td{padding:12px 20px;border-bottom:1px solid var(--border)}
+        .compare-table td:nth-child(2),.compare-table td:nth-child(3){text-align:center;font-weight:600}
+        .compare-table tr:last-child td{border-bottom:none}
+        .icon-no{color:var(--red)}
+        .icon-yes{color:var(--green)}
+
+        .before-after{padding:60px 0}
+        .before-after h2{text-align:center;font-size:1.8rem;font-weight:800;margin-bottom:40px}
+        .ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+        .ba-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+        .ba-label{padding:12px 20px;font-weight:700;font-size:.85rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+        .ba-label-before{background:rgba(231,76,60,.1);color:var(--red)}
+        .ba-label-after{background:rgba(39,174,96,.1);color:var(--green)}
+        .ba-content{padding:24px}
+        .ba-content p{color:var(--text-muted);font-size:.9rem;line-height:1.6;margin-bottom:8px}
+        .ba-iframe{width:100%;height:300px;border:0;border-radius:8px}
+
+        .google-mock{background:#fff;border-radius:8px;padding:16px;color:#202124;font-family:Arial,sans-serif}
+        .gm-title{color:#1a0dab;font-size:1.1rem;margin-bottom:4px}
+        .gm-url{color:#006621;font-size:.82rem;margin-bottom:4px}
+        .gm-desc{color:#4d5156;font-size:.85rem;line-height:1.4}
+        .gm-missing{background:#ffeaa7;color:#856404;padding:8px 12px;border-radius:4px;font-size:.8rem;margin-top:8px}
+
+        .journey{padding:60px 0}
+        .journey h2{text-align:center;font-size:1.8rem;font-weight:800;margin-bottom:40px}
+        .journey-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+        .journey-col h3{text-align:center;font-size:1rem;font-weight:700;padding:12px;border-radius:8px 8px 0 0;margin-bottom:16px}
+        .journey-lost h3{background:rgba(231,76,60,.15);color:var(--red)}
+        .journey-won h3{background:rgba(39,174,96,.15);color:var(--green)}
+        .journey-step{display:flex;gap:12px;margin-bottom:16px;align-items:start}
+        .journey-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;flex-shrink:0}
+        .journey-lost .journey-num{background:rgba(231,76,60,.15);color:var(--red)}
+        .journey-won .journey-num{background:rgba(39,174,96,.15);color:var(--green)}
+        .journey-step p{font-size:.88rem;color:var(--text-muted);line-height:1.5}
+        .journey-step strong{color:var(--text)}
+
+        .cta-section{text-align:center;padding:60px 0;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);margin:40px 0}
+        .cta-section h2{font-size:2rem;font-weight:900;margin-bottom:12px}
+        .cta-section p{color:var(--text-muted);margin-bottom:28px;font-size:1.05rem}
+        .cta-btn{display:inline-block;background:var(--accent);color:#fff;padding:16px 40px;border-radius:var(--radius);font-weight:800;font-size:1.1rem;transition:all .2s}
+        .cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(231,76,60,.3)}
+
+        .footer{text-align:center;padding:32px 0;color:var(--text-dim);font-size:.8rem;border-top:1px solid var(--border)}
+        .footer a{color:var(--accent)}
+
+        @media(max-width:768px){.hero h1{font-size:2rem}.ba-grid,.journey-grid{grid-template-columns:1fr}.stats-bar{gap:16px}}
+    </style>
+</head>
+<body>
+<nav class="nav"><div class="container"><a href="/e17studios/"><div class="nav-mark">E17</div><div class="nav-text">E17<span>Studios</span></div></a></div></nav>
+
+<section class="hero">
+    <div class="container">
+        <h1>Why Your Business <span>Needs a Website</span></h1>
+        <p>In 2026, not having a website isn't saving you money — it's costing you customers every single day.</p>
+    </div>
+</section>
+
+<div class="container">
+    <div class="stats-bar">
+        <div class="stat-block"><div class="num">97%</div><div class="label">Search online before visiting</div></div>
+        <div class="stat-block"><div class="num">70%</div><div class="label">Won't use a business with no website</div></div>
+        <div class="stat-block"><div class="num">3 in 4</div><div class="label">Judge credibility by website</div></div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="money-loss">
+        <h2>You're Losing Approximately</h2>
+        <div class="money-counter" id="counter">£0.00</div>
+        <p>in potential revenue every day without a website (based on avg £18/day for local service businesses)</p>
+    </div>
+</div>
+
+<section class="comparison">
+    <div class="container">
+        <h2>With Website vs Without Website</h2>
+        <div class="compare-table">
+            <table>
+                <thead><tr><th>Feature</th><th>Without Website</th><th>With E17Studios</th></tr></thead>
+                <tbody>
+                    <tr><td>Found on Google Search</td><td class="icon-no">✗ Rarely</td><td class="icon-yes">✓ First page</td></tr>
+                    <tr><td>Google Maps listing enhanced</td><td class="icon-no">✗ Basic</td><td class="icon-yes">✓ With website link</td></tr>
+                    <tr><td>Mobile-friendly presence</td><td class="icon-no">✗ None</td><td class="icon-yes">✓ Fully responsive</td></tr>
+                    <tr><td>Reviews visible to searchers</td><td class="icon-no">✗ Maps only</td><td class="icon-yes">✓ Featured on site</td></tr>
+                    <tr><td>Click-to-call from search</td><td class="icon-no">✗ Manual dial</td><td class="icon-yes">✓ One-tap calling</td></tr>
+                    <tr><td>Services listed online</td><td class="icon-no">✗ Nowhere</td><td class="icon-yes">✓ Clear & detailed</td></tr>
+                    <tr><td>Opening hours online</td><td class="icon-no">✗ Maps only</td><td class="icon-yes">✓ Prominently shown</td></tr>
+                    <tr><td>Professional credibility</td><td class="icon-no">✗ Questionable</td><td class="icon-yes">✓ Instant trust</td></tr>
+                    <tr><td>Customer directions</td><td class="icon-no">✗ Generic Maps</td><td class="icon-yes">✓ Embedded map</td></tr>
+                    <tr><td>Compete with chains</td><td class="icon-no">✗ Invisible</td><td class="icon-yes">✓ Equal footing</td></tr>
+                    <tr><td>24/7 availability</td><td class="icon-no">✗ Shop hours only</td><td class="icon-yes">✓ Always online</td></tr>
+                    <tr><td>Monthly cost</td><td style="color:var(--text-muted)">£0 + £18/day lost</td><td class="icon-yes">From £29/mo</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="before-after">
+    <div class="container">
+        <h2>What Customers See</h2>
+        <div class="ba-grid">
+            <div class="ba-card">
+                <div class="ba-label ba-label-before">✗ Without a Website</div>
+                <div class="ba-content">
+                    <div class="google-mock">
+                        <div class="gm-title">Morris Dry Cleaners</div>
+                        <div class="gm-url">No website available</div>
+                        <div class="gm-desc">Dry cleaner · 7 Hoe Street, Walthamstow · Open until 7pm</div>
+                        <div class="gm-missing">No website found. Customer clicks competitor instead.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="ba-card">
+                <div class="ba-label ba-label-after">✓ With E17Studios Website</div>
+                <div class="ba-content">
+                    <iframe src="/morris-dry-cleaners/" class="ba-iframe" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="journey">
+    <div class="container">
+        <h2>The Customer Journey</h2>
+        <div class="journey-grid">
+            <div class="journey-col journey-lost">
+                <h3>Without a Website — Customer Lost</h3>
+                <div class="journey-step"><div class="journey-num">1</div><p><strong>Customer needs dry cleaning</strong> — searches "dry cleaners near me" on phone</p></div>
+                <div class="journey-step"><div class="journey-num">2</div><p>Sees your Google listing but <strong>no website link</strong></p></div>
+                <div class="journey-step"><div class="journey-num">3</div><p>Clicks on competitor who <strong>has a professional website</strong></p></div>
+                <div class="journey-step"><div class="journey-num">4</div><p>Sees their services, reviews, and location. <strong>Calls them instead.</strong></p></div>
+                <div class="journey-step"><div class="journey-num">5</div><p>Becomes a <strong>regular customer — of your competitor</strong></p></div>
+                <div class="journey-step"><div class="journey-num">6</div><p>You never even knew they existed. <strong>£35 lost.</strong></p></div>
+            </div>
+            <div class="journey-col journey-won">
+                <h3>With a Website — Customer Won</h3>
+                <div class="journey-step"><div class="journey-num">1</div><p><strong>Customer needs dry cleaning</strong> — searches "dry cleaners near me" on phone</p></div>
+                <div class="journey-step"><div class="journey-num">2</div><p>Sees your Google listing <strong>with website link</strong></p></div>
+                <div class="journey-step"><div class="journey-num">3</div><p>Clicks through to your <strong>professional, mobile-friendly site</strong></p></div>
+                <div class="journey-step"><div class="journey-num">4</div><p>Sees your 669 reviews, services, location map. <strong>Trusts you instantly.</strong></p></div>
+                <div class="journey-step"><div class="journey-num">5</div><p>Taps <strong>"Call Now"</strong> — you answer, they book.</p></div>
+                <div class="journey-step"><div class="journey-num">6</div><p>New regular customer. <strong>£35+ every visit. ROI achieved.</strong></p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="cta-section">
+        <h2>Stop Losing Customers Today</h2>
+        <p>We'll build your website for free — you only pay if you love it</p>
+        <a href="/e17studios/#contact" class="cta-btn">Get Your Free Preview →</a>
+    </div>
+</div>
+
+<footer class="footer"><div class="container"><p>© 2026 <a href="/e17studios/">E17Studios.com</a> — Professional websites for East London businesses</p></div></footer>
+
+<script>
+let amount=0;const rate=18/(24*60*60);
+function updateCounter(){amount+=rate;document.getElementById('counter').textContent='£'+amount.toFixed(2);}
+setInterval(updateCounter,50);
+</script>
+</body>
+</html>

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Studies — E17Studios</title>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #09090f;
+            --surface: #111118;
+            --surface-2: #1a1a24;
+            --surface-3: #222230;
+            --accent: #e74c3c;
+            --accent-glow: rgba(231, 76, 60, 0.3);
+            --text: #f0f0f5;
+            --text-muted: #8a8a9a;
+            --border: rgba(255,255,255,0.06);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── NAV ── */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(9,9,15,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 700;
+            font-size: 1.15rem;
+        }
+        .nav-logo .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: #fff;
+        }
+        .nav-links { display: flex; gap: 8px; align-items: center; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); background: var(--surface-2); }
+        .nav-links .btn-accent {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+        .nav-links .btn-accent:hover { background: #d44235; color: #fff; }
+
+        /* ── HERO ── */
+        .hero {
+            padding: 140px 24px 80px;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(231,76,60,0.1);
+            border: 1px solid rgba(231,76,60,0.25);
+            color: var(--accent);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: 0.02em;
+        }
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.4rem);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+        .hero h1 span { color: var(--accent); }
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        /* ── CASE STUDIES GRID ── */
+        .cases-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px 80px;
+        }
+        .case-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 48px;
+            transition: border-color 0.3s;
+        }
+        .case-card:hover { border-color: rgba(255,255,255,0.12); }
+
+        .case-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 28px 32px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .case-header-left { display: flex; align-items: center; gap: 16px; }
+        .case-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .case-title { font-size: 1.35rem; font-weight: 700; }
+        .case-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+        .opportunity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .case-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 420px;
+        }
+        @media (max-width: 800px) {
+            .case-body { grid-template-columns: 1fr; }
+        }
+
+        /* Iframe Preview */
+        .case-preview {
+            position: relative;
+            background: var(--surface-2);
+            border-right: 1px solid var(--border);
+            overflow: hidden;
+            min-height: 400px;
+        }
+        .case-preview iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .preview-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 20px;
+            background: linear-gradient(transparent, rgba(9,9,15,0.95));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 2;
+        }
+        .preview-overlay a {
+            color: var(--text);
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            background: rgba(255,255,255,0.1);
+            padding: 6px 14px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .preview-overlay a:hover { background: rgba(255,255,255,0.2); }
+
+        /* Stats & Info */
+        .case-info { padding: 28px 32px; display: flex; flex-direction: column; gap: 24px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .stat-card {
+            background: var(--surface-2);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .highlights-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .highlights-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+        .highlights-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+        .highlight-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 7px;
+        }
+
+        /* ── THEME COLORS ── */
+        .theme-gold .case-icon { background: rgba(218,165,32,0.15); color: #daa520; }
+        .theme-gold .stat-value { color: #daa520; }
+        .theme-gold .opportunity-badge { background: rgba(218,165,32,0.1); border: 1px solid rgba(218,165,32,0.3); color: #daa520; }
+        .theme-gold .highlight-dot { background: #daa520; }
+
+        .theme-green .case-icon { background: rgba(39,174,96,0.15); color: #27ae60; }
+        .theme-green .stat-value { color: #27ae60; }
+        .theme-green .opportunity-badge { background: rgba(39,174,96,0.1); border: 1px solid rgba(39,174,96,0.3); color: #27ae60; }
+        .theme-green .highlight-dot { background: #27ae60; }
+
+        .theme-purple .case-icon { background: rgba(142,68,173,0.15); color: #8e44ad; }
+        .theme-purple .stat-value { color: #8e44ad; }
+        .theme-purple .opportunity-badge { background: rgba(142,68,173,0.1); border: 1px solid rgba(142,68,173,0.3); color: #8e44ad; }
+        .theme-purple .highlight-dot { background: #8e44ad; }
+
+        .theme-orange .case-icon { background: rgba(230,126,34,0.15); color: #e67e22; }
+        .theme-orange .stat-value { color: #e67e22; }
+        .theme-orange .opportunity-badge { background: rgba(230,126,34,0.1); border: 1px solid rgba(230,126,34,0.3); color: #e67e22; }
+        .theme-orange .highlight-dot { background: #e67e22; }
+
+        /* ── APPROACH SECTION ── */
+        .approach-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 24px;
+            border-top: 1px solid var(--border);
+        }
+        .approach-section h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        .approach-section h2 span { color: var(--accent); }
+        .approach-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 48px;
+            font-size: 1.05rem;
+        }
+        .approach-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        @media (max-width: 800px) {
+            .approach-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 500px) {
+            .approach-grid { grid-template-columns: 1fr; }
+        }
+        .approach-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px 24px;
+            text-align: center;
+            position: relative;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .approach-card:hover { border-color: rgba(231,76,60,0.3); transform: translateY(-4px); }
+        .approach-step {
+            width: 48px;
+            height: 48px;
+            background: rgba(231,76,60,0.1);
+            border: 1px solid rgba(231,76,60,0.25);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin: 0 auto 16px;
+        }
+        .approach-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+        .approach-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
+        .approach-arrow {
+            display: none;
+        }
+        @media (min-width: 801px) {
+            .approach-arrow {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                right: -22px;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 2;
+                color: var(--text-muted);
+                font-size: 1.2rem;
+            }
+        }
+
+        /* ── CTA ── */
+        .cta-section {
+            text-align: center;
+            padding: 80px 24px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .cta-section h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        .cta-section p {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            font-size: 1.05rem;
+        }
+        .btn-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent);
+            color: #fff;
+            text-decoration: none;
+            padding: 16px 36px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 4px 24px var(--accent-glow);
+        }
+        .btn-cta:hover { background: #d44235; transform: translateY(-2px); box-shadow: 0 8px 32px var(--accent-glow); }
+
+        /* ── FOOTER ── */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 32px 24px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            .case-header { padding: 20px; }
+            .case-info { padding: 20px; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .stat-card { padding: 12px 8px; }
+            .stat-value { font-size: 1.2rem; }
+            .nav-links .hide-mobile { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <a href="/e17studios/" class="nav-logo">
+        <div class="logo-icon">E17</div>
+        E17Studios
+    </a>
+    <div class="nav-links">
+        <a href="/e17studios/" class="hide-mobile">Home</a>
+        <a href="/e17studios/pricing-breakdown.html" class="hide-mobile">Pricing</a>
+        <a href="/e17studios/#contact" class="btn-accent">Get Started</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-badge">&#9733; Portfolio</div>
+    <h1>Case Studies &mdash; <span>Real Businesses, Real Results</span></h1>
+    <p>Every site we build is crafted around real data, local SEO strategy, and conversion-focused design. Here are five businesses we've helped stand out in E17 and beyond.</p>
+</section>
+
+<!-- CASE STUDIES -->
+<section class="cases-section">
+
+    <!-- 1. Morris Dry Cleaners -->
+    <article class="case-card theme-gold">
+        <div class="case-header">
+            <div class="case-header-left">
+                <div class="case-icon">M</div>
+                <div>
+                    <div class="case-title">Morris Dry Cleaners</div>
+                    <div class="case-subtitle">Est. Walthamstow &bull; Premium Dry Cleaning</div>
+                </div>
+            </div>
+            <div class="opportunity-badge">&#9733; Highest review count in E17</div>
+        </div>
+        <div class="case-body">
+            <div class="case-preview">
+                <iframe src="/morris-dry-cleaners/" loading="lazy" title="Morris Dry Cleaners Preview"></iframe>
+                <div class="preview-overlay">
+                    <span style="font-size:0.8rem;color:var(--text-muted);">Live Preview</span>
+                    <a href="/morris-dry-cleaners/" target="_blank">Visit Site &rarr;</a>
+                </div>
+            </div>
+            <div class="case-info">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">669</div>
+                        <div class="stat-label">Reviews</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">4.9&#9733;</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">12+</div>
+                        <div class="stat-label">Services</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="highlights-title">Key Highlights</div>
+                    <ul class="highlights-list">
+                        <li><span class="highlight-dot"></span>669 Google reviews &mdash; highest count of any dry cleaner in E17</li>
+                        <li><span class="highlight-dot"></span>4.9-star average maintained across hundreds of reviews</li>
+                        <li><span class="highlight-dot"></span>12+ services from suits to wedding dresses &amp; curtains</li>
+                        <li><span class="highlight-dot"></span>Prime Hoe Street location with strong local footfall</li>
+                        <li><span class="highlight-dot"></span>Over 20 years serving the Walthamstow community</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- 2. Lagoon Eco Friendly -->
+    <article class="case-card theme-green">
+        <div class="case-header">
+            <div class="case-header-left">
+                <div class="case-icon">L</div>
+                <div>
+                    <div class="case-title">Lagoon Eco Friendly</div>
+                    <div class="case-subtitle">Eco-Conscious Cleaning &bull; Walthamstow</div>
+                </div>
+            </div>
+            <div class="opportunity-badge">&#9752; Eco-friendly angle</div>
+        </div>
+        <div class="case-body">
+            <div class="case-preview">
+                <iframe src="/lagoon-eco-friendly/" loading="lazy" title="Lagoon Eco Friendly Preview"></iframe>
+                <div class="preview-overlay">
+                    <span style="font-size:0.8rem;color:var(--text-muted);">Live Preview</span>
+                    <a href="/lagoon-eco-friendly/" target="_blank">Visit Site &rarr;</a>
+                </div>
+            </div>
+            <div class="case-info">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">99</div>
+                        <div class="stat-label">Reviews</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">4.8&#9733;</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">8+</div>
+                        <div class="stat-label">Services</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="highlights-title">Key Highlights</div>
+                    <ul class="highlights-list">
+                        <li><span class="highlight-dot"></span>99 reviews with a strong 4.8-star average rating</li>
+                        <li><span class="highlight-dot"></span>Eco-friendly cleaning methods using biodegradable solvents</li>
+                        <li><span class="highlight-dot"></span>Appeals to environmentally conscious E17 customers</li>
+                        <li><span class="highlight-dot"></span>Unique market position &mdash; only green dry cleaner locally</li>
+                        <li><span class="highlight-dot"></span>Growing reputation for sustainable garment care</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- 3. Vanish Dry Cleaners -->
+    <article class="case-card theme-green">
+        <div class="case-header">
+            <div class="case-header-left">
+                <div class="case-icon">V</div>
+                <div>
+                    <div class="case-title">Vanish Dry Cleaners</div>
+                    <div class="case-subtitle">Stain Removal Specialists &bull; Walthamstow</div>
+                </div>
+            </div>
+            <div class="opportunity-badge">&#10024; Stain removal specialist</div>
+        </div>
+        <div class="case-body">
+            <div class="case-preview">
+                <iframe src="/vanish-dry-cleaners/" loading="lazy" title="Vanish Dry Cleaners Preview"></iframe>
+                <div class="preview-overlay">
+                    <span style="font-size:0.8rem;color:var(--text-muted);">Live Preview</span>
+                    <a href="/vanish-dry-cleaners/" target="_blank">Visit Site &rarr;</a>
+                </div>
+            </div>
+            <div class="case-info">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">175</div>
+                        <div class="stat-label">Reviews</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">4.7&#9733;</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">10+</div>
+                        <div class="stat-label">Services</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="highlights-title">Key Highlights</div>
+                    <ul class="highlights-list">
+                        <li><span class="highlight-dot"></span>175 reviews demonstrating consistent customer satisfaction</li>
+                        <li><span class="highlight-dot"></span>4.7-star rating with expertise in tough stain removal</li>
+                        <li><span class="highlight-dot"></span>Specialist services for delicate and difficult fabrics</li>
+                        <li><span class="highlight-dot"></span>Competitive pricing with fast turnaround times</li>
+                        <li><span class="highlight-dot"></span>Trusted neighbourhood presence for over a decade</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- 4. Pressed 2 Perfection -->
+    <article class="case-card theme-purple">
+        <div class="case-header">
+            <div class="case-header-left">
+                <div class="case-icon">P2P</div>
+                <div>
+                    <div class="case-title">Pressed 2 Perfection</div>
+                    <div class="case-subtitle">Premium Garment Care &bull; Walthamstow</div>
+                </div>
+            </div>
+            <div class="opportunity-badge">&#9830; Premium positioning</div>
+        </div>
+        <div class="case-body">
+            <div class="case-preview">
+                <iframe src="/pressed-2-perfection/" loading="lazy" title="Pressed 2 Perfection Preview"></iframe>
+                <div class="preview-overlay">
+                    <span style="font-size:0.8rem;color:var(--text-muted);">Live Preview</span>
+                    <a href="/pressed-2-perfection/" target="_blank">Visit Site &rarr;</a>
+                </div>
+            </div>
+            <div class="case-info">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">90</div>
+                        <div class="stat-label">Reviews</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">4.8&#9733;</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">9+</div>
+                        <div class="stat-label">Services</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="highlights-title">Key Highlights</div>
+                    <ul class="highlights-list">
+                        <li><span class="highlight-dot"></span>90 reviews with a premium 4.8-star rating</li>
+                        <li><span class="highlight-dot"></span>Positioned as the upscale choice for garment care</li>
+                        <li><span class="highlight-dot"></span>Specialises in suits, evening wear &amp; designer labels</li>
+                        <li><span class="highlight-dot"></span>Attention to detail that justifies premium pricing</li>
+                        <li><span class="highlight-dot"></span>Strong word-of-mouth referrals from loyal clients</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- 5. Apollo Dry Cleaners -->
+    <article class="case-card theme-orange">
+        <div class="case-header">
+            <div class="case-header-left">
+                <div class="case-icon">A</div>
+                <div>
+                    <div class="case-title">Apollo Dry Cleaners</div>
+                    <div class="case-subtitle">Station Convenience &bull; Walthamstow</div>
+                </div>
+            </div>
+            <div class="opportunity-badge">&#128643; Station convenience</div>
+        </div>
+        <div class="case-body">
+            <div class="case-preview">
+                <iframe src="/apollo-dry-cleaners/" loading="lazy" title="Apollo Dry Cleaners Preview"></iframe>
+                <div class="preview-overlay">
+                    <span style="font-size:0.8rem;color:var(--text-muted);">Live Preview</span>
+                    <a href="/apollo-dry-cleaners/" target="_blank">Visit Site &rarr;</a>
+                </div>
+            </div>
+            <div class="case-info">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">63</div>
+                        <div class="stat-label">Reviews</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">4.1&#9733;</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">7+</div>
+                        <div class="stat-label">Services</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="highlights-title">Key Highlights</div>
+                    <ul class="highlights-list">
+                        <li><span class="highlight-dot"></span>63 reviews with room to grow and improve ratings</li>
+                        <li><span class="highlight-dot"></span>4.1-star rating &mdash; website drives trust and credibility</li>
+                        <li><span class="highlight-dot"></span>Prime location near Walthamstow Central station</li>
+                        <li><span class="highlight-dot"></span>Captures commuter traffic with drop-off convenience</li>
+                        <li><span class="highlight-dot"></span>Competitive pricing aimed at daily commuters</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </article>
+
+</section>
+
+<!-- OUR APPROACH -->
+<section class="approach-section">
+    <h2>Our <span>Approach</span></h2>
+    <p class="approach-subtitle">Every project follows the same proven four-step process.</p>
+    <div class="approach-grid">
+        <div class="approach-card" style="position:relative;">
+            <div class="approach-step">1</div>
+            <h3>Research</h3>
+            <p>We audit your Google profile, reviews, competitors, and local search landscape to find your edge.</p>
+            <div class="approach-arrow">&rarr;</div>
+        </div>
+        <div class="approach-card" style="position:relative;">
+            <div class="approach-step">2</div>
+            <h3>Design</h3>
+            <p>Custom dark-theme layouts built for trust, speed, and mobile-first conversion.</p>
+            <div class="approach-arrow">&rarr;</div>
+        </div>
+        <div class="approach-card" style="position:relative;">
+            <div class="approach-step">3</div>
+            <h3>Copywriting</h3>
+            <p>SEO-optimised content that tells your story and ranks for local search terms.</p>
+            <div class="approach-arrow">&rarr;</div>
+        </div>
+        <div class="approach-card">
+            <div class="approach-step">4</div>
+            <h3>Launch</h3>
+            <p>We deploy, connect analytics, submit to Google, and hand over the keys &mdash; all within days.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <h2>Ready to be the next case study?</h2>
+    <p>Join the growing list of E17 businesses with a website that actually works for them. Let&rsquo;s talk.</p>
+    <a href="/e17studios/#contact" class="btn-cta">Get Your Free Consultation &rarr;</a>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <p>&copy; 2026 <a href="/e17studios/">E17Studios</a>. All rights reserved. &bull; Built in Walthamstow, E17.</p>
+</footer>
+
+</body>
+</html>

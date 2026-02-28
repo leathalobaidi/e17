@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard | E17Studios Admin</title>
+    <style>
+        /* ── Reset & Base ────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 15px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #09090f;
+            color: #c8c8d0;
+            min-height: 100vh;
+            display: flex;
+        }
+        a { color: inherit; text-decoration: none; }
+
+        /* ── Sidebar ─────────────────────────────────────── */
+        .sidebar {
+            width: 240px;
+            min-height: 100vh;
+            background: #111118;
+            border-right: 1px solid #1e1e2a;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+        .sidebar-brand {
+            padding: 24px 20px;
+            border-bottom: 1px solid #1e1e2a;
+        }
+        .sidebar-brand h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+        .sidebar-brand span {
+            color: #e74c3c;
+        }
+        .sidebar-brand p {
+            font-size: 0.7rem;
+            color: #555;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .sidebar-nav {
+            list-style: none;
+            padding: 12px 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            font-size: 0.85rem;
+            color: #777;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-nav li a:hover {
+            color: #bbb;
+            background: rgba(255,255,255,0.02);
+        }
+        .sidebar-nav li a.active {
+            color: #e74c3c;
+            background: rgba(231,76,60,0.06);
+            border-left-color: #e74c3c;
+        }
+        .sidebar-nav li a .nav-icon {
+            width: 18px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        /* ── Main Content ────────────────────────────────── */
+        .main {
+            margin-left: 240px;
+            flex: 1;
+            padding: 32px 36px;
+            min-height: 100vh;
+        }
+
+        /* ── Page Header ─────────────────────────────────── */
+        .page-header {
+            margin-bottom: 32px;
+        }
+        .page-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+        .page-header p {
+            font-size: 0.85rem;
+            color: #555;
+            margin-top: 6px;
+        }
+
+        /* ── Section ─────────────────────────────────────── */
+        .section {
+            margin-bottom: 36px;
+        }
+        .section-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            margin-bottom: 16px;
+        }
+
+        /* ── KPI Cards ───────────────────────────────────── */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .kpi-card {
+            background: #111118;
+            border: 1px solid #1e1e2a;
+            border-radius: 10px;
+            padding: 22px 24px;
+            transition: border-color 0.2s;
+        }
+        .kpi-card:hover {
+            border-color: #2a2a38;
+        }
+        .kpi-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -1px;
+        }
+        .kpi-sub {
+            font-size: 0.75rem;
+            color: #4a9;
+            margin-top: 6px;
+        }
+        .kpi-sub.warn { color: #e7a03c; }
+        .kpi-card.accent {
+            border-color: rgba(231,76,60,0.3);
+            background: linear-gradient(135deg, #111118 60%, rgba(231,76,60,0.04));
+        }
+        .kpi-card.accent .kpi-value { color: #e74c3c; }
+
+        /* ── Bar Chart ───────────────────────────────────── */
+        .chart-container {
+            background: #111118;
+            border: 1px solid #1e1e2a;
+            border-radius: 10px;
+            padding: 24px;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .chart-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #ddd;
+        }
+        .chart-legend {
+            font-size: 0.72rem;
+            color: #555;
+        }
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 160px;
+            border-bottom: 1px solid #1e1e2a;
+            padding-bottom: 0;
+        }
+        .bar-chart .bar {
+            flex: 1;
+            border-radius: 3px 3px 0 0;
+            min-width: 6px;
+            transition: all 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+        .bar-chart .bar:hover {
+            filter: brightness(1.3);
+        }
+        .bar-chart .bar:hover::after {
+            content: attr(data-views);
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            color: #fff;
+            background: #222;
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .bar-chart .bar.low { background: #2a2a38; }
+        .bar-chart .bar.med { background: #e74c3c88; }
+        .bar-chart .bar.high { background: #e74c3c; }
+        .chart-x-labels {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+        }
+        .chart-x-labels span {
+            flex: 1;
+            text-align: center;
+            font-size: 0.55rem;
+            color: #444;
+        }
+
+        /* ── Donut + Lead Sources ─────────────────────────── */
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .donut-container {
+            background: #111118;
+            border: 1px solid #1e1e2a;
+            border-radius: 10px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .donut-chart {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #e74c3c 0% 45%,
+                #3498db 45% 70%,
+                #2ecc71 70% 90%,
+                #555 90% 100%
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 24px;
+        }
+        .donut-chart::after {
+            content: '';
+            width: 110px;
+            height: 110px;
+            background: #111118;
+            border-radius: 50%;
+        }
+        .donut-center {
+            position: absolute;
+            text-align: center;
+            z-index: 2;
+        }
+        .donut-center .big {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .donut-center .small {
+            font-size: 0.65rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .legend-list {
+            list-style: none;
+            width: 100%;
+        }
+        .legend-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #1a1a24;
+            font-size: 0.82rem;
+        }
+        .legend-list li:last-child { border: none; }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .legend-left {
+            display: flex;
+            align-items: center;
+        }
+        .legend-pct {
+            font-weight: 600;
+            color: #aaa;
+        }
+
+        /* ── Email Metrics ───────────────────────────────── */
+        .email-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+        }
+        .email-card {
+            background: #111118;
+            border: 1px solid #1e1e2a;
+            border-radius: 10px;
+            padding: 18px 16px;
+            text-align: center;
+        }
+        .email-card .em-icon {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+        .email-card .em-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .email-card .em-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #555;
+            margin-top: 4px;
+        }
+        .email-card.green .em-value { color: #2ecc71; }
+        .email-card.blue .em-value { color: #3498db; }
+        .email-card.yellow .em-value { color: #e7a03c; }
+        .email-card.red .em-value { color: #e74c3c; }
+
+        /* ── Sales Funnel ────────────────────────────────── */
+        .funnel-container {
+            background: #111118;
+            border: 1px solid #1e1e2a;
+            border-radius: 10px;
+            padding: 28px;
+        }
+        .funnel {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .funnel-step {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+        }
+        .funnel-bar-wrap {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+        .funnel-bar {
+            height: 42px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #fff;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .funnel-bar:hover { filter: brightness(1.2); }
+        .funnel-label {
+            width: 110px;
+            text-align: right;
+            font-size: 0.78rem;
+            color: #888;
+            flex-shrink: 0;
+        }
+        .funnel-count {
+            width: 50px;
+            text-align: left;
+            font-size: 0.78rem;
+            color: #555;
+            flex-shrink: 0;
+        }
+        .funnel-arrow {
+            text-align: center;
+            color: #333;
+            font-size: 0.8rem;
+            padding: 4px 0 4px 130px;
+        }
+        .funnel-rate {
+            font-size: 0.6rem;
+            color: #555;
+            position: absolute;
+            right: -60px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* ── Performance Table ────────────────────────────── */
+        .table-container {
+            background: #111118;
+            border: 1px solid #1e1e2a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-container th {
+            text-align: left;
+            padding: 14px 20px;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #555;
+            border-bottom: 1px solid #1e1e2a;
+            font-weight: 600;
+        }
+        .table-container td {
+            padding: 14px 20px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #141420;
+        }
+        .table-container tr:last-child td { border: none; }
+        .table-container tr:hover td {
+            background: rgba(255,255,255,0.015);
+        }
+        .site-name {
+            color: #ddd;
+            font-weight: 500;
+        }
+        .table-num {
+            font-variant-numeric: tabular-nums;
+            color: #999;
+        }
+        .conv-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+        .conv-badge.high { background: rgba(46,204,113,0.12); color: #2ecc71; }
+        .conv-badge.med  { background: rgba(231,160,60,0.12); color: #e7a03c; }
+        .conv-badge.low  { background: rgba(231,76,60,0.12); color: #e74c3c; }
+        .status-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-dot.live { background: #2ecc71; }
+        .status-dot.pending { background: #e7a03c; }
+        .status-dot.inactive { background: #555; }
+
+        /* ── Revenue Forecast & Cost ─────────────────────── */
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+        .forecast-card {
+            background: #111118;
+            border: 1px solid #1e1e2a;
+            border-radius: 10px;
+            padding: 24px;
+            text-align: center;
+        }
+        .forecast-card .fc-period {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .forecast-card .fc-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -1px;
+        }
+        .forecast-card .fc-sub {
+            font-size: 0.72rem;
+            color: #4a9;
+            margin-top: 6px;
+        }
+        .forecast-card.current .fc-value { color: #e74c3c; }
+        .forecast-card.projected .fc-value { color: #3498db; }
+        .forecast-card.goal .fc-value { color: #2ecc71; }
+
+        .cost-container {
+            background: #111118;
+            border: 1px solid #1e1e2a;
+            border-radius: 10px;
+            padding: 24px;
+        }
+        .cost-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .cost-total {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2ecc71;
+        }
+        .cost-badge {
+            background: rgba(46,204,113,0.12);
+            color: #2ecc71;
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .cost-list {
+            list-style: none;
+        }
+        .cost-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #1a1a24;
+            font-size: 0.82rem;
+        }
+        .cost-list li:last-child { border: none; }
+        .cost-list .tool { color: #999; }
+        .cost-list .price { color: #2ecc71; font-weight: 600; }
+
+        /* ── Responsive ──────────────────────────────────── */
+        @media (max-width: 1200px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .email-grid { grid-template-columns: repeat(3, 1fr); }
+            .forecast-grid { grid-template-columns: 1fr; }
+            .split-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; padding: 20px 16px; }
+            .kpi-grid { grid-template-columns: 1fr 1fr; }
+            .email-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── Sidebar ──────────────────────────────────────────── -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <h2>E17<span>Studios</span></h2>
+        <p>Admin Panel</p>
+    </div>
+    <ul class="sidebar-nav">
+        <li><a href="/admin/"><span class="nav-icon">&#9641;</span> CRM Dashboard</a></li>
+        <li><a href="/admin/analytics.html" class="active"><span class="nav-icon">&#9655;</span> Analytics</a></li>
+            <li><a href="/admin/lead-scoring.html"><span class="nav-icon">&#9733;</span> Lead Scoring</a></li>
+        <li><a href="/admin/roi-calculator.html"><span class="nav-icon">&#9683;</span> ROI Calculator</a></li>
+        <li><a href="/admin/competitor-analysis.html"><span class="nav-icon">&#9670;</span> Competitor Analysis</a></li>
+        <li><a href="/admin/whatsapp-templates.html"><span class="nav-icon">&#9993;</span> WhatsApp</a></li>
+        <li><a href="/emails/preview.html"><span class="nav-icon">&#9878;</span> Email Templates</a></li>
+        <li><a href="/admin/sales-script.html"><span class="nav-icon">&#9782;</span> Sales Script</a></li>
+            <li><a href="/admin/sequence-builder.html"><span class="nav-icon">&#9993;</span> Sequence Builder</a></li>
+            <li><a href="/admin/client-success.html"><span class="nav-icon">&#9650;</span> Success Metrics</a></li>
+        <li><a href="/admin/client-report.html"><span class="nav-icon">&#9776;</span> Client Report</a></li>
+        <li><a href="/admin/expansion-planner.html"><span class="nav-icon">&#9733;</span> Expansion</a></li>
+        <li><a href="/admin/client-dashboard.html"><span class="nav-icon">&#9635;</span> Client Dashboard</a></li>
+        <li><a href="/sitemap.html"><span class="nav-icon">&#9783;</span> Sitemap</a></li>
+    </ul>
+</aside>
+
+<!-- ── Main Content ─────────────────────────────────────── -->
+<main class="main">
+
+    <div class="page-header">
+        <h1>Analytics Dashboard</h1>
+        <p>Performance metrics &amp; business intelligence &mdash; Last updated 28 Feb 2026</p>
+    </div>
+
+    <!-- ── KPI Cards ─────────────────────────────────────── -->
+    <div class="section">
+        <div class="section-title">Key Performance Indicators</div>
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Total Site Views</div>
+                <div class="kpi-value">2,847</div>
+                <div class="kpi-sub">+12.3% vs last month</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Emails Sent</div>
+                <div class="kpi-value">34</div>
+                <div class="kpi-sub">Active outreach campaign</div>
+            </div>
+            <div class="kpi-card accent">
+                <div class="kpi-label">Open Rate</div>
+                <div class="kpi-value">47%</div>
+                <div class="kpi-sub">Industry avg: 21%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Pipeline Value</div>
+                <div class="kpi-value">&pound;897</div>
+                <div class="kpi-sub warn">3 warm leads in pipeline</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Bar Chart: Last 30 Days ───────────────────────── -->
+    <div class="section">
+        <div class="section-title">Website Traffic</div>
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title">Site Views &mdash; Last 30 Days</div>
+                <div class="chart-legend">Avg: 95/day</div>
+            </div>
+            <div class="bar-chart">
+                <div class="bar low" style="height:35%" data-views="56"></div>
+                <div class="bar low" style="height:42%" data-views="67"></div>
+                <div class="bar med" style="height:58%" data-views="93"></div>
+                <div class="bar med" style="height:62%" data-views="99"></div>
+                <div class="bar low" style="height:28%" data-views="45"></div>
+                <div class="bar low" style="height:22%" data-views="35"></div>
+                <div class="bar med" style="height:70%" data-views="112"></div>
+                <div class="bar high" style="height:85%" data-views="136"></div>
+                <div class="bar high" style="height:92%" data-views="147"></div>
+                <div class="bar med" style="height:65%" data-views="104"></div>
+                <div class="bar med" style="height:55%" data-views="88"></div>
+                <div class="bar low" style="height:40%" data-views="64"></div>
+                <div class="bar low" style="height:30%" data-views="48"></div>
+                <div class="bar low" style="height:25%" data-views="40"></div>
+                <div class="bar med" style="height:50%" data-views="80"></div>
+                <div class="bar med" style="height:68%" data-views="109"></div>
+                <div class="bar high" style="height:78%" data-views="125"></div>
+                <div class="bar high" style="height:100%" data-views="160"></div>
+                <div class="bar high" style="height:88%" data-views="141"></div>
+                <div class="bar med" style="height:60%" data-views="96"></div>
+                <div class="bar med" style="height:52%" data-views="83"></div>
+                <div class="bar low" style="height:38%" data-views="61"></div>
+                <div class="bar low" style="height:32%" data-views="51"></div>
+                <div class="bar med" style="height:48%" data-views="77"></div>
+                <div class="bar med" style="height:72%" data-views="115"></div>
+                <div class="bar high" style="height:82%" data-views="131"></div>
+                <div class="bar med" style="height:55%" data-views="88"></div>
+                <div class="bar low" style="height:45%" data-views="72"></div>
+                <div class="bar low" style="height:33%" data-views="53"></div>
+                <div class="bar med" style="height:58%" data-views="93"></div>
+            </div>
+            <div class="chart-x-labels">
+                <span>30 Jan</span><span></span><span></span><span></span><span></span>
+                <span>4 Feb</span><span></span><span></span><span></span><span></span>
+                <span>9 Feb</span><span></span><span></span><span></span><span></span>
+                <span>14 Feb</span><span></span><span></span><span></span><span></span>
+                <span>19 Feb</span><span></span><span></span><span></span><span></span>
+                <span>24 Feb</span><span></span><span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Donut Chart + Email Metrics ───────────────────── -->
+    <div class="section">
+        <div class="section-title">Lead Sources &amp; Email Performance</div>
+        <div class="split-grid">
+            <!-- Donut -->
+            <div class="donut-container">
+                <div class="donut-chart">
+                    <div class="donut-center">
+                        <div class="big">15</div>
+                        <div class="small">Total Leads</div>
+                    </div>
+                </div>
+                <ul class="legend-list">
+                    <li>
+                        <span class="legend-left"><span class="legend-dot" style="background:#e74c3c"></span> Google Maps</span>
+                        <span class="legend-pct">45%</span>
+                    </li>
+                    <li>
+                        <span class="legend-left"><span class="legend-dot" style="background:#3498db"></span> Walk-in</span>
+                        <span class="legend-pct">25%</span>
+                    </li>
+                    <li>
+                        <span class="legend-left"><span class="legend-dot" style="background:#2ecc71"></span> Referral</span>
+                        <span class="legend-pct">20%</span>
+                    </li>
+                    <li>
+                        <span class="legend-left"><span class="legend-dot" style="background:#555"></span> Other</span>
+                        <span class="legend-pct">10%</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Email Metrics -->
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <div class="email-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="email-card">
+                        <div class="em-icon">&#9993;</div>
+                        <div class="em-value">34</div>
+                        <div class="em-label">Sent</div>
+                    </div>
+                    <div class="email-card green">
+                        <div class="em-icon">&#9745;</div>
+                        <div class="em-value">16</div>
+                        <div class="em-label">Opened</div>
+                    </div>
+                    <div class="email-card blue">
+                        <div class="em-icon">&#10149;</div>
+                        <div class="em-value">8</div>
+                        <div class="em-label">Clicked</div>
+                    </div>
+                    <div class="email-card yellow">
+                        <div class="em-icon">&#8617;</div>
+                        <div class="em-value">4</div>
+                        <div class="em-label">Replied</div>
+                    </div>
+                    <div class="email-card red">
+                        <div class="em-icon">&#10007;</div>
+                        <div class="em-value">1</div>
+                        <div class="em-label">Bounced</div>
+                    </div>
+                    <div class="email-card">
+                        <div class="em-icon">&#9888;</div>
+                        <div class="em-value">0</div>
+                        <div class="em-label">Unsub'd</div>
+                    </div>
+                </div>
+                <div style="background:#111118; border:1px solid #1e1e2a; border-radius:10px; padding:18px 20px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <span style="font-size:0.78rem; color:#888;">Open Rate</span>
+                        <span style="font-size:0.78rem; font-weight:600; color:#2ecc71;">47.1%</span>
+                    </div>
+                    <div style="height:6px; background:#1e1e2a; border-radius:3px; overflow:hidden;">
+                        <div style="width:47.1%; height:100%; background:linear-gradient(90deg,#e74c3c,#e7a03c); border-radius:3px;"></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-top:14px; margin-bottom:10px;">
+                        <span style="font-size:0.78rem; color:#888;">Click Rate</span>
+                        <span style="font-size:0.78rem; font-weight:600; color:#3498db;">23.5%</span>
+                    </div>
+                    <div style="height:6px; background:#1e1e2a; border-radius:3px; overflow:hidden;">
+                        <div style="width:23.5%; height:100%; background:linear-gradient(90deg,#3498db,#2ecc71); border-radius:3px;"></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-top:14px; margin-bottom:10px;">
+                        <span style="font-size:0.78rem; color:#888;">Reply Rate</span>
+                        <span style="font-size:0.78rem; font-weight:600; color:#e7a03c;">11.8%</span>
+                    </div>
+                    <div style="height:6px; background:#1e1e2a; border-radius:3px; overflow:hidden;">
+                        <div style="width:11.8%; height:100%; background:linear-gradient(90deg,#e7a03c,#e74c3c); border-radius:3px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Sales Funnel ──────────────────────────────────── -->
+    <div class="section">
+        <div class="section-title">Sales Funnel</div>
+        <div class="funnel-container">
+            <div class="funnel">
+                <div class="funnel-step">
+                    <div class="funnel-label">Found</div>
+                    <div class="funnel-bar-wrap">
+                        <div class="funnel-bar" style="width:100%; background:linear-gradient(90deg,#e74c3c,#c0392b);">34</div>
+                    </div>
+                    <div class="funnel-count"></div>
+                </div>
+                <div class="funnel-arrow">&#8595; 64.7%</div>
+                <div class="funnel-step">
+                    <div class="funnel-label">No Website</div>
+                    <div class="funnel-bar-wrap">
+                        <div class="funnel-bar" style="width:64.7%; background:linear-gradient(90deg,#d35400,#e67e22);">22</div>
+                    </div>
+                    <div class="funnel-count"></div>
+                </div>
+                <div class="funnel-arrow">&#8595; 36.4%</div>
+                <div class="funnel-step">
+                    <div class="funnel-label">Contacted</div>
+                    <div class="funnel-bar-wrap">
+                        <div class="funnel-bar" style="width:23.5%; background:linear-gradient(90deg,#e7a03c,#f39c12);">8</div>
+                    </div>
+                    <div class="funnel-count"></div>
+                </div>
+                <div class="funnel-arrow">&#8595; 62.5%</div>
+                <div class="funnel-step">
+                    <div class="funnel-label">Replied</div>
+                    <div class="funnel-bar-wrap">
+                        <div class="funnel-bar" style="width:14.7%; background:linear-gradient(90deg,#3498db,#2980b9);">5</div>
+                    </div>
+                    <div class="funnel-count"></div>
+                </div>
+                <div class="funnel-arrow">&#8595; 100%</div>
+                <div class="funnel-step">
+                    <div class="funnel-label">Demo'd</div>
+                    <div class="funnel-bar-wrap">
+                        <div class="funnel-bar" style="width:14.7%; background:linear-gradient(90deg,#2980b9,#1abc9c);">5</div>
+                    </div>
+                    <div class="funnel-count"></div>
+                </div>
+                <div class="funnel-arrow">&#8595; 40%</div>
+                <div class="funnel-step">
+                    <div class="funnel-label">Paying</div>
+                    <div class="funnel-bar-wrap">
+                        <div class="funnel-bar" style="width:5.9%; background:linear-gradient(90deg,#2ecc71,#27ae60);">2</div>
+                    </div>
+                    <div class="funnel-count"></div>
+                </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:24px; padding:16px 0 0; border-top:1px solid #1e1e2a; max-width:700px; margin-left:auto; margin-right:auto;">
+                <div style="text-align:center;">
+                    <div style="font-size:0.65rem; color:#555; text-transform:uppercase; letter-spacing:1px;">Overall Conv.</div>
+                    <div style="font-size:1.1rem; font-weight:700; color:#e74c3c; margin-top:4px;">5.9%</div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="font-size:0.65rem; color:#555; text-transform:uppercase; letter-spacing:1px;">Avg. Deal Value</div>
+                    <div style="font-size:1.1rem; font-weight:700; color:#fff; margin-top:4px;">&pound;49/mo</div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="font-size:0.65rem; color:#555; text-transform:uppercase; letter-spacing:1px;">Best Stage</div>
+                    <div style="font-size:1.1rem; font-weight:700; color:#2ecc71; margin-top:4px;">Demo &rarr; Pay</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Per-Site Performance ───────────────────────────── -->
+    <div class="section">
+        <div class="section-title">Per-Site Performance</div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Client Site</th>
+                        <th>Status</th>
+                        <th>Views (30d)</th>
+                        <th>Clicks</th>
+                        <th>Conversion</th>
+                        <th>Revenue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="site-name">Morris Barbers</span></td>
+                        <td><span class="status-dot live"></span>Live</td>
+                        <td class="table-num">842</td>
+                        <td class="table-num">67</td>
+                        <td><span class="conv-badge high">8.0%</span></td>
+                        <td class="table-num">&pound;49/mo</td>
+                    </tr>
+                    <tr>
+                        <td><span class="site-name">Vanish Beauty</span></td>
+                        <td><span class="status-dot live"></span>Live</td>
+                        <td class="table-num">634</td>
+                        <td class="table-num">41</td>
+                        <td><span class="conv-badge med">6.5%</span></td>
+                        <td class="table-num">&pound;49/mo</td>
+                    </tr>
+                    <tr>
+                        <td><span class="site-name">Lagoon Nails</span></td>
+                        <td><span class="status-dot pending"></span>Trial</td>
+                        <td class="table-num">521</td>
+                        <td class="table-num">38</td>
+                        <td><span class="conv-badge high">7.3%</span></td>
+                        <td class="table-num">&pound;0 (trial)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="site-name">Pressed 2 Perfection</span></td>
+                        <td><span class="status-dot pending"></span>Demo</td>
+                        <td class="table-num">489</td>
+                        <td class="table-num">22</td>
+                        <td><span class="conv-badge low">4.5%</span></td>
+                        <td class="table-num">&mdash;</td>
+                    </tr>
+                    <tr>
+                        <td><span class="site-name">Apollo Cuts</span></td>
+                        <td><span class="status-dot inactive"></span>Prospect</td>
+                        <td class="table-num">361</td>
+                        <td class="table-num">15</td>
+                        <td><span class="conv-badge low">4.2%</span></td>
+                        <td class="table-num">&mdash;</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ── Revenue Forecast ──────────────────────────────── -->
+    <div class="section">
+        <div class="section-title">Revenue Forecast</div>
+        <div class="forecast-grid">
+            <div class="forecast-card current">
+                <div class="fc-period">Current MRR</div>
+                <div class="fc-value">&pound;98</div>
+                <div class="fc-sub">2 paying clients</div>
+            </div>
+            <div class="forecast-card projected">
+                <div class="fc-period">30-Day Forecast</div>
+                <div class="fc-value">&pound;196</div>
+                <div class="fc-sub">+100% &middot; 4 clients projected</div>
+            </div>
+            <div class="forecast-card goal">
+                <div class="fc-period">90-Day Forecast</div>
+                <div class="fc-value">&pound;588</div>
+                <div class="fc-sub">+500% &middot; 12 clients projected</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Cost Breakdown ────────────────────────────────── -->
+    <div class="section">
+        <div class="section-title">Monthly Cost Breakdown</div>
+        <div class="cost-container">
+            <div class="cost-header">
+                <div>
+                    <div style="font-size:0.78rem; color:#888; margin-bottom:4px;">Total Monthly Cost</div>
+                    <div class="cost-total">&pound;0.46</div>
+                </div>
+                <div class="cost-badge">All Free Tools</div>
+            </div>
+            <ul class="cost-list">
+                <li>
+                    <span class="tool">Cloudflare Pages (Hosting)</span>
+                    <span class="price">&pound;0.00</span>
+                </li>
+                <li>
+                    <span class="tool">Google Workspace (Email)</span>
+                    <span class="price">&pound;0.00</span>
+                </li>
+                <li>
+                    <span class="tool">Resend (Transactional Email)</span>
+                    <span class="price">&pound;0.00</span>
+                </li>
+                <li>
+                    <span class="tool">Google Analytics</span>
+                    <span class="price">&pound;0.00</span>
+                </li>
+                <li>
+                    <span class="tool">Domain (amortised monthly)</span>
+                    <span class="price">&pound;0.46</span>
+                </li>
+                <li>
+                    <span class="tool">CRM / Pipeline (Notion)</span>
+                    <span class="price">&pound;0.00</span>
+                </li>
+                <li>
+                    <span class="tool">WhatsApp Business</span>
+                    <span class="price">&pound;0.00</span>
+                </li>
+            </ul>
+            <div style="margin-top:16px; padding-top:16px; border-top:1px solid #1e1e2a; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <div style="font-size:0.68rem; color:#555; text-transform:uppercase; letter-spacing:1px;">Profit Margin</div>
+                    <div style="font-size:1.2rem; font-weight:700; color:#2ecc71; margin-top:4px;">99.5%</div>
+                </div>
+                <div>
+                    <div style="font-size:0.68rem; color:#555; text-transform:uppercase; letter-spacing:1px;">Revenue per &pound;1 Spent</div>
+                    <div style="font-size:1.2rem; font-weight:700; color:#2ecc71; margin-top:4px;">&pound;213.04</div>
+                </div>
+                <div>
+                    <div style="font-size:0.68rem; color:#555; text-transform:uppercase; letter-spacing:1px;">Break-even</div>
+                    <div style="font-size:1.2rem; font-weight:700; color:#2ecc71; margin-top:4px;">1 client</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Footer ────────────────────────────────────────── -->
+    <div style="text-align:center; padding:24px 0 12px; border-top:1px solid #1e1e2a; margin-top:12px;">
+        <p style="font-size:0.7rem; color:#333;">E17Studios Admin &middot; Analytics Dashboard &middot; Data refreshed 28 Feb 2026</p>
+    </div>
+
+</main>
+
+</body>
+</html>

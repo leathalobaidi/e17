@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Refer & Earn — E17Studios Referral Program</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#09090f;--surface:#111118;--border:rgba(255,255,255,.08);--text:#e8e8f0;--text-muted:#8888a0;--text-dim:#55556a;--accent:#e74c3c;--green:#27ae60;--gold:#f39c12;--radius:12px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text)}
+        .container{max-width:800px;margin:0 auto;padding:0 24px}
+        a{text-decoration:none;color:inherit}
+
+        .nav{padding:20px 0;text-align:center;border-bottom:1px solid var(--border)}
+        .nav a{display:inline-flex;align-items:center;gap:10px}
+        .nav-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),#c0392b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.7rem;color:#fff}
+        .nav-text{font-weight:800;font-size:1.1rem}.nav-text span{color:var(--accent)}
+
+        .hero{padding:80px 0 60px;text-align:center}
+        .hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.2);padding:8px 20px;border-radius:50px;font-size:.85rem;color:var(--green);margin-bottom:24px}
+        .hero h1{font-size:2.6rem;font-weight:900;letter-spacing:-.03em;margin-bottom:16px;line-height:1.1}
+        .hero h1 span{color:var(--green)}
+        .hero p{font-size:1.15rem;color:var(--text-muted);max-width:560px;margin:0 auto}
+
+        .reward-highlight{background:linear-gradient(135deg,var(--green),#1e8449);border-radius:var(--radius);padding:40px;text-align:center;margin:40px 0;color:#fff}
+        .reward-highlight .big{font-size:3rem;font-weight:900;margin-bottom:8px}
+        .reward-highlight p{font-size:1.1rem;opacity:.85}
+        .reward-highlight .sub{font-size:.85rem;opacity:.6;margin-top:12px}
+
+        .how-it-works{padding:60px 0}
+        .how-it-works h2{text-align:center;font-size:1.6rem;font-weight:800;margin-bottom:40px}
+        .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+        .step{text-align:center;padding:28px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+        .step-num{width:48px;height:48px;background:rgba(39,174,96,.12);border:2px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.2rem;color:var(--green);margin:0 auto 16px}
+        .step h3{font-size:1rem;font-weight:700;margin-bottom:8px}
+        .step p{color:var(--text-muted);font-size:.88rem;line-height:1.5}
+
+        .tiers{padding:60px 0}
+        .tiers h2{text-align:center;font-size:1.6rem;font-weight:800;margin-bottom:40px}
+        .tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+        .tier{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;text-align:center;position:relative}
+        .tier.featured{border-color:var(--green);box-shadow:0 0 30px rgba(39,174,96,.1)}
+        .tier-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:3px 14px;border-radius:50px;font-size:.7rem;font-weight:700;text-transform:uppercase}
+        .tier-count{font-size:2.4rem;font-weight:900;color:var(--green)}
+        .tier-label{font-size:.85rem;color:var(--text-muted);margin-bottom:12px}
+        .tier-reward{font-size:1.4rem;font-weight:800;margin-bottom:4px}
+        .tier-desc{font-size:.82rem;color:var(--text-dim);line-height:1.5}
+
+        .faq{padding:60px 0}
+        .faq h2{text-align:center;font-size:1.6rem;font-weight:800;margin-bottom:32px}
+        .faq-list{max-width:640px;margin:0 auto}
+        .faq-item{border-bottom:1px solid var(--border);padding:16px 0}
+        .faq-q{font-weight:700;font-size:.95rem;cursor:pointer;display:flex;justify-content:space-between}
+        .faq-q::after{content:'+';font-size:1.2rem;color:var(--text-dim)}
+        .faq-item.open .faq-q::after{content:'−';color:var(--green)}
+        .faq-a{max-height:0;overflow:hidden;transition:max-height .3s;color:var(--text-muted);font-size:.88rem;line-height:1.6}
+        .faq-item.open .faq-a{max-height:200px;padding-top:10px}
+
+        .cta-section{text-align:center;padding:60px 40px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin:40px 0}
+        .cta-section h2{font-size:1.6rem;font-weight:800;margin-bottom:8px}
+        .cta-section p{color:var(--text-muted);margin-bottom:24px}
+        .cta-form{display:flex;gap:12px;max-width:480px;margin:0 auto}
+        .cta-form input{flex:1;padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.9rem;outline:none}
+        .cta-form input:focus{border-color:var(--green)}
+        .cta-form button{padding:12px 28px;background:var(--green);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap}
+
+        .footer{text-align:center;padding:32px 0;color:var(--text-dim);font-size:.8rem;border-top:1px solid var(--border)}
+        .footer a{color:var(--accent)}
+
+        @media(max-width:768px){.hero h1{font-size:2rem}.steps,.tier-grid{grid-template-columns:1fr}.cta-form{flex-direction:column}}
+    </style>
+</head>
+<body>
+<nav class="nav"><div class="container"><a href="/e17studios/"><div class="nav-mark">E17</div><div class="nav-text">E17<span>Studios</span></div></a></div></nav>
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">🤝 Referral Program</div>
+        <h1>Refer a Friend,<br><span>Get a Free Month</span></h1>
+        <p>Know a local business that could use a website? Send them our way and earn free months for every successful referral.</p>
+    </div>
+</section>
+
+<div class="container">
+    <div class="reward-highlight">
+        <div class="big">1 FREE MONTH</div>
+        <p>For every business you refer that signs up for any plan</p>
+        <div class="sub">No limit on referrals. Refer 12 businesses = 1 year free.</div>
+    </div>
+</div>
+
+<section class="how-it-works">
+    <div class="container">
+        <h2>How It Works</h2>
+        <div class="steps">
+            <div class="step"><div class="step-num">1</div><h3>Tell a Friend</h3><p>Share E17Studios with another local business owner. Give them our link or just tell them to mention your name.</p></div>
+            <div class="step"><div class="step-num">2</div><h3>They Sign Up</h3><p>We build them a free preview. If they love it and activate any plan, your referral counts.</p></div>
+            <div class="step"><div class="step-num">3</div><h3>You Get Rewarded</h3><p>Your next month is free! The credit is applied automatically to your next billing cycle.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="tiers">
+    <div class="container">
+        <h2>Referral Milestones</h2>
+        <div class="tier-grid">
+            <div class="tier">
+                <div class="tier-count">1</div>
+                <div class="tier-label">Successful Referral</div>
+                <div class="tier-reward">1 Free Month</div>
+                <div class="tier-desc">Your next billing is on us. Simple as that.</div>
+            </div>
+            <div class="tier featured">
+                <div class="tier-badge">Best Value</div>
+                <div class="tier-count">5</div>
+                <div class="tier-label">Successful Referrals</div>
+                <div class="tier-reward">6 Free Months</div>
+                <div class="tier-desc">5 months for referrals + 1 bonus month for reaching the milestone.</div>
+            </div>
+            <div class="tier">
+                <div class="tier-count">12</div>
+                <div class="tier-label">Successful Referrals</div>
+                <div class="tier-reward">1 Free Year</div>
+                <div class="tier-desc">12 months free + permanent upgrade to the next plan tier.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="faq">
+    <div class="container">
+        <h2>Referral FAQ</h2>
+        <div class="faq-list">
+            <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Who can I refer?</div><div class="faq-a">Any local business owner — doesn't have to be a dry cleaner. Restaurants, barbers, nail salons, plumbers, florists — anyone who could benefit from a professional website.</div></div>
+            <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">When do I get my free month?</div><div class="faq-a">As soon as your referral activates their plan and makes their first payment. The credit is applied to your next billing cycle automatically.</div></div>
+            <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is there a limit?</div><div class="faq-a">No limit! Refer as many businesses as you like. Each successful referral = 1 free month. Refer 12 and you've earned a full year free.</div></div>
+            <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What if my referral cancels?</div><div class="faq-a">Your free month is yours to keep regardless. Once earned, it's credited to your account permanently.</div></div>
+            <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I combine with other offers?</div><div class="faq-a">Yes! Referral credits stack with any other offers or promotions. They're applied as a billing credit.</div></div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="cta-section">
+        <h2>Ready to Refer?</h2>
+        <p>Enter their email and we'll send them a friendly introduction</p>
+        <form class="cta-form" onsubmit="event.preventDefault();this.querySelector('button').textContent='✓ Sent!';this.querySelector('button').style.background='#27ae60'">
+            <input type="email" placeholder="friend@business.com" required>
+            <button type="submit">Send Referral</button>
+        </form>
+    </div>
+</div>
+
+<footer class="footer"><div class="container"><p>© 2026 <a href="/e17studios/">E17Studios.com</a> — Referral Program</p></div></footer>
+</body>
+</html>

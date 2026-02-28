@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Your Dashboard — Morris Dry Cleaners | E17Studios</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#fafbfc;--white:#fff;--border:#e8eaf0;--text:#2a2a3e;--text-muted:#6a6a7e;--accent:#e74c3c;--green:#27ae60;--blue:#3498db;--gold:#f39c12;--navy:#1a1f3a;--radius:12px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text)}
+        .container{max-width:960px;margin:0 auto;padding:0 24px}
+        a{text-decoration:none;color:inherit}
+
+        .header{background:var(--navy);padding:20px 0;color:#fff}
+        .header-inner{display:flex;justify-content:space-between;align-items:center}
+        .header-logo{display:flex;align-items:center;gap:10px}
+        .header-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),#c0392b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.7rem;color:#fff}
+        .header-text{font-weight:800;font-size:1rem}.header-text span{color:var(--accent)}
+        .header-biz{text-align:right}
+        .header-biz h2{font-size:1.1rem;font-weight:700}
+        .header-biz p{font-size:.8rem;color:rgba(255,255,255,.5)}
+
+        .welcome{padding:32px 0 24px}
+        .welcome h1{font-size:1.6rem;font-weight:800;margin-bottom:4px}
+        .welcome p{color:var(--text-muted);font-size:.9rem}
+
+        .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+        .kpi{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center}
+        .kpi-icon{font-size:1.6rem;margin-bottom:8px}
+        .kpi-num{font-size:2rem;font-weight:900;color:var(--navy)}
+        .kpi-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+        .kpi-change{font-size:.8rem;margin-top:6px;font-weight:600;color:var(--green)}
+
+        .section{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px}
+        .section h2{font-size:1.1rem;font-weight:800;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+
+        .chart-area{height:180px;display:flex;align-items:flex-end;gap:6px;padding:0 8px}
+        .chart-bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+        .chart-bar-fill{width:100%;border-radius:3px 3px 0 0;background:linear-gradient(180deg,var(--blue),#2980b9);min-height:2px}
+        .chart-bar-label{font-size:.6rem;color:var(--text-muted);margin-top:4px;text-align:center}
+
+        .site-preview{border:2px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+        .site-preview iframe{width:100%;height:300px;border:0}
+        .preview-link{display:block;text-align:center;padding:12px;font-weight:600;font-size:.9rem;color:var(--accent);background:rgba(231,76,60,.05);border-radius:0 0 var(--radius) var(--radius)}
+
+        .activity-list{list-style:none}
+        .activity-list li{padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:start;font-size:.88rem}
+        .activity-list li:last-child{border-bottom:none}
+        .activity-dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}
+        .dot-green{background:var(--green)}
+        .dot-blue{background:var(--blue)}
+        .dot-gold{background:var(--gold)}
+        .activity-time{color:var(--text-muted);font-size:.78rem;margin-top:2px}
+
+        .plan-card{background:linear-gradient(135deg,var(--navy),#252b4a);color:#fff;border-radius:var(--radius);padding:24px;display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px}
+        .plan-card h3{font-size:1rem;font-weight:700}
+        .plan-card p{font-size:.85rem;color:rgba(255,255,255,.6);margin-top:4px}
+        .plan-badge{background:var(--accent);padding:8px 20px;border-radius:50px;font-weight:700;font-size:.85rem}
+
+        .help-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+        .help-card{text-align:center;padding:20px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border)}
+        .help-card h4{font-size:.9rem;font-weight:700;margin:8px 0 4px}
+        .help-card p{font-size:.8rem;color:var(--text-muted)}
+
+        .footer-bar{text-align:center;padding:24px 0;color:var(--text-muted);font-size:.8rem;border-top:1px solid var(--border);margin-top:24px}
+        .footer-bar a{color:var(--accent)}
+
+        @media(max-width:768px){.kpi-row{grid-template-columns:1fr 1fr}.help-grid{grid-template-columns:1fr}.header-biz{display:none}}
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <div class="header-logo"><div class="header-mark">E17</div><div class="header-text">E17<span>Studios</span></div></div>
+        <div class="header-biz"><h2>Morris Dry Cleaners</h2><p>Professional Plan · Active since Jan 2026</p></div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="welcome">
+        <h1>Welcome back, Morris!</h1>
+        <p>Here's how your website is performing this month — February 2026</p>
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi"><div class="kpi-icon">👁️</div><div class="kpi-num">847</div><div class="kpi-label">Page Views</div><div class="kpi-change">↑ 23% vs last month</div></div>
+        <div class="kpi"><div class="kpi-icon">📞</div><div class="kpi-num">34</div><div class="kpi-label">Call Clicks</div><div class="kpi-change">↑ 15% vs last month</div></div>
+        <div class="kpi"><div class="kpi-icon">🗺️</div><div class="kpi-num">61</div><div class="kpi-label">Map Clicks</div><div class="kpi-change">↑ 8% vs last month</div></div>
+        <div class="kpi"><div class="kpi-icon">⭐</div><div class="kpi-num">669</div><div class="kpi-label">Google Reviews</div><div class="kpi-change">+12 new this month</div></div>
+    </div>
+
+    <div class="section">
+        <h2>📈 Daily Views — February 2026</h2>
+        <div class="chart-area">
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:45%"></div><div class="chart-bar-label">1</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:52%"></div><div class="chart-bar-label">2</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:38%"></div><div class="chart-bar-label">3</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:61%"></div><div class="chart-bar-label">4</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:70%"></div><div class="chart-bar-label">5</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:55%"></div><div class="chart-bar-label">6</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:30%"></div><div class="chart-bar-label">7</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:48%"></div><div class="chart-bar-label">8</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:65%"></div><div class="chart-bar-label">9</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:72%"></div><div class="chart-bar-label">10</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:58%"></div><div class="chart-bar-label">11</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:43%"></div><div class="chart-bar-label">12</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:50%"></div><div class="chart-bar-label">13</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:68%"></div><div class="chart-bar-label">14</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:75%"></div><div class="chart-bar-label">15</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:82%"></div><div class="chart-bar-label">16</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:60%"></div><div class="chart-bar-label">17</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:45%"></div><div class="chart-bar-label">18</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:55%"></div><div class="chart-bar-label">19</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:78%"></div><div class="chart-bar-label">20</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:88%"></div><div class="chart-bar-label">21</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:65%"></div><div class="chart-bar-label">22</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:42%"></div><div class="chart-bar-label">23</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:58%"></div><div class="chart-bar-label">24</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:90%"></div><div class="chart-bar-label">25</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:100%"></div><div class="chart-bar-label">26</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:70%"></div><div class="chart-bar-label">27</div></div>
+            <div class="chart-bar"><div class="chart-bar-fill" style="height:62%"></div><div class="chart-bar-label">28</div></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🌐 Your Live Website</h2>
+        <div class="site-preview">
+            <iframe src="/morris-dry-cleaners/" loading="lazy"></iframe>
+        </div>
+        <a href="/morris-dry-cleaners/" class="preview-link" target="_blank">View Full Website →</a>
+    </div>
+
+    <div class="plan-card">
+        <div><h3>Professional Plan — £49/month</h3><p>Next billing: 1 March 2026 · Cancel anytime · Includes everything below</p></div>
+        <div class="plan-badge">Active</div>
+    </div>
+
+    <div class="section">
+        <h2>📋 Recent Activity</h2>
+        <ul class="activity-list">
+            <li><div class="activity-dot dot-green"></div><div><strong>12 new Google reviews</strong> added to showcase<div class="activity-time">Feb 26, 2026</div></div></li>
+            <li><div class="activity-dot dot-blue"></div><div><strong>Monthly report generated</strong> — February 2026<div class="activity-time">Feb 25, 2026</div></div></li>
+            <li><div class="activity-dot dot-green"></div><div><strong>Page speed optimised</strong> — now loads in 0.8s<div class="activity-time">Feb 20, 2026</div></div></li>
+            <li><div class="activity-dot dot-gold"></div><div><strong>Opening hours updated</strong> for half-term schedule<div class="activity-time">Feb 14, 2026</div></div></li>
+            <li><div class="activity-dot dot-blue"></div><div><strong>Schema markup updated</strong> with latest review count<div class="activity-time">Feb 10, 2026</div></div></li>
+            <li><div class="activity-dot dot-green"></div><div><strong>SSL certificate renewed</strong> — secure for another year<div class="activity-time">Feb 1, 2026</div></div></li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>💡 Need Help?</h2>
+        <div class="help-grid">
+            <div class="help-card"><div style="font-size:2rem">💬</div><h4>Request a Change</h4><p>Want to update text, images, or hours? Just message us on WhatsApp.</p></div>
+            <div class="help-card"><div style="font-size:2rem">📊</div><h4>Full Report</h4><p>Download your detailed monthly performance report as PDF.</p></div>
+            <div class="help-card"><div style="font-size:2rem">⬆️</div><h4>Upgrade Plan</h4><p>Get more features with Professional or Premium plans.</p></div>
+        </div>
+    </div>
+
+    <div class="footer-bar">
+        <p>Powered by <a href="/e17studios/">E17Studios.com</a> · Questions? WhatsApp us anytime</p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Sitemap — E17Studios Platform</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#09090f;--surface:#111118;--border:rgba(255,255,255,.06);--text:#e8e8f0;--muted:#8888a0;--accent:#e74c3c;--green:#27ae60;--blue:#3498db;--gold:#f39c12;--purple:#9b59b6;--teal:#1abc9c;--radius:16px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+        a{text-decoration:none;color:inherit}
+
+        .header{background:var(--surface);border-bottom:1px solid var(--border);padding:20px 0}
+        .container{max-width:1100px;margin:0 auto;padding:0 24px}
+        .header-inner{display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:10px}
+        .logo-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),#c0392b);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.75rem;color:#fff}
+        .logo-text{font-weight:800;font-size:1.1rem}
+        .logo-text span{color:var(--accent)}
+        .header-badge{background:var(--accent);color:#fff;padding:6px 16px;border-radius:50px;font-size:.75rem;font-weight:700}
+
+        .hero{padding:48px 0 32px;text-align:center}
+        .hero h1{font-size:2.2rem;font-weight:900;margin-bottom:8px}
+        .hero h1 span{color:var(--accent)}
+        .hero p{color:var(--muted);font-size:1rem;max-width:600px;margin:0 auto 24px}
+        .stats-bar{display:flex;gap:32px;justify-content:center;flex-wrap:wrap}
+        .stat{text-align:center}
+        .stat-num{font-size:1.8rem;font-weight:900;color:var(--accent)}
+        .stat-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+
+        .filter-bar{display:flex;gap:8px;justify-content:center;margin:32px 0 24px;flex-wrap:wrap}
+        .filter-btn{padding:8px 20px;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s}
+        .filter-btn:hover{border-color:var(--accent);color:var(--accent)}
+        .filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+        .section{margin-bottom:40px}
+        .section-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+        .section-tag{padding:4px 12px;border-radius:50px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+        .tag-client{background:rgba(39,174,96,.15);color:var(--green)}
+        .tag-public{background:rgba(231,76,60,.15);color:var(--accent)}
+        .tag-admin{background:rgba(52,152,219,.15);color:var(--blue)}
+        .tag-email{background:rgba(243,156,18,.15);color:var(--gold)}
+        .tag-nav{background:rgba(155,89,182,.15);color:var(--purple)}
+        .tag-demo{background:rgba(26,188,156,.15);color:var(--teal)}
+        .section-title{font-size:1.1rem;font-weight:800}
+        .section-count{color:var(--muted);font-size:.8rem}
+
+        .page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+        .page-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:14px;transition:all .2s;cursor:pointer}
+        .page-card:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 20px rgba(231,76,60,.1)}
+        .page-icon{font-size:1.4rem;flex-shrink:0;width:36px;text-align:center}
+        .page-info{flex:1;min-width:0}
+        .page-name{font-weight:700;font-size:.9rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .page-path{font-size:.72rem;color:var(--muted);font-family:'SF Mono',Monaco,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .page-arrow{color:var(--muted);font-size:.8rem;flex-shrink:0;transition:color .2s}
+        .page-card:hover .page-arrow{color:var(--accent)}
+        .page-size{font-size:.7rem;color:var(--muted);flex-shrink:0}
+
+        .quick-links{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:40px}
+        .quick-links h2{font-size:1rem;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .ql-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+        .ql-item{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;font-size:.85rem;font-weight:600;transition:all .2s}
+        .ql-item:hover{border-color:var(--accent);background:rgba(231,76,60,.05)}
+
+        .footer{text-align:center;padding:32px 0;color:var(--muted);font-size:.8rem;border-top:1px solid var(--border)}
+        .footer a{color:var(--accent)}
+
+        @media(max-width:768px){
+            .hero h1{font-size:1.6rem}
+            .page-grid{grid-template-columns:1fr}
+            .stats-bar{gap:20px}
+            .ql-grid{grid-template-columns:1fr 1fr}
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <div class="logo"><div class="logo-mark">E17</div><div class="logo-text">E17<span>Studios</span></div></div>
+        <div class="header-badge">Platform Sitemap</div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="hero">
+        <h1>Platform <span>Sitemap</span></h1>
+        <p>Complete index of every page in the E17Studios platform — client sites, admin tools, public pages, and email templates.</p>
+        <div class="stats-bar">
+            <div class="stat"><div class="stat-num" id="totalPages">0</div><div class="stat-label">Total Pages</div></div>
+            <div class="stat"><div class="stat-num">6</div><div class="stat-label">Categories</div></div>
+            <div class="stat"><div class="stat-num">5</div><div class="stat-label">Client Sites</div></div>
+            <div class="stat"><div class="stat-num">14</div><div class="stat-label">Admin Tools</div></div>
+        </div>
+    </div>
+
+    <div class="quick-links">
+        <h2>Quick Access</h2>
+        <div class="ql-grid">
+            <a href="/e17studios/" class="ql-item">🏠 E17Studios Homepage</a>
+            <a href="/admin/" class="ql-item">📊 Admin Dashboard</a>
+            <a href="/morris-dry-cleaners/" class="ql-item">👔 Morris (Top Client)</a>
+            <a href="/e17studios/audit.html" class="ql-item">🔍 Free Audit Tool</a>
+            <a href="/e17studios/pricing-breakdown.html" class="ql-item">💰 Pricing</a>
+            <a href="/emails/preview.html" class="ql-item">📧 Email Templates</a>
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterPages('all')">All Pages</button>
+        <button class="filter-btn" onclick="filterPages('client')">Client Sites</button>
+        <button class="filter-btn" onclick="filterPages('public')">Public Site</button>
+        <button class="filter-btn" onclick="filterPages('admin')">Admin Tools</button>
+        <button class="filter-btn" onclick="filterPages('email')">Emails</button>
+        <button class="filter-btn" onclick="filterPages('nav')">Navigation</button>
+        <button class="filter-btn" onclick="filterPages('demo')">Demo</button>
+    </div>
+
+    <!-- Client Websites -->
+    <div class="section" data-category="client">
+        <div class="section-header">
+            <span class="section-tag tag-client">Client Sites</span>
+            <span class="section-title">Live Client Websites</span>
+            <span class="section-count">5 pages</span>
+        </div>
+        <div class="page-grid">
+            <a href="/morris-dry-cleaners/" class="page-card">
+                <div class="page-icon">👔</div>
+                <div class="page-info"><div class="page-name">Morris Dry Cleaners</div><div class="page-path">/morris-dry-cleaners/index.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/vanish-dry-cleaners/" class="page-card">
+                <div class="page-icon">✨</div>
+                <div class="page-info"><div class="page-name">Vanish Dry Cleaners</div><div class="page-path">/vanish-dry-cleaners/index.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/lagoon-eco-friendly/" class="page-card">
+                <div class="page-icon">🌿</div>
+                <div class="page-info"><div class="page-name">Lagoon Eco-Friendly</div><div class="page-path">/lagoon-eco-friendly/index.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/pressed-2-perfection/" class="page-card">
+                <div class="page-icon">👑</div>
+                <div class="page-info"><div class="page-name">Pressed 2 Perfection</div><div class="page-path">/pressed-2-perfection/index.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/apollo-dry-cleaners/" class="page-card">
+                <div class="page-icon">🚀</div>
+                <div class="page-info"><div class="page-name">Apollo Dry Cleaners</div><div class="page-path">/apollo-dry-cleaners/index.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/supreme-dry-cleaners/" class="page-card">
+                <div class="page-icon">⭐</div>
+                <div class="page-info"><div class="page-name">Supreme Dry Cleaners</div><div class="page-path">/supreme-dry-cleaners/index.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- E17Studios Public Site -->
+    <div class="section" data-category="public">
+        <div class="section-header">
+            <span class="section-tag tag-public">Public Site</span>
+            <span class="section-title">E17Studios.com — Public Pages</span>
+            <span class="section-count">12 pages</span>
+        </div>
+        <div class="page-grid">
+            <a href="/e17studios/" class="page-card">
+                <div class="page-icon">🏠</div>
+                <div class="page-info"><div class="page-name">Homepage / Landing Page</div><div class="page-path">/e17studios/index.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/e17studios/case-studies.html" class="page-card">
+                <div class="page-icon">📸</div>
+                <div class="page-info"><div class="page-name">Case Studies</div><div class="page-path">/e17studios/case-studies.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/e17studios/pricing-breakdown.html" class="page-card">
+                <div class="page-icon">💰</div>
+                <div class="page-info"><div class="page-name">Pricing Breakdown</div><div class="page-path">/e17studios/pricing-breakdown.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/e17studios/compare.html" class="page-card">
+                <div class="page-icon">⚖️</div>
+                <div class="page-info"><div class="page-name">Why You Need a Website</div><div class="page-path">/e17studios/compare.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/e17studios/audit.html" class="page-card">
+                <div class="page-icon">🔍</div>
+                <div class="page-info"><div class="page-name">Free Website Audit Tool</div><div class="page-path">/e17studios/audit.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/e17studios/blog.html" class="page-card">
+                <div class="page-icon">📝</div>
+                <div class="page-info"><div class="page-name">Blog / Content Hub</div><div class="page-path">/e17studios/blog.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/e17studios/referral.html" class="page-card">
+                <div class="page-icon">🤝</div>
+                <div class="page-info"><div class="page-name">Referral Program</div><div class="page-path">/e17studios/referral.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/e17studios/reviews.html" class="page-card">
+                <div class="page-icon">⭐</div>
+                <div class="page-info"><div class="page-name">Review Collection</div><div class="page-path">/e17studios/reviews.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/e17studios/verticals.html" class="page-card">
+                <div class="page-icon">🏪</div>
+                <div class="page-info"><div class="page-name">Industry Verticals</div><div class="page-path">/e17studios/verticals.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/e17studios/help.html" class="page-card">
+                <div class="page-icon">❓</div>
+                <div class="page-info"><div class="page-name">Help Centre</div><div class="page-path">/e17studios/help.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/e17studios/terms.html" class="page-card">
+                <div class="page-icon">📜</div>
+                <div class="page-info"><div class="page-name">Terms & Privacy Policy</div><div class="page-path">/e17studios/terms.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/e17studios/404.html" class="page-card">
+                <div class="page-icon">🚫</div>
+                <div class="page-info"><div class="page-name">404 Error Page</div><div class="page-path">/e17studios/404.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Admin Tools -->
+    <div class="section" data-category="admin">
+        <div class="section-header">
+            <span class="section-tag tag-admin">Admin Tools</span>
+            <span class="section-title">Internal Admin Dashboard & Tools</span>
+            <span class="section-count">17 pages</span>
+        </div>
+        <div class="page-grid">
+            <a href="/admin/" class="page-card">
+                <div class="page-icon">📊</div>
+                <div class="page-info"><div class="page-name">CRM Dashboard (Home)</div><div class="page-path">/admin/index.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/analytics.html" class="page-card">
+                <div class="page-icon">📈</div>
+                <div class="page-info"><div class="page-name">Analytics & Reporting</div><div class="page-path">/admin/analytics.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/roi-calculator.html" class="page-card">
+                <div class="page-icon">🧮</div>
+                <div class="page-info"><div class="page-name">ROI Calculator</div><div class="page-path">/admin/roi-calculator.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/competitor-analysis.html" class="page-card">
+                <div class="page-icon">🔎</div>
+                <div class="page-info"><div class="page-name">Competitor Analysis</div><div class="page-path">/admin/competitor-analysis.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/sales-script.html" class="page-card">
+                <div class="page-icon">📞</div>
+                <div class="page-info"><div class="page-name">Sales Call Script</div><div class="page-path">/admin/sales-script.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/whatsapp-templates.html" class="page-card">
+                <div class="page-icon">💬</div>
+                <div class="page-info"><div class="page-name">WhatsApp Templates</div><div class="page-path">/admin/whatsapp-templates.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/client-success.html" class="page-card">
+                <div class="page-icon">📈</div>
+                <div class="page-info"><div class="page-name">Client Success Metrics</div><div class="page-path">/admin/client-success.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/client-report.html" class="page-card">
+                <div class="page-icon">📋</div>
+                <div class="page-info"><div class="page-name">Client Monthly Report</div><div class="page-path">/admin/client-report.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/client-dashboard.html" class="page-card">
+                <div class="page-icon">👤</div>
+                <div class="page-info"><div class="page-name">Client-Facing Dashboard</div><div class="page-path">/admin/client-dashboard.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/expansion-planner.html" class="page-card">
+                <div class="page-icon">🗺️</div>
+                <div class="page-info"><div class="page-name">Expansion Planner</div><div class="page-path">/admin/expansion-planner.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/social-calendar.html" class="page-card">
+                <div class="page-icon">📅</div>
+                <div class="page-info"><div class="page-name">Social Media Calendar</div><div class="page-path">/admin/social-calendar.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/invoice.html" class="page-card">
+                <div class="page-icon">🧾</div>
+                <div class="page-info"><div class="page-name">Invoice Template</div><div class="page-path">/admin/invoice.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/ab-testing.html" class="page-card">
+                <div class="page-icon">🔬</div>
+                <div class="page-info"><div class="page-name">A/B Testing Dashboard</div><div class="page-path">/admin/ab-testing.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/deploy-guide.html" class="page-card">
+                <div class="page-icon">🚀</div>
+                <div class="page-info"><div class="page-name">Deployment Guide</div><div class="page-path">/admin/deploy-guide.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/proposal-generator.html" class="page-card">
+                <div class="page-icon">📄</div>
+                <div class="page-info"><div class="page-name">Proposal Generator</div><div class="page-path">/admin/proposal-generator.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/gbp-optimizer.html" class="page-card">
+                <div class="page-icon">📍</div>
+                <div class="page-info"><div class="page-name">GBP Optimizer</div><div class="page-path">/admin/gbp-optimizer.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/admin/client-portal.html" class="page-card">
+                <div class="page-icon">🔐</div>
+                <div class="page-info"><div class="page-name">Client Portal Login</div><div class="page-path">/admin/client-portal.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/outreach/" class="page-card">
+                <div class="page-icon">📡</div>
+                <div class="page-info"><div class="page-name">Outreach Agent</div><div class="page-path">/outreach/index.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Email Templates -->
+    <div class="section" data-category="email">
+        <div class="section-header">
+            <span class="section-tag tag-email">Emails</span>
+            <span class="section-title">Email Outreach Templates</span>
+            <span class="section-count">4 pages</span>
+        </div>
+        <div class="page-grid">
+            <a href="/emails/preview.html" class="page-card">
+                <div class="page-icon">👁️</div>
+                <div class="page-info"><div class="page-name">Email Preview Hub</div><div class="page-path">/emails/preview.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/emails/template-pitch.html" class="page-card">
+                <div class="page-icon">📧</div>
+                <div class="page-info"><div class="page-name">Day 0 — Pitch Email</div><div class="page-path">/emails/template-pitch.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/emails/template-followup-1.html" class="page-card">
+                <div class="page-icon">📨</div>
+                <div class="page-info"><div class="page-name">Day 3 — Follow-Up Email</div><div class="page-path">/emails/template-followup-1.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/emails/template-breakup.html" class="page-card">
+                <div class="page-icon">👋</div>
+                <div class="page-info"><div class="page-name">Day 14 — Breakup Email</div><div class="page-path">/emails/template-breakup.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Navigation & Onboarding -->
+    <div class="section" data-category="nav">
+        <div class="section-header">
+            <span class="section-tag tag-nav">Navigation</span>
+            <span class="section-title">Platform Navigation & Onboarding</span>
+            <span class="section-count">3 pages</span>
+        </div>
+        <div class="page-grid">
+            <a href="/dashboard.html" class="page-card">
+                <div class="page-icon">🏗️</div>
+                <div class="page-info"><div class="page-name">Builder Agent Dashboard</div><div class="page-path">/dashboard.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/onboarding/" class="page-card">
+                <div class="page-icon">🎯</div>
+                <div class="page-info"><div class="page-name">Client Onboarding Flow</div><div class="page-path">/onboarding/index.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+            <a href="/sitemap.html" class="page-card">
+                <div class="page-icon">🗂️</div>
+                <div class="page-info"><div class="page-name">This Sitemap</div><div class="page-path">/sitemap.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Demo -->
+    <div class="section" data-category="demo">
+        <div class="section-header">
+            <span class="section-tag tag-demo">Demo</span>
+            <span class="section-title">Original Proof-of-Concept</span>
+            <span class="section-count">1 page</span>
+        </div>
+        <div class="page-grid">
+            <a href="/" class="page-card">
+                <div class="page-icon">🚲</div>
+                <div class="page-info"><div class="page-name">Walthamstow Cycles (Original Demo)</div><div class="page-path">/index.html</div></div>
+                <div class="page-arrow">→</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>E17Studios Platform Sitemap — <span id="pageCount">0</span> pages across 6 categories · <a href="/e17studios/">Back to Homepage</a></p>
+    </div>
+</div>
+
+<script>
+    // Count total pages
+    const totalCards = document.querySelectorAll('.page-card').length;
+    document.getElementById('totalPages').textContent = totalCards;
+    document.getElementById('pageCount').textContent = totalCards;
+
+    // Filter functionality
+    function filterPages(category) {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        document.querySelectorAll('.section').forEach(section => {
+            if (category === 'all' || section.dataset.category === category) {
+                section.style.display = 'block';
+            } else {
+                section.style.display = 'none';
+            }
+        });
+    }
+</script>
+</body>
+</html>

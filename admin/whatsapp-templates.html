@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>WhatsApp Templates — E17Studios Admin</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#09090f;--surface:#111118;--border:rgba(255,255,255,.08);--text:#e8e8f0;--text-muted:#8888a0;--text-dim:#55556a;--accent:#e74c3c;--green:#25D366;--green-dark:#128C7E;--radius:12px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+        a{text-decoration:none;color:inherit}
+
+        .sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:20px 0;position:fixed;top:0;left:0;bottom:0;overflow-y:auto}
+        .sidebar-logo{padding:0 20px 20px;font-weight:800;font-size:1.1rem;border-bottom:1px solid var(--border)}.sidebar-logo span{color:var(--accent)}
+        .sidebar-section{padding:16px 12px 4px;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+        .sidebar a{display:block;padding:8px 20px;font-size:.85rem;color:var(--text-muted);transition:all .15s;border-left:2px solid transparent}
+        .sidebar a:hover{color:var(--text);background:rgba(255,255,255,.03)}
+        .sidebar a.active{color:var(--green);border-left-color:var(--green);background:rgba(37,211,102,.05)}
+
+        .main{margin-left:220px;flex:1;padding:32px}
+        .page-title{font-size:1.8rem;font-weight:800;margin-bottom:4px}
+        .page-sub{color:var(--text-muted);margin-bottom:24px}
+
+        .tabs{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+        .tab{padding:8px 20px;border-radius:50px;font-size:.85rem;font-weight:600;cursor:pointer;border:1px solid var(--border);color:var(--text-muted);transition:all .2s;background:none}
+        .tab:hover{border-color:var(--green);color:var(--green)}
+        .tab.active{background:var(--green);color:#fff;border-color:var(--green)}
+
+        .template-grid{display:grid;gap:24px;max-width:640px}
+        .template-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:none}
+        .template-card.visible{display:block}
+        .template-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .template-name{font-weight:700;font-size:.95rem}
+        .template-tag{font-size:.7rem;padding:3px 10px;border-radius:50px;font-weight:600}
+        .tag-cold{background:rgba(52,152,219,.15);color:#3498db}
+        .tag-warm{background:rgba(243,156,18,.15);color:#f39c12}
+        .tag-client{background:rgba(39,174,96,.15);color:#27ae60}
+        .tag-support{background:rgba(155,89,182,.15);color:#9b59b6}
+
+        .bubble-area{padding:20px;background:#0b141a}
+        .bubble{background:#005c4b;color:#e8e8e8;padding:12px 16px;border-radius:0 12px 12px 12px;font-size:.9rem;line-height:1.6;max-width:85%;position:relative;margin-bottom:4px;white-space:pre-line}
+        .bubble-time{text-align:right;font-size:.7rem;color:rgba(255,255,255,.4);margin-top:4px}
+        .bubble var{background:rgba(37,211,102,.2);padding:1px 6px;border-radius:4px;font-style:normal;color:var(--green);font-size:.85rem}
+
+        .template-actions{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px}
+        .btn-copy,.btn-wa{padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:600;border:none;cursor:pointer;transition:all .2s}
+        .btn-copy{background:rgba(255,255,255,.06);color:var(--text-muted);border:1px solid var(--border)}
+        .btn-copy:hover{border-color:var(--text-muted)}
+        .btn-wa{background:var(--green);color:#fff}
+        .btn-wa:hover{background:var(--green-dark)}
+
+        .stats-bar{display:flex;gap:20px;margin-bottom:32px;flex-wrap:wrap}
+        .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 24px;text-align:center}
+        .stat-num{font-size:1.8rem;font-weight:900;color:var(--green)}
+        .stat-label{font-size:.75rem;color:var(--text-dim);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+
+        @media(max-width:768px){.sidebar{display:none}.main{margin-left:0}}
+    </style>
+</head>
+<body>
+
+<nav class="sidebar">
+    <div class="sidebar-logo">E17<span>Studios</span></div>
+    <div class="sidebar-section">Pipeline</div>
+    <a href="/admin/">CRM Dashboard</a>
+    <a href="/admin/analytics.html">Analytics</a>
+    <a href="/admin/lead-scoring.html">Lead Scoring</a>
+    <div class="sidebar-section">Sales Tools</div>
+    <a href="/admin/roi-calculator.html">ROI Calculator</a>
+    <a href="/admin/competitor-analysis.html">Competitor Analysis</a>
+    <a href="/admin/whatsapp-templates.html" class="active">WhatsApp Templates</a>
+    <a href="/emails/preview.html">Email Templates</a>
+    <a href="/admin/sales-script.html">Sales Script</a>
+    <a href="/admin/sequence-builder.html">Sequence Builder</a>
+    <div class="sidebar-section">Client Tools</div>
+    <a href="/admin/client-success.html">Success Metrics</a>
+    <a href="/admin/client-report.html">Client Report</a>
+    <a href="/admin/expansion-planner.html">Expansion Planner</a>
+    <a href="/admin/client-dashboard.html">Client Dashboard</a>
+    <div class="sidebar-section">Public Site</div>
+    <a href="/e17studios/">Landing Page</a>
+    <a href="/e17studios/audit.html">Free Audit Tool</a>
+    <div class="sidebar-section">Navigation</div>
+    <a href="/sitemap.html">Sitemap</a>
+</nav>
+
+<main class="main">
+    <h1 class="page-title">WhatsApp Templates</h1>
+    <p class="page-sub">10 copy-paste message templates for every stage of the sales pipeline</p>
+
+    <div class="stats-bar">
+        <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">Templates</div></div>
+        <div class="stat-card"><div class="stat-num">85%</div><div class="stat-label">Open Rate</div></div>
+        <div class="stat-card"><div class="stat-num">32%</div><div class="stat-label">Reply Rate</div></div>
+        <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">Categories</div></div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="filterTemplates('all')">All (10)</div>
+        <div class="tab" onclick="filterTemplates('cold')">Cold (2)</div>
+        <div class="tab" onclick="filterTemplates('warm')">Warm (3)</div>
+        <div class="tab" onclick="filterTemplates('client')">Client (3)</div>
+        <div class="tab" onclick="filterTemplates('support')">Support (2)</div>
+    </div>
+
+    <div class="template-grid">
+        <!-- COLD -->
+        <div class="template-card visible" data-cat="cold">
+            <div class="template-header"><span class="template-name">1. Initial DM — Cold Outreach</span><span class="template-tag tag-cold">Cold</span></div>
+            <div class="bubble-area">
+                <div class="bubble">Hi <var>{{OWNER_NAME}}</var> 👋
+
+I noticed <var>{{BUSINESS_NAME}}</var> has amazing reviews on Google (<var>{{REVIEW_COUNT}}</var> reviews, <var>{{RATING}}</var>★!) but doesn't have a website yet.
+
+I actually built a free preview of what a site could look like for you — no strings attached:
+
+<var>{{PREVIEW_URL}}</var>
+
+Would love to hear what you think! 🙌
+                    <div class="bubble-time">09:14 ✓✓</div>
+                </div>
+            </div>
+            <div class="template-actions">
+                <button class="btn-copy" onclick="copyTemplate(this)">📋 Copy Text</button>
+                <a href="https://wa.me/?text=Hi%20%7B%7BOWNER_NAME%7D%7D%20%F0%9F%91%8B" target="_blank" class="btn-wa">💬 Open WhatsApp</a>
+            </div>
+        </div>
+
+        <div class="template-card visible" data-cat="cold">
+            <div class="template-header"><span class="template-name">2. Walk-In Follow-Up</span><span class="template-tag tag-cold">Cold</span></div>
+            <div class="bubble-area">
+                <div class="bubble">Hi <var>{{OWNER_NAME}}</var>, it was great chatting earlier at <var>{{BUSINESS_NAME}}</var>!
+
+As promised, here's the website preview I mentioned:
+
+<var>{{PREVIEW_URL}}</var>
+
+Have a look when you get a moment — everything's already set up with your real reviews and location. No cost to view it 😊
+                    <div class="bubble-time">14:32 ✓✓</div>
+                </div>
+            </div>
+            <div class="template-actions">
+                <button class="btn-copy" onclick="copyTemplate(this)">📋 Copy Text</button>
+                <a href="https://wa.me/" target="_blank" class="btn-wa">💬 Open WhatsApp</a>
+            </div>
+        </div>
+
+        <!-- WARM -->
+        <div class="template-card visible" data-cat="warm">
+            <div class="template-header"><span class="template-name">3. Day 3 Follow-Up</span><span class="template-tag tag-warm">Warm</span></div>
+            <div class="bubble-area">
+                <div class="bubble">Hey <var>{{OWNER_NAME}}</var> 👋 Just checking in — did you get a chance to look at the website preview I sent for <var>{{BUSINESS_NAME}}</var>?
+
+Happy to make any changes or answer questions. The preview stays live for 30 days 🙂
+                    <div class="bubble-time">10:15 ✓✓</div>
+                </div>
+            </div>
+            <div class="template-actions">
+                <button class="btn-copy" onclick="copyTemplate(this)">📋 Copy Text</button>
+                <a href="https://wa.me/" target="_blank" class="btn-wa">💬 Open WhatsApp</a>
+            </div>
+        </div>
+
+        <div class="template-card visible" data-cat="warm">
+            <div class="template-header"><span class="template-name">4. Pricing Reply</span><span class="template-tag tag-warm">Warm</span></div>
+            <div class="bubble-area">
+                <div class="bubble">Great question! Plans start from just £29/month — that's less than £1/day.
+
+Most businesses like <var>{{BUSINESS_NAME}}</var> go for the Professional plan at £49/month which includes the review showcase and monthly reports.
+
+No contracts, cancel anytime. Want me to set it up? Takes about 5 minutes 👍
+                    <div class="bubble-time">11:03 ✓✓</div>
+                </div>
+            </div>
+            <div class="template-actions">
+                <button class="btn-copy" onclick="copyTemplate(this)">📋 Copy Text</button>
+                <a href="https://wa.me/" target="_blank" class="btn-wa">💬 Open WhatsApp</a>
+            </div>
+        </div>
+
+        <div class="template-card visible" data-cat="warm">
+            <div class="template-header"><span class="template-name">5. Day 14 Breakup</span><span class="template-tag tag-warm">Warm</span></div>
+            <div class="bubble-area">
+                <div class="bubble">Hi <var>{{OWNER_NAME}}</var>, just a heads up — the free preview for <var>{{BUSINESS_NAME}}</var> will expire in 16 days.
+
+No pressure at all! If it's not right for you, totally understand. Just didn't want it to expire without you seeing it 😊
+
+<var>{{PREVIEW_URL}}</var>
+                    <div class="bubble-time">09:45 ✓✓</div>
+                </div>
+            </div>
+            <div class="template-actions">
+                <button class="btn-copy" onclick="copyTemplate(this)">📋 Copy Text</button>
+                <a href="https://wa.me/" target="_blank" class="btn-wa">💬 Open WhatsApp</a>
+            </div>
+        </div>
+
+        <!-- CLIENT -->
+        <div class="template-card visible" data-cat="client">
+            <div class="template-header"><span class="template-name">6. Welcome — New Client</span><span class="template-tag tag-client">Client</span></div>
+            <div class="bubble-area">
+                <div class="bubble">Welcome aboard <var>{{OWNER_NAME}}</var>! 🎉
+
+Your website for <var>{{BUSINESS_NAME}}</var> is now LIVE at:
+<var>{{LIVE_URL}}</var>
+
+A few things to know:
+✅ Site is mobile-friendly and SEO-optimised
+✅ You'll get a monthly performance report
+✅ Message me anytime for changes
+
+So excited to help grow your business! 🚀
+                    <div class="bubble-time">15:22 ✓✓</div>
+                </div>
+            </div>
+            <div class="template-actions">
+                <button class="btn-copy" onclick="copyTemplate(this)">📋 Copy Text</button>
+                <a href="https://wa.me/" target="_blank" class="btn-wa">💬 Open WhatsApp</a>
+            </div>
+        </div>
+
+        <div class="template-card visible" data-cat="client">
+            <div class="template-header"><span class="template-name">7. Monthly Report</span><span class="template-tag tag-client">Client</span></div>
+            <div class="bubble-area">
+                <div class="bubble">Hi <var>{{OWNER_NAME}}</var>! Your February report for <var>{{BUSINESS_NAME}}</var> is ready 📊
+
+This month:
+📈 <var>{{VIEWS}}</var> people viewed your site
+📞 <var>{{CALLS}}</var> tapped "Call Now"
+🗺️ <var>{{MAPS}}</var> clicked for directions
+
+Your site is performing well! Full report: <var>{{REPORT_URL}}</var>
+                    <div class="bubble-time">10:00 ✓✓</div>
+                </div>
+            </div>
+            <div class="template-actions">
+                <button class="btn-copy" onclick="copyTemplate(this)">📋 Copy Text</button>
+                <a href="https://wa.me/" target="_blank" class="btn-wa">💬 Open WhatsApp</a>
+            </div>
+        </div>
+
+        <div class="template-card visible" data-cat="client">
+            <div class="template-header"><span class="template-name">8. Referral Ask</span><span class="template-tag tag-client">Client</span></div>
+            <div class="bubble-area">
+                <div class="bubble">Hey <var>{{OWNER_NAME}}</var>! Quick one — do you know any other local business owners who might want a website?
+
+If you refer someone and they sign up, I'll give you a month free as a thank you 🙌
+
+No pressure, just thought I'd ask!
+                    <div class="bubble-time">14:10 ✓✓</div>
+                </div>
+            </div>
+            <div class="template-actions">
+                <button class="btn-copy" onclick="copyTemplate(this)">📋 Copy Text</button>
+                <a href="https://wa.me/" target="_blank" class="btn-wa">💬 Open WhatsApp</a>
+            </div>
+        </div>
+
+        <!-- SUPPORT -->
+        <div class="template-card visible" data-cat="support">
+            <div class="template-header"><span class="template-name">9. Change Request Done</span><span class="template-tag tag-support">Support</span></div>
+            <div class="bubble-area">
+                <div class="bubble">Hi <var>{{OWNER_NAME}}</var>! The changes you requested for <var>{{BUSINESS_NAME}}</var> are now live ✅
+
+Updated:
+<var>{{CHANGE_SUMMARY}}</var>
+
+Take a look: <var>{{LIVE_URL}}</var>
+
+Let me know if anything else needs tweaking 👍
+                    <div class="bubble-time">16:45 ✓✓</div>
+                </div>
+            </div>
+            <div class="template-actions">
+                <button class="btn-copy" onclick="copyTemplate(this)">📋 Copy Text</button>
+                <a href="https://wa.me/" target="_blank" class="btn-wa">💬 Open WhatsApp</a>
+            </div>
+        </div>
+
+        <div class="template-card visible" data-cat="support">
+            <div class="template-header"><span class="template-name">10. Payment Issue</span><span class="template-tag tag-support">Support</span></div>
+            <div class="bubble-area">
+                <div class="bubble">Hi <var>{{OWNER_NAME}}</var>, just a quick note — it looks like this month's payment for your <var>{{BUSINESS_NAME}}</var> website didn't go through.
+
+This can happen if your card expired or the bank flagged it. Could you check when you get a moment?
+
+No rush — your site stays live. Just want to make sure we keep things running smoothly 😊
+                    <div class="bubble-time">11:30 ✓✓</div>
+                </div>
+            </div>
+            <div class="template-actions">
+                <button class="btn-copy" onclick="copyTemplate(this)">📋 Copy Text</button>
+                <a href="https://wa.me/" target="_blank" class="btn-wa">💬 Open WhatsApp</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+function filterTemplates(cat){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    event.target.classList.add('active');
+    document.querySelectorAll('.template-card').forEach(c=>{
+        c.classList.toggle('visible', cat==='all'||c.dataset.cat===cat);
+    });
+}
+function copyTemplate(btn){
+    const bubble=btn.closest('.template-card').querySelector('.bubble');
+    const text=bubble.innerText.replace(/\n\s*\d{2}:\d{2} ✓✓/,'').trim();
+    navigator.clipboard.writeText(text).then(()=>{
+        btn.textContent='✅ Copied!';
+        setTimeout(()=>btn.textContent='📋 Copy Text',2000);
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Invoice #E17-2026-001 — E17Studios</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--navy:#1a1f3a;--accent:#e74c3c;--green:#27ae60;--text:#2a2a3e;--text-muted:#6a6a7e;--bg:#fafbfc;--white:#fff;--border:#e8eaf0;--radius:12px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text)}
+        .container{max-width:680px;margin:0 auto;padding:32px 24px}
+
+        .invoice{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+
+        .invoice-header{background:var(--navy);color:#fff;padding:32px;display:flex;justify-content:space-between;align-items:start}
+        .invoice-logo{display:flex;align-items:center;gap:10px}
+        .invoice-logo-mark{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),#c0392b);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85rem;color:#fff}
+        .invoice-logo-text{font-weight:800;font-size:1.2rem}.invoice-logo-text span{color:var(--accent)}
+        .invoice-title{text-align:right}
+        .invoice-title h1{font-size:1.4rem;font-weight:800;margin-bottom:4px}
+        .invoice-title p{font-size:.85rem;color:rgba(255,255,255,.5)}
+
+        .invoice-meta{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:24px 32px;border-bottom:1px solid var(--border)}
+        .meta-group h3{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:6px}
+        .meta-group p{font-size:.9rem;line-height:1.5}
+        .meta-group strong{font-weight:700}
+
+        .invoice-status{padding:16px 32px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .status-badge{padding:6px 16px;border-radius:50px;font-size:.8rem;font-weight:700}
+        .status-paid{background:rgba(39,174,96,.1);color:var(--green)}
+        .status-pending{background:rgba(243,156,18,.1);color:#f39c12}
+        .status-overdue{background:rgba(231,76,60,.1);color:var(--accent)}
+        .due-date{font-size:.85rem;color:var(--text-muted)}
+
+        .invoice-table{padding:24px 32px}
+        .invoice-table table{width:100%;border-collapse:collapse}
+        .invoice-table th{text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);padding:10px 0;border-bottom:2px solid var(--border)}
+        .invoice-table th:last-child{text-align:right}
+        .invoice-table td{padding:14px 0;border-bottom:1px solid var(--border);font-size:.9rem}
+        .invoice-table td:last-child{text-align:right;font-weight:600}
+        .item-desc{font-size:.78rem;color:var(--text-muted);margin-top:2px}
+
+        .invoice-totals{padding:0 32px 24px;display:flex;justify-content:flex-end}
+        .totals-table{width:250px}
+        .totals-table tr td{padding:8px 0;font-size:.9rem}
+        .totals-table tr td:last-child{text-align:right;font-weight:600}
+        .totals-table tr.total-row td{border-top:2px solid var(--navy);font-size:1.1rem;font-weight:800;padding-top:12px;color:var(--navy)}
+
+        .invoice-notes{padding:0 32px 24px}
+        .invoice-notes h3{font-size:.8rem;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+        .invoice-notes p{font-size:.82rem;color:var(--text-muted);line-height:1.5}
+
+        .invoice-footer{background:var(--bg);padding:20px 32px;text-align:center;font-size:.78rem;color:var(--text-muted);border-top:1px solid var(--border)}
+        .invoice-footer a{color:var(--accent)}
+
+        .actions{display:flex;justify-content:center;gap:12px;margin-top:24px}
+        .actions button{padding:12px 28px;border-radius:var(--radius);font-weight:700;font-size:.9rem;cursor:pointer;border:none;transition:all .2s}
+        .btn-print{background:var(--navy);color:#fff}
+        .btn-print:hover{opacity:.85}
+        .btn-download{background:var(--white);color:var(--navy);border:1px solid var(--border)}
+        .btn-download:hover{border-color:var(--navy)}
+
+        /* Template controls */
+        .template-controls{background:var(--navy);color:#fff;padding:16px 24px;border-radius:var(--radius);margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+        .template-controls h3{font-size:.9rem;font-weight:700}
+        .template-controls select{padding:6px 12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:#fff;font-size:.82rem;cursor:pointer}
+
+        @media print{.actions,.template-controls{display:none}body{background:#fff}.container{padding:0}.invoice{border:none;box-shadow:none}}
+        @media(max-width:768px){.invoice-header{flex-direction:column;gap:16px}.invoice-title{text-align:left}.invoice-meta{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="template-controls">
+        <h3>Invoice Template — Edit variables below</h3>
+        <div>
+            <select onchange="document.querySelector('.status-badge').className='status-badge status-'+this.value;document.querySelector('.status-badge').textContent=this.options[this.selectedIndex].text">
+                <option value="paid">Paid</option>
+                <option value="pending">Pending</option>
+                <option value="overdue">Overdue</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="invoice">
+        <div class="invoice-header">
+            <div class="invoice-logo">
+                <div class="invoice-logo-mark">E17</div>
+                <div class="invoice-logo-text">E17<span>Studios</span></div>
+            </div>
+            <div class="invoice-title">
+                <h1>INVOICE</h1>
+                <p>#E17-2026-001</p>
+            </div>
+        </div>
+
+        <div class="invoice-meta">
+            <div class="meta-group">
+                <h3>From</h3>
+                <p><strong>E17Studios.com</strong><br>Walthamstow, London E17<br>hello@e17studios.com<br>VAT: GB123456789</p>
+            </div>
+            <div class="meta-group">
+                <h3>Bill To</h3>
+                <p><strong>Morris Dry Cleaners</strong><br>7 Hoe Street<br>Walthamstow, London E17 4SA<br>owner@morrisdry.co.uk</p>
+            </div>
+        </div>
+
+        <div class="invoice-meta">
+            <div class="meta-group">
+                <h3>Invoice Date</h3>
+                <p>1 February 2026</p>
+            </div>
+            <div class="meta-group">
+                <h3>Payment Due</h3>
+                <p>1 February 2026 (Due on receipt)</p>
+            </div>
+        </div>
+
+        <div class="invoice-status">
+            <span class="status-badge status-paid">Paid</span>
+            <span class="due-date">Paid on 1 Feb 2026 via card ending 4242</span>
+        </div>
+
+        <div class="invoice-table">
+            <table>
+                <thead><tr><th>Description</th><th>Qty</th><th>Amount</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <strong>Professional Website Plan — Monthly</strong>
+                            <div class="item-desc">Mobile-responsive website, hosting, SSL, SEO, Schema markup, review showcase, monthly report, priority support</div>
+                        </td>
+                        <td>1</td>
+                        <td>£40.83</td>
+                    </tr>
+                    <tr>
+                        <td>VAT (20%)</td>
+                        <td></td>
+                        <td>£8.17</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="invoice-totals">
+            <table class="totals-table">
+                <tr><td>Subtotal</td><td>£40.83</td></tr>
+                <tr><td>VAT (20%)</td><td>£8.17</td></tr>
+                <tr class="total-row"><td>Total</td><td>£49.00</td></tr>
+            </table>
+        </div>
+
+        <div class="invoice-notes">
+            <h3>Notes</h3>
+            <p>Thank you for choosing E17Studios! Your website is live and performing well. This invoice covers your Professional plan for February 2026. For any questions, contact us at hello@e17studios.com or via WhatsApp.</p>
+        </div>
+
+        <div class="invoice-footer">
+            <p>E17Studios.com · Walthamstow, London E17 · <a href="/e17studios/">e17studios.com</a> · Company Reg: 12345678</p>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn-print" onclick="window.print()">🖨️ Print Invoice</button>
+        <button class="btn-download">📄 Download PDF</button>
+    </div>
+</div>
+</body>
+</html>

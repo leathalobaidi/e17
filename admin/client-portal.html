@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Client Portal — E17Studios</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#09090f;--surface:#111118;--border:rgba(255,255,255,.06);--text:#e8e8f0;--muted:#8888a0;--accent:#e74c3c;--radius:16px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+        a{text-decoration:none;color:inherit}
+
+        .login-container{width:100%;max-width:420px}
+        .login-header{text-align:center;margin-bottom:32px}
+        .logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:24px}
+        .logo-mark{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),#c0392b);border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.9rem;color:#fff}
+        .logo-text{font-weight:900;font-size:1.3rem}.logo-text span{color:var(--accent)}
+        .login-header h1{font-size:1.5rem;font-weight:800;margin-bottom:6px}
+        .login-header p{color:var(--muted);font-size:.88rem}
+
+        .login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:20px}
+        .form-group{margin-bottom:18px}
+        .form-group label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+        .form-group input{width:100%;padding:12px 16px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:.9rem;font-family:inherit;transition:border-color .2s}
+        .form-group input:focus{outline:none;border-color:var(--accent)}
+        .form-group input::placeholder{color:var(--muted)}
+
+        .remember-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:.82rem}
+        .remember-row label{display:flex;align-items:center;gap:8px;color:var(--muted);cursor:pointer}
+        .remember-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent)}
+        .forgot-link{color:var(--accent);font-weight:600}
+        .forgot-link:hover{text-decoration:underline}
+
+        .login-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;transition:all .2s}
+        .login-btn:hover{background:#c0392b;transform:translateY(-1px)}
+        .login-btn:active{transform:translateY(0)}
+
+        .divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--muted);font-size:.78rem}
+        .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+        .demo-access{background:rgba(231,76,60,.06);border:1px solid rgba(231,76,60,.12);border-radius:12px;padding:16px;text-align:center}
+        .demo-access h3{font-size:.85rem;font-weight:700;margin-bottom:8px;color:var(--accent)}
+        .demo-clients{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+        .demo-client{padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;text-align:center}
+        .demo-client:hover{border-color:var(--accent);color:var(--accent)}
+
+        .login-footer{text-align:center;color:var(--muted);font-size:.78rem}
+        .login-footer a{color:var(--accent)}
+
+        /* Dashboard view after login */
+        .portal-view{display:none}
+        .portal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}
+        .portal-header h1{font-size:1.4rem;font-weight:800}
+        .portal-logout{padding:8px 20px;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s}
+        .portal-logout:hover{border-color:var(--accent);color:var(--accent)}
+
+        .portal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px}
+        .portal-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center;transition:all .2s}
+        .portal-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+        .portal-card-icon{font-size:2rem;margin-bottom:10px}
+        .portal-card h3{font-size:.9rem;font-weight:700;margin-bottom:4px}
+        .portal-card p{font-size:.78rem;color:var(--muted)}
+
+        .portal-status{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px}
+        .portal-status h2{font-size:1rem;font-weight:800;margin-bottom:16px}
+        .status-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:.85rem}
+        .status-row:last-child{border-bottom:none}
+        .status-badge{padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:700}
+        .badge-green{background:rgba(39,174,96,.15);color:#27ae60}
+        .badge-blue{background:rgba(52,152,219,.15);color:#3498db}
+
+        @media(max-width:500px){.portal-grid{grid-template-columns:1fr}.demo-clients{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <!-- Login View -->
+    <div id="loginView">
+        <div class="login-header">
+            <div class="logo"><div class="logo-mark">E17</div><div class="logo-text">E17<span>Studios</span></div></div>
+            <h1>Client Portal</h1>
+            <p>Sign in to view your website dashboard, reports, and manage your account.</p>
+        </div>
+
+        <div class="login-card">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="loginEmail" placeholder="you@yourbusiness.com">
+            </div>
+            <div class="form-group">
+                <label>Access Code</label>
+                <input type="password" id="loginCode" placeholder="Your 6-digit code">
+            </div>
+            <div class="remember-row">
+                <label><input type="checkbox"> Remember me</label>
+                <a href="#" class="forgot-link">Forgot code?</a>
+            </div>
+            <button class="login-btn" onclick="handleLogin()">Sign In</button>
+        </div>
+
+        <div class="divider">or quick access</div>
+
+        <div class="demo-access">
+            <h3>Demo Client Access</h3>
+            <p style="font-size:.75rem;color:var(--muted);margin-bottom:8px">Click a client to preview their portal experience</p>
+            <div class="demo-clients">
+                <div class="demo-client" onclick="demoLogin('Morris Dry Cleaners')">👔 Morris</div>
+                <div class="demo-client" onclick="demoLogin('Vanish Dry Cleaners')">✨ Vanish</div>
+                <div class="demo-client" onclick="demoLogin('Lagoon Eco-Friendly')">🌿 Lagoon</div>
+                <div class="demo-client" onclick="demoLogin('Pressed 2 Perfection')">👑 Pressed 2 Perf.</div>
+            </div>
+        </div>
+
+        <div class="login-footer" style="margin-top:20px">
+            <p>Not a client yet? <a href="/e17studios/audit.html">Get a free website audit</a></p>
+            <p style="margin-top:8px"><a href="/e17studios/">← Back to E17Studios.com</a></p>
+        </div>
+    </div>
+
+    <!-- Portal View (after login) -->
+    <div id="portalView" class="portal-view" style="max-width:600px">
+        <div class="portal-header">
+            <h1 id="portalWelcome">Welcome back!</h1>
+            <button class="portal-logout" onclick="handleLogout()">Sign Out</button>
+        </div>
+
+        <div class="portal-grid">
+            <a href="/admin/client-dashboard.html" class="portal-card">
+                <div class="portal-card-icon">📊</div>
+                <h3>Dashboard</h3>
+                <p>View your website performance and stats</p>
+            </a>
+            <a href="/admin/client-report.html" class="portal-card">
+                <div class="portal-card-icon">📋</div>
+                <h3>Monthly Report</h3>
+                <p>Download your latest performance report</p>
+            </a>
+            <a href="#" class="portal-card" onclick="alert('WhatsApp link would open here')">
+                <div class="portal-card-icon">💬</div>
+                <h3>Request a Change</h3>
+                <p>Message us on WhatsApp to update your site</p>
+            </a>
+            <a href="/e17studios/help.html" class="portal-card">
+                <div class="portal-card-icon">❓</div>
+                <h3>Help Centre</h3>
+                <p>Find answers to common questions</p>
+            </a>
+        </div>
+
+        <div class="portal-status">
+            <h2>Account Status</h2>
+            <div class="status-row"><span>Plan</span><span class="status-badge badge-blue">Professional — £49/mo</span></div>
+            <div class="status-row"><span>Website Status</span><span class="status-badge badge-green">Live</span></div>
+            <div class="status-row"><span>Next Billing</span><span>1 March 2026</span></div>
+            <div class="status-row"><span>SSL Certificate</span><span class="status-badge badge-green">Valid</span></div>
+            <div class="status-row"><span>Last Updated</span><span>Feb 26, 2026</span></div>
+        </div>
+
+        <div class="portal-grid">
+            <a href="/e17studios/referral.html" class="portal-card">
+                <div class="portal-card-icon">🤝</div>
+                <h3>Refer a Friend</h3>
+                <p>Earn a free month for every referral</p>
+            </a>
+            <a href="/admin/invoice.html" class="portal-card">
+                <div class="portal-card-icon">🧾</div>
+                <h3>Invoices</h3>
+                <p>View and download your invoices</p>
+            </a>
+        </div>
+
+        <div class="login-footer">
+            <p>Need help? <a href="/e17studios/help.html">Visit our Help Centre</a> or WhatsApp us anytime</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function handleLogin() {
+    const email = document.getElementById('loginEmail').value;
+    if (!email) { alert('Please enter your email address'); return; }
+    showPortal(email.split('@')[0]);
+}
+
+function demoLogin(name) {
+    showPortal(name);
+}
+
+function showPortal(name) {
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('portalView').style.display = 'block';
+    document.getElementById('portalWelcome').textContent = `Welcome, ${name}!`;
+}
+
+function handleLogout() {
+    document.getElementById('portalView').style.display = 'none';
+    document.getElementById('loginView').style.display = 'block';
+}
+</script>
+</body>
+</html>

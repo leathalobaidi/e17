@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E17Studios — Deployment & Integration Guide</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #09090f;
+    --surface: #111118;
+    --surface-2: #16161f;
+    --surface-3: #1c1c28;
+    --border: rgba(255,255,255,.06);
+    --border-solid: #25253a;
+    --border-light: #2e2e45;
+    --text: #e8e8f0;
+    --text-dim: #8888a0;
+    --text-muted: #55556a;
+    --accent: #e74c3c;
+    --accent-dim: rgba(231, 76, 60, 0.15);
+    --accent-glow: rgba(231, 76, 60, 0.3);
+    --green: #2ecc71;
+    --green-dim: rgba(46, 204, 113, 0.15);
+    --blue: #3498db;
+    --blue-dim: rgba(52, 152, 219, 0.15);
+    --yellow: #f39c12;
+    --yellow-dim: rgba(243, 156, 18, 0.15);
+    --purple: #9b59b6;
+    --purple-dim: rgba(155, 89, 182, 0.15);
+    --orange: #e67e22;
+    --orange-dim: rgba(230, 126, 34, 0.15);
+    --sidebar-w: 260px;
+    --radius: 16px;
+    --radius-btn: 12px;
+    --radius-sm: 6px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-solid); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sidebar-logo .logo-icon {
+    width: 38px; height: 38px;
+    background: var(--accent);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px;
+    color: #fff; letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo .logo-text { display: flex; flex-direction: column; }
+  .sidebar-logo .logo-text strong { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+  .sidebar-logo .logo-text span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 1px; }
+
+  .sidebar-nav { padding: 16px 0; flex: 1; }
+  .nav-group { margin-bottom: 8px; }
+
+  .nav-group-label {
+    padding: 6px 20px;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--text-muted);
+  }
+
+  .nav-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 20px;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px; font-weight: 500;
+    transition: all 0.15s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .nav-link:hover { color: var(--text); background: var(--surface-2); }
+
+  .nav-link.active {
+    color: var(--accent);
+    background: var(--accent-dim);
+    border-left-color: var(--accent);
+  }
+
+  .nav-link .nav-icon { width: 18px; text-align: center; font-size: 14px; flex-shrink: 0; }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .sidebar-footer .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer .user-info { display: flex; flex-direction: column; }
+  .sidebar-footer .user-info strong { font-size: 13px; font-weight: 600; color: var(--text); }
+  .sidebar-footer .user-info span { font-size: 11px; color: var(--text-muted); }
+
+  /* ── Main ── */
+  .main { margin-left: var(--sidebar-w); flex: 1; padding: 0; min-width: 0; }
+
+  /* ── Top Header ── */
+  .top-header {
+    padding: 24px 32px 0;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+  }
+
+  .top-header h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; color: var(--text); }
+  .top-header h1 span { color: var(--accent); }
+
+  .header-actions { display: flex; align-items: center; gap: 10px; }
+
+  .version-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 14px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(231,76,60,0.25);
+    border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.2px;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-btn);
+    background: var(--surface-2);
+    color: var(--text-dim);
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    font-family: inherit;
+  }
+
+  .btn:hover { border-color: var(--border-light); color: var(--text); background: var(--surface-3); }
+
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #d44235; border-color: #d44235; color: #fff; }
+
+  .content { padding: 24px 32px 60px; }
+
+  /* ── Global Progress Bar ── */
+  .global-progress {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    display: flex; align-items: center; gap: 20px;
+  }
+
+  .global-progress-info { display: flex; flex-direction: column; gap: 2px; min-width: 140px; }
+  .global-progress-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; }
+  .global-progress-count { font-size: 22px; font-weight: 700; color: var(--text); }
+  .global-progress-count em { font-style: normal; color: var(--accent); }
+
+  .global-progress-bar-wrap { flex: 1; }
+  .global-progress-bar { width: 100%; height: 8px; background: var(--surface-3); border-radius: 4px; overflow: hidden; }
+  .global-progress-fill { height: 100%; width: 0; border-radius: 4px; transition: width 0.4s ease, background 0.4s ease; background: var(--accent); }
+  .global-progress-fill.complete { background: var(--green); }
+  .global-progress-pct { font-size: 14px; font-weight: 700; color: var(--text-dim); min-width: 48px; text-align: right; }
+
+  /* ── Section Title ── */
+  .section-title {
+    font-size: 18px; font-weight: 700; color: var(--text);
+    margin-bottom: 16px; margin-top: 40px;
+    letter-spacing: -0.3px;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .section-title span { color: var(--accent); }
+
+  .section-title:first-child { margin-top: 0; }
+
+  .section-subtitle {
+    font-size: 14px; color: var(--text-dim);
+    margin-top: -10px; margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  /* ── Deployment Checklist (with toggles) ── */
+  .deploy-checklist {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  .deploy-checklist-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 24px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .deploy-checklist-header h3 { font-size: 14px; font-weight: 700; color: var(--text); }
+
+  .deploy-checklist-counter {
+    font-size: 13px; font-weight: 600; color: var(--text-dim);
+  }
+
+  .deploy-checklist-counter em { font-style: normal; color: var(--green); }
+
+  .checklist-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s ease;
+    cursor: pointer;
+  }
+
+  .checklist-item:last-child { border-bottom: none; }
+  .checklist-item:hover { background: var(--surface-2); }
+
+  .checklist-item .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    background: var(--surface-3); color: var(--text-muted);
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .checklist-item.checked .step-num {
+    background: var(--green-dim); color: var(--green);
+    border-color: rgba(46,204,113,0.3);
+  }
+
+  .checklist-toggle {
+    position: relative;
+    width: 40px; height: 22px;
+    flex-shrink: 0;
+  }
+
+  .checklist-toggle input {
+    opacity: 0; width: 0; height: 0; position: absolute;
+  }
+
+  .checklist-toggle .slider {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--surface-3);
+    border: 1px solid var(--border-light);
+    border-radius: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .checklist-toggle .slider::before {
+    content: '';
+    position: absolute;
+    width: 16px; height: 16px;
+    left: 2px; top: 2px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+
+  .checklist-toggle input:checked + .slider {
+    background: var(--green-dim);
+    border-color: rgba(46,204,113,0.4);
+  }
+
+  .checklist-toggle input:checked + .slider::before {
+    transform: translateX(18px);
+    background: var(--green);
+  }
+
+  .checklist-label {
+    flex: 1;
+    font-size: 14px; color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .checklist-item.checked .checklist-label {
+    color: var(--text-muted);
+    text-decoration: line-through;
+  }
+
+  /* ── Tech Stack Cards ── */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .stack-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    transition: all 0.2s ease;
+  }
+
+  .stack-card:hover { border-color: var(--border-light); transform: translateY(-1px); }
+
+  .stack-card-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .stack-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .stack-card-header .stack-meta { flex: 1; }
+  .stack-card-header .stack-category { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; }
+  .stack-card-header .stack-name { font-size: 15px; font-weight: 700; color: var(--text); margin-top: 1px; }
+
+  .stack-primary {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--green-dim);
+    color: var(--green);
+    font-size: 10px; font-weight: 700;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .stack-desc { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+  .stack-desc strong { color: var(--text); font-weight: 600; }
+
+  .stack-alternatives {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .stack-alternatives strong { color: var(--text-dim); }
+
+  /* ── Cost Table ── */
+  .cost-table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .cost-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .cost-table thead { background: var(--surface-2); }
+
+  .cost-table th {
+    text-align: left;
+    padding: 14px 20px;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cost-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+
+  .cost-table tr:last-child td { border-bottom: none; }
+  .cost-table tr:hover td { background: var(--surface-2); }
+  .cost-table .item-cell { color: var(--text); font-weight: 600; }
+  .cost-free { color: var(--green); font-weight: 600; }
+  .cost-paid { color: var(--yellow); font-weight: 600; }
+
+  .cost-total { background: var(--surface-2); }
+  .cost-total td { font-weight: 700; color: var(--text); border-bottom: none; }
+  .cost-total .total-val { color: var(--accent); font-size: 16px; }
+
+  .margin-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+    margin-top: 16px;
+  }
+
+  .margin-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+
+  .margin-card .margin-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
+  .margin-card .margin-value { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+  .margin-card .margin-sub { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+
+  /* ── Terminal / Code Blocks ── */
+  .terminal {
+    background: #0c0c14;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .terminal-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .terminal-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  .terminal-dot.red { background: #e74c3c; }
+  .terminal-dot.yellow { background: #f39c12; }
+  .terminal-dot.green { background: #2ecc71; }
+
+  .terminal-title {
+    flex: 1;
+    text-align: center;
+    font-size: 12px; font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .terminal-body {
+    padding: 18px 20px;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .terminal-body .cmd { color: var(--green); }
+  .terminal-body .comment { color: var(--text-muted); }
+  .terminal-body .flag { color: var(--blue); }
+  .terminal-body .str { color: var(--yellow); }
+  .terminal-body .output { color: var(--text-dim); opacity: 0.7; }
+
+  .terminal-group { margin-bottom: 40px; }
+
+  /* ── Go-Live Checklist (Enhanced) ── */
+  .golive-checklist {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  .golive-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 24px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .golive-header h3 { font-size: 14px; font-weight: 700; color: var(--text); }
+
+  .golive-progress {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 14px;
+  }
+
+  .golive-progress-bar {
+    flex: 1; height: 6px;
+    background: var(--surface-3);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .golive-progress-fill {
+    height: 100%; width: 0;
+    background: var(--green);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  .golive-progress-text {
+    font-size: 13px; font-weight: 600; color: var(--text-dim);
+    min-width: 60px; text-align: right;
+  }
+
+  .golive-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s ease;
+    cursor: pointer;
+  }
+
+  .golive-item:last-child { border-bottom: none; }
+  .golive-item:hover { background: var(--surface-2); }
+
+  .golive-item input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none;
+    width: 20px; height: 20px;
+    border: 2px solid var(--border-light);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+    background: transparent;
+  }
+
+  .golive-item input[type="checkbox"]:checked {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .golive-item input[type="checkbox"]:checked::after {
+    content: '\2713';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 12px; font-weight: 700;
+  }
+
+  .golive-item label {
+    font-size: 14px; color: var(--text-dim);
+    cursor: pointer;
+    flex: 1;
+    transition: color 0.15s ease;
+  }
+
+  .golive-item input[type="checkbox"]:checked + label {
+    color: var(--text-muted);
+    text-decoration: line-through;
+  }
+
+  .golive-item .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--border-light);
+    transition: background 0.2s ease;
+  }
+
+  .golive-item input[type="checkbox"]:checked ~ .status-dot {
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(46,204,113,0.4);
+  }
+
+  /* ── Troubleshooting ── */
+  .trouble-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+  }
+
+  .trouble-card:hover { border-color: var(--border-light); }
+
+  .trouble-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 22px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease;
+  }
+
+  .trouble-header:hover { background: var(--surface-2); }
+
+  .trouble-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    background: var(--yellow-dim);
+    color: var(--yellow);
+  }
+
+  .trouble-title { flex: 1; font-size: 15px; font-weight: 600; color: var(--text); }
+
+  .trouble-chevron {
+    font-size: 14px; color: var(--text-muted);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .trouble-card.expanded .trouble-chevron { transform: rotate(90deg); }
+
+  .trouble-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+
+  .trouble-card.expanded .trouble-body { max-height: 500px; }
+
+  .trouble-body-inner {
+    padding: 0 22px 22px;
+    padding-left: 68px;
+  }
+
+  .trouble-content {
+    font-size: 14px; color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .trouble-content strong { color: var(--text); }
+
+  .trouble-content code {
+    display: inline-block;
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  .trouble-content ul { margin: 8px 0 8px 20px; color: var(--text-dim); }
+  .trouble-content ul li { margin-bottom: 4px; }
+
+  /* ── Timeline ── */
+  .timeline {
+    position: relative;
+    margin-bottom: 40px;
+    padding-left: 32px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 11px; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--border-solid);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 0 0 28px 28px;
+  }
+
+  .timeline-item:last-child { padding-bottom: 0; }
+
+  .timeline-dot {
+    position: absolute;
+    left: -27px; top: 4px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--surface-3);
+    border: 2px solid var(--border-light);
+    z-index: 1;
+  }
+
+  .timeline-item:first-child .timeline-dot { background: var(--accent); border-color: var(--accent); }
+
+  .timeline-when {
+    font-size: 12px; font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .timeline-what { font-size: 14px; font-weight: 600; color: var(--text); }
+  .timeline-detail { font-size: 13px; color: var(--text-dim); margin-top: 2px; line-height: 1.5; }
+
+  /* ── Mobile ── */
+  .mobile-toggle {
+    display: none;
+    position: fixed; top: 16px; left: 16px; z-index: 200;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text);
+    width: 40px; height: 40px;
+    border-radius: var(--radius-sm);
+    font-size: 18px; cursor: pointer;
+    align-items: center; justify-content: center;
+  }
+
+  @media (max-width: 1200px) {
+    .stack-grid { grid-template-columns: 1fr; }
+    .margin-cards { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 768px) {
+    .mobile-toggle { display: flex; }
+    .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .top-header { padding: 24px 20px 0; padding-top: 64px; }
+    .content { padding: 24px 20px 48px; }
+    .stack-grid { grid-template-columns: 1fr; }
+    .margin-cards { grid-template-columns: 1fr; }
+    .global-progress { flex-wrap: wrap; }
+    .trouble-body-inner { padding-left: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Mobile Toggle -->
+<button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+
+<!-- ════════════ SIDEBAR ════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">E17</div>
+    <div class="logo-text">
+      <strong>E17Studios</strong>
+      <span>Admin Panel</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-group-label">Pipeline</div>
+      <a href="/admin/" class="nav-link">
+        <span class="nav-icon">&#9633;</span> CRM Dashboard
+      </a>
+      <a href="/admin/analytics.html" class="nav-link">
+        <span class="nav-icon">&#9672;</span> Analytics
+      </a>
+      <a href="/admin/lead-scoring.html" class="nav-link">
+        <span class="nav-icon">&#9733;</span> Lead Scoring
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">CRM</div>
+      <a href="/outreach/" class="nav-link">
+        <span class="nav-icon">&#9993;</span> Outreach Agent
+      </a>
+      <a href="/dashboard.html" class="nav-link">
+        <span class="nav-icon">&#9881;</span> Builder Dashboard
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Sales Tools</div>
+      <a href="/admin/roi-calculator.html" class="nav-link">
+        <span class="nav-icon">&#9736;</span> ROI Calculator
+      </a>
+      <a href="/admin/competitor-analysis.html" class="nav-link">
+        <span class="nav-icon">&#8982;</span> Competitor Analysis
+      </a>
+      <a href="/admin/whatsapp-templates.html" class="nav-link">
+        <span class="nav-icon">&#9742;</span> WhatsApp Templates
+      </a>
+      <a href="/emails/preview.html" class="nav-link">
+        <span class="nav-icon">&#9993;</span> Email Templates
+      </a>
+      <a href="/admin/sales-script.html" class="nav-link">
+        <span class="nav-icon">&#9998;</span> Sales Script
+      </a>
+      <a href="/admin/sequence-builder.html" class="nav-link">
+        <span class="nav-icon">&#9993;</span> Sequence Builder
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Client Tools</div>
+      <a href="/admin/client-success.html" class="nav-link">
+        <span class="nav-icon">&#9650;</span> Success Metrics
+      </a>
+      <a href="/admin/client-report.html" class="nav-link">
+        <span class="nav-icon">&#9635;</span> Client Report
+      </a>
+      <a href="/admin/expansion-planner.html" class="nav-link">
+        <span class="nav-icon">&#8862;</span> Expansion Planner
+      </a>
+      <a href="/admin/client-dashboard.html" class="nav-link">
+        <span class="nav-icon">&#9638;</span> Client Dashboard
+      </a>
+      <a href="/admin/social-calendar.html" class="nav-link">
+        <span class="nav-icon">&#9783;</span> Social Calendar
+      </a>
+      <a href="/admin/ab-testing.html" class="nav-link">
+        <span class="nav-icon">&#8660;</span> A/B Testing
+      </a>
+      <a href="/admin/deploy-guide.html" class="nav-link active">
+        <span class="nav-icon">&#9881;</span> Deploy Guide
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Public Site</div>
+      <a href="/e17studios/" class="nav-link">
+        <span class="nav-icon">&#9750;</span> Landing Page
+      </a>
+      <a href="/e17studios/case-studies.html" class="nav-link">
+        <span class="nav-icon">&#9733;</span> Case Studies
+      </a>
+      <a href="/e17studios/pricing-breakdown.html" class="nav-link">
+        <span class="nav-icon">&#163;</span> Pricing
+      </a>
+      <a href="/e17studios/audit.html" class="nav-link">
+        <span class="nav-icon">&#10003;</span> Free Audit
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Settings</div>
+      <a href="/admin/invoice.html" class="nav-link">
+        <span class="nav-icon">&#163;</span> Invoicing
+      </a>
+      <a href="/sitemap.html" class="nav-link">
+        <span class="nav-icon">&#9776;</span> Sitemap
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="avatar">LH</div>
+    <div class="user-info">
+      <strong>Leath Sheridan</strong>
+      <span>Founder</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ════════════ MAIN CONTENT ════════════ -->
+<main class="main">
+
+  <div class="top-header">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <h1>Deployment & <span>Integration Guide</span></h1>
+      <span class="version-badge">v2.0 &mdash; Feb 2026</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn" onclick="resetAll()">&#8635; Reset All</button>
+      <button class="btn btn-primary" onclick="window.print()">&#128438; Export</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ Global Progress ═══ -->
+    <div class="global-progress">
+      <div class="global-progress-info">
+        <span class="global-progress-label">Overall Progress</span>
+        <span class="global-progress-count" id="globalCount"><em>0</em> / 25 complete</span>
+      </div>
+      <div class="global-progress-bar-wrap">
+        <div class="global-progress-bar">
+          <div class="global-progress-fill" id="globalFill"></div>
+        </div>
+      </div>
+      <span class="global-progress-pct" id="globalPct">0%</span>
+    </div>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 1. DEPLOYMENT CHECKLIST                -->
+    <!-- ═══════════════════════════════════════ -->
+    <h2 class="section-title">Deployment <span>Checklist</span></h2>
+    <p class="section-subtitle">Complete each step sequentially when deploying a new client site. Toggle switches persist in your browser.</p>
+
+    <div class="deploy-checklist" id="deployChecklist">
+      <div class="deploy-checklist-header">
+        <h3>Pre-Launch Steps</h3>
+        <span class="deploy-checklist-counter" id="deployCounter"><em>0</em> / 10</span>
+      </div>
+
+      <div class="checklist-item" data-group="deploy" data-key="dc1">
+        <span class="step-num">1</span>
+        <label class="checklist-label" onclick="toggleDeploy(this)">Domain purchased and DNS configured</label>
+        <label class="checklist-toggle">
+          <input type="checkbox" onchange="handleDeployToggle(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="checklist-item" data-group="deploy" data-key="dc2">
+        <span class="step-num">2</span>
+        <label class="checklist-label" onclick="toggleDeploy(this)">SSL certificate installed (Let's Encrypt)</label>
+        <label class="checklist-toggle">
+          <input type="checkbox" onchange="handleDeployToggle(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="checklist-item" data-group="deploy" data-key="dc3">
+        <span class="step-num">3</span>
+        <label class="checklist-label" onclick="toggleDeploy(this)">Files uploaded to hosting (Cloudflare Pages / Netlify / VPS)</label>
+        <label class="checklist-toggle">
+          <input type="checkbox" onchange="handleDeployToggle(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="checklist-item" data-group="deploy" data-key="dc4">
+        <span class="step-num">4</span>
+        <label class="checklist-label" onclick="toggleDeploy(this)">Custom email set up (hello@businessname.co.uk)</label>
+        <label class="checklist-toggle">
+          <input type="checkbox" onchange="handleDeployToggle(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="checklist-item" data-group="deploy" data-key="dc5">
+        <span class="step-num">5</span>
+        <label class="checklist-label" onclick="toggleDeploy(this)">Google Search Console verified</label>
+        <label class="checklist-toggle">
+          <input type="checkbox" onchange="handleDeployToggle(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="checklist-item" data-group="deploy" data-key="dc6">
+        <span class="step-num">6</span>
+        <label class="checklist-label" onclick="toggleDeploy(this)">Google Business Profile linked</label>
+        <label class="checklist-toggle">
+          <input type="checkbox" onchange="handleDeployToggle(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="checklist-item" data-group="deploy" data-key="dc7">
+        <span class="step-num">7</span>
+        <label class="checklist-label" onclick="toggleDeploy(this)">Schema.org markup validated</label>
+        <label class="checklist-toggle">
+          <input type="checkbox" onchange="handleDeployToggle(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="checklist-item" data-group="deploy" data-key="dc8">
+        <span class="step-num">8</span>
+        <label class="checklist-label" onclick="toggleDeploy(this)">Mobile responsiveness tested</label>
+        <label class="checklist-toggle">
+          <input type="checkbox" onchange="handleDeployToggle(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="checklist-item" data-group="deploy" data-key="dc9">
+        <span class="step-num">9</span>
+        <label class="checklist-label" onclick="toggleDeploy(this)">Page speed score > 90</label>
+        <label class="checklist-toggle">
+          <input type="checkbox" onchange="handleDeployToggle(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="checklist-item" data-group="deploy" data-key="dc10">
+        <span class="step-num">10</span>
+        <label class="checklist-label" onclick="toggleDeploy(this)">Analytics tracking installed</label>
+        <label class="checklist-toggle">
+          <input type="checkbox" onchange="handleDeployToggle(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 2. RECOMMENDED TECH STACK              -->
+    <!-- ═══════════════════════════════════════ -->
+    <h2 class="section-title">Recommended <span>Tech Stack</span></h2>
+    <p class="section-subtitle">Optimised for low cost, high performance, and minimal maintenance. Primary picks are battle-tested and free where possible.</p>
+
+    <div class="stack-grid">
+
+      <div class="stack-card">
+        <div class="stack-card-header">
+          <div class="stack-icon" style="background:var(--orange-dim);color:var(--orange);">CF</div>
+          <div class="stack-meta">
+            <div class="stack-category">Hosting</div>
+            <div class="stack-name">Cloudflare Pages <span class="stack-primary">Primary</span></div>
+          </div>
+        </div>
+        <div class="stack-desc"><strong>Free tier</strong> with unlimited bandwidth, global CDN, instant deploys from Git. Fastest option for static sites with automatic SSL and preview deployments.</div>
+        <div class="stack-alternatives"><strong>Alternatives:</strong> Netlify (free tier, 100GB/mo) &bull; DigitalOcean Droplet ($5/mo VPS for dynamic sites)</div>
+      </div>
+
+      <div class="stack-card">
+        <div class="stack-card-header">
+          <div class="stack-icon" style="background:var(--blue-dim);color:var(--blue);">D</div>
+          <div class="stack-meta">
+            <div class="stack-category">Domain</div>
+            <div class="stack-name">Namecheap / Cloudflare Registrar</div>
+          </div>
+        </div>
+        <div class="stack-desc"><strong>Cloudflare Registrar</strong> sells domains at wholesale cost (no markup). Namecheap offers competitive pricing with good WHOIS privacy.</div>
+        <div class="stack-alternatives"><strong>Typical cost:</strong> .co.uk ~$8/yr &bull; .com ~$10-12/yr</div>
+      </div>
+
+      <div class="stack-card">
+        <div class="stack-card-header">
+          <div class="stack-icon" style="background:var(--purple-dim);color:var(--purple);">@</div>
+          <div class="stack-meta">
+            <div class="stack-category">Email</div>
+            <div class="stack-name">Zoho Mail / Google Workspace</div>
+          </div>
+        </div>
+        <div class="stack-desc"><strong>Zoho Mail free tier</strong> gives 1 user, 5GB storage with custom domain. <strong>Google Workspace</strong> at $5/mo provides full Gmail, Drive, and calendar.</div>
+        <div class="stack-alternatives"><strong>Budget option:</strong> Cloudflare Email Routing (free forwarding to Gmail)</div>
+      </div>
+
+      <div class="stack-card">
+        <div class="stack-card-header">
+          <div class="stack-icon" style="background:var(--green-dim);color:var(--green);">DNS</div>
+          <div class="stack-meta">
+            <div class="stack-category">DNS</div>
+            <div class="stack-name">Cloudflare DNS</div>
+          </div>
+        </div>
+        <div class="stack-desc"><strong>Free</strong> managed DNS with DDoS protection, fast propagation, and built-in analytics. Industry-leading performance and reliability.</div>
+        <div class="stack-alternatives"><strong>Bonus:</strong> Proxy mode adds CDN + security layer at no cost</div>
+      </div>
+
+      <div class="stack-card">
+        <div class="stack-card-header">
+          <div class="stack-icon" style="background:var(--accent-dim);color:var(--accent);">SSL</div>
+          <div class="stack-meta">
+            <div class="stack-category">SSL</div>
+            <div class="stack-name">Let's Encrypt (auto)</div>
+          </div>
+        </div>
+        <div class="stack-desc"><strong>Free, automatic SSL</strong> via Cloudflare Pages or Netlify. Zero configuration needed &mdash; certificates auto-renew every 90 days.</div>
+        <div class="stack-alternatives"><strong>For VPS:</strong> Use Certbot for automatic Let's Encrypt provisioning</div>
+      </div>
+
+      <div class="stack-card">
+        <div class="stack-card-header">
+          <div class="stack-icon" style="background:var(--yellow-dim);color:var(--yellow);">A</div>
+          <div class="stack-meta">
+            <div class="stack-category">Analytics</div>
+            <div class="stack-name">Plausible / Google Analytics</div>
+          </div>
+        </div>
+        <div class="stack-desc"><strong>Plausible ($9/mo)</strong> is privacy-friendly, lightweight (< 1KB), and GDPR-compliant with no cookie banner needed. <strong>GA4</strong> is free but heavier.</div>
+        <div class="stack-alternatives"><strong>Free alternative:</strong> Cloudflare Web Analytics (basic, privacy-first)</div>
+      </div>
+
+      <div class="stack-card">
+        <div class="stack-card-header">
+          <div class="stack-icon" style="background:var(--surface-3);color:var(--text);">F</div>
+          <div class="stack-meta">
+            <div class="stack-category">Forms</div>
+            <div class="stack-name">Formspree / Netlify Forms</div>
+          </div>
+        </div>
+        <div class="stack-desc"><strong>Formspree free tier</strong> handles 50 submissions/month with spam filtering. Netlify Forms is built-in if you host on Netlify (100 submissions/mo).</div>
+        <div class="stack-alternatives"><strong>Self-hosted:</strong> Simple mailto: link or custom worker function</div>
+      </div>
+
+      <div class="stack-card">
+        <div class="stack-card-header">
+          <div class="stack-icon" style="background:var(--blue-dim);color:var(--blue);">M</div>
+          <div class="stack-meta">
+            <div class="stack-category">Maps</div>
+            <div class="stack-name">Google Maps Embed</div>
+          </div>
+        </div>
+        <div class="stack-desc"><strong>Free, no API key needed.</strong> Embed a map iframe directly from Google Maps. Sufficient for showing a business location with directions link.</div>
+        <div class="stack-alternatives"><strong>Alternative:</strong> OpenStreetMap embed (fully free, no Google dependency)</div>
+      </div>
+
+    </div>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 3. COST BREAKDOWN                      -->
+    <!-- ═══════════════════════════════════════ -->
+    <h2 class="section-title">Cost <span>Breakdown</span> Per Client</h2>
+    <p class="section-subtitle">What it actually costs to run a client site, compared to what they pay. Margin analysis below.</p>
+
+    <div class="cost-table-wrap">
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Type</th>
+            <th>Cost</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="item-cell">Domain (.co.uk / .com)</td>
+            <td>Annual</td>
+            <td class="cost-paid">$8&ndash;12/yr</td>
+            <td>Cloudflare Registrar at wholesale cost</td>
+          </tr>
+          <tr>
+            <td class="item-cell">Hosting (Cloudflare Pages)</td>
+            <td>Monthly</td>
+            <td class="cost-free">$0</td>
+            <td>Free tier, unlimited bandwidth, global CDN</td>
+          </tr>
+          <tr>
+            <td class="item-cell">SSL Certificate</td>
+            <td>Monthly</td>
+            <td class="cost-free">$0</td>
+            <td>Auto-provisioned via Cloudflare / Let's Encrypt</td>
+          </tr>
+          <tr>
+            <td class="item-cell">Email (Zoho Free / Workspace)</td>
+            <td>Monthly</td>
+            <td class="cost-paid">$0&ndash;5/mo</td>
+            <td>Zoho free for 1 user, Workspace $5/mo</td>
+          </tr>
+          <tr>
+            <td class="item-cell">Analytics (Plausible / GA4)</td>
+            <td>Monthly</td>
+            <td class="cost-paid">$0&ndash;9/mo</td>
+            <td>GA4 free, Plausible $9/mo for privacy</td>
+          </tr>
+          <tr>
+            <td class="item-cell">DNS (Cloudflare)</td>
+            <td>Monthly</td>
+            <td class="cost-free">$0</td>
+            <td>Free managed DNS with CDN</td>
+          </tr>
+          <tr>
+            <td class="item-cell">Forms (Formspree)</td>
+            <td>Monthly</td>
+            <td class="cost-free">$0</td>
+            <td>50 submissions/mo on free tier</td>
+          </tr>
+          <tr>
+            <td class="item-cell">Maps (Google Embed)</td>
+            <td>Monthly</td>
+            <td class="cost-free">$0</td>
+            <td>Free iframe embed, no API key</td>
+          </tr>
+          <tr class="cost-total">
+            <td colspan="2"><strong>Fixed Annual Cost</strong></td>
+            <td class="total-val">$8&ndash;12/yr</td>
+            <td>Domain only</td>
+          </tr>
+          <tr class="cost-total">
+            <td colspan="2"><strong>Variable Monthly Cost</strong></td>
+            <td class="total-val">$0&ndash;14/mo</td>
+            <td>Email + Analytics if paid tiers</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="margin-cards">
+      <div class="margin-card">
+        <div class="margin-label">Min Client Revenue</div>
+        <div class="margin-value" style="color:var(--green);">$29/mo</div>
+        <div class="margin-sub">Starter plan</div>
+      </div>
+      <div class="margin-card">
+        <div class="margin-label">Max Client Revenue</div>
+        <div class="margin-value" style="color:var(--green);">$99/mo</div>
+        <div class="margin-sub">Premium plan</div>
+      </div>
+      <div class="margin-card">
+        <div class="margin-label">Profit Margin</div>
+        <div class="margin-value" style="color:var(--accent);">85&ndash;100%</div>
+        <div class="margin-sub">Near-zero running costs</div>
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 4. DEPLOYMENT COMMANDS                 -->
+    <!-- ═══════════════════════════════════════ -->
+    <h2 class="section-title">Deployment <span>Commands</span></h2>
+    <p class="section-subtitle">Copy-paste terminal commands for each hosting provider. Cloudflare Pages is the primary recommendation.</p>
+
+    <div class="terminal-group">
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">Cloudflare Pages &mdash; Wrangler CLI</span>
+        </div>
+        <div class="terminal-body"><span class="comment"># Install Wrangler CLI globally</span>
+<span class="cmd">npm install -g wrangler</span>
+
+<span class="comment"># Authenticate with Cloudflare</span>
+<span class="cmd">wrangler login</span>
+
+<span class="comment"># Create a new Pages project</span>
+<span class="cmd">wrangler pages project create</span> <span class="str">client-site-name</span>
+
+<span class="comment"># Deploy the site (from project root)</span>
+<span class="cmd">wrangler pages deploy</span> <span class="flag">./dist</span> <span class="flag">--project-name=</span><span class="str">client-site-name</span>
+
+<span class="comment"># Set custom domain in Cloudflare Dashboard:</span>
+<span class="comment"># Pages > Project > Custom domains > Add domain</span>
+<span class="output">  Success! Deployed to https://client-site-name.pages.dev</span></div>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">Netlify &mdash; CLI Deploy</span>
+        </div>
+        <div class="terminal-body"><span class="comment"># Install Netlify CLI</span>
+<span class="cmd">npm install -g netlify-cli</span>
+
+<span class="comment"># Login to Netlify</span>
+<span class="cmd">netlify login</span>
+
+<span class="comment"># Initialise project (link to existing or create new)</span>
+<span class="cmd">netlify init</span>
+
+<span class="comment"># Deploy to production</span>
+<span class="cmd">netlify deploy</span> <span class="flag">--prod</span> <span class="flag">--dir=</span><span class="str">./dist</span>
+
+<span class="comment"># Preview deploy (staging URL)</span>
+<span class="cmd">netlify deploy</span> <span class="flag">--dir=</span><span class="str">./dist</span>
+<span class="output">  Website draft URL: https://abc123--client-site.netlify.app</span></div>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">DNS Records &mdash; Example Configuration</span>
+        </div>
+        <div class="terminal-body"><span class="comment"># A Record &mdash; point root domain to hosting</span>
+<span class="str">Type</span>    <span class="str">Name</span>    <span class="str">Value</span>                 <span class="str">TTL</span>     <span class="str">Proxy</span>
+<span class="cmd">A</span>       @       185.199.108.153       Auto    Proxied
+<span class="cmd">A</span>       @       185.199.109.153       Auto    Proxied
+
+<span class="comment"># CNAME &mdash; point www to root</span>
+<span class="cmd">CNAME</span>   www     businessname.co.uk    Auto    Proxied
+
+<span class="comment"># TXT &mdash; Google Search Console verification</span>
+<span class="cmd">TXT</span>     @       <span class="str">"google-site-verification=abc123..."</span>    Auto
+
+<span class="comment"># TXT &mdash; SPF record for email deliverability</span>
+<span class="cmd">TXT</span>     @       <span class="str">"v=spf1 include:zoho.eu ~all"</span>           Auto
+
+<span class="comment"># MX &mdash; email routing (Zoho example)</span>
+<span class="cmd">MX</span>      @       mx.zoho.eu            Auto    <span class="flag">Priority: 10</span>
+<span class="cmd">MX</span>      @       mx2.zoho.eu           Auto    <span class="flag">Priority: 20</span></div>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">SSL Verification &amp; Testing</span>
+        </div>
+        <div class="terminal-body"><span class="comment"># Check SSL certificate details</span>
+<span class="cmd">openssl s_client</span> <span class="flag">-connect</span> <span class="str">businessname.co.uk:443</span> <span class="flag">-servername</span> <span class="str">businessname.co.uk</span>
+
+<span class="comment"># Check certificate expiry date</span>
+<span class="cmd">echo</span> | <span class="cmd">openssl s_client</span> <span class="flag">-connect</span> <span class="str">businessname.co.uk:443</span> 2>/dev/null | <span class="cmd">openssl x509</span> <span class="flag">-noout -dates</span>
+
+<span class="comment"># Verify HTTP to HTTPS redirect</span>
+<span class="cmd">curl</span> <span class="flag">-I</span> <span class="str">http://businessname.co.uk</span>
+<span class="output">  HTTP/1.1 301 Moved Permanently</span>
+<span class="output">  Location: https://businessname.co.uk/</span>
+
+<span class="comment"># Full SSL test via SSL Labs API</span>
+<span class="cmd">curl</span> <span class="str">"https://api.ssllabs.com/api/v3/analyze?host=businessname.co.uk"</span></div>
+      </div>
+
+    </div>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 5. GO-LIVE CHECKLIST                   -->
+    <!-- ═══════════════════════════════════════ -->
+    <h2 class="section-title">Go-Live <span>Checklist</span></h2>
+    <p class="section-subtitle">Final 15-point verification before handing the site to the client. Every item must pass.</p>
+
+    <div class="golive-checklist" id="goLiveChecklist">
+      <div class="golive-header">
+        <h3>Final Verification</h3>
+        <button class="btn" onclick="resetGoLive()" style="padding:5px 12px;font-size:12px;">Reset</button>
+      </div>
+      <div class="golive-progress">
+        <div class="golive-progress-bar">
+          <div class="golive-progress-fill" id="goliveFill"></div>
+        </div>
+        <span class="golive-progress-text" id="goliveText">0 / 15</span>
+      </div>
+
+      <div class="golive-item">
+        <input type="checkbox" id="gl1" onchange="updateGoLive()">
+        <label for="gl1">All links tested and working (no 404 errors)</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl2" onchange="updateGoLive()">
+        <label for="gl2">Contact details correct (phone, email, address)</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl3" onchange="updateGoLive()">
+        <label for="gl3">Opening hours verified with client</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl4" onchange="updateGoLive()">
+        <label for="gl4">Google Maps showing correct location</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl5" onchange="updateGoLive()">
+        <label for="gl5">Phone number clickable on mobile (tel: link)</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl6" onchange="updateGoLive()">
+        <label for="gl6">Reviews displaying correctly</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl7" onchange="updateGoLive()">
+        <label for="gl7">Meta title and description set for all pages</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl8" onchange="updateGoLive()">
+        <label for="gl8">Favicon uploaded and showing in browser tab</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl9" onchange="updateGoLive()">
+        <label for="gl9">404 page configured with navigation back</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl10" onchange="updateGoLive()">
+        <label for="gl10">robots.txt in place (not blocking key pages)</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl11" onchange="updateGoLive()">
+        <label for="gl11">sitemap.xml generated and valid</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl12" onchange="updateGoLive()">
+        <label for="gl12">Privacy policy linked in footer</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl13" onchange="updateGoLive()">
+        <label for="gl13">Cookie notice implemented (if tracking used)</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl14" onchange="updateGoLive()">
+        <label for="gl14">Print stylesheet tested (clean output)</label>
+        <span class="status-dot"></span>
+      </div>
+      <div class="golive-item">
+        <input type="checkbox" id="gl15" onchange="updateGoLive()">
+        <label for="gl15">Cross-browser tested (Chrome, Safari, Firefox)</label>
+        <span class="status-dot"></span>
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 6. TROUBLESHOOTING                     -->
+    <!-- ═══════════════════════════════════════ -->
+    <h2 class="section-title">Common <span>Troubleshooting</span></h2>
+    <p class="section-subtitle">Quick fixes for the most frequent deployment issues. Click to expand each solution.</p>
+
+    <div style="margin-bottom:40px;">
+
+      <div class="trouble-card" id="trouble-1">
+        <div class="trouble-header" onclick="toggleTrouble(1)">
+          <div class="trouble-icon">!</div>
+          <div class="trouble-title">DNS propagation delay &mdash; site not loading after domain change</div>
+          <span class="trouble-chevron">&#9654;</span>
+        </div>
+        <div class="trouble-body">
+          <div class="trouble-body-inner">
+            <div class="trouble-content">
+              <strong>Cause:</strong> DNS changes can take 5 minutes to 48 hours to propagate globally.
+              <ul>
+                <li>Use <code>dig businessname.co.uk</code> or <strong>whatsmydns.net</strong> to check propagation status</li>
+                <li>Flush local DNS cache: <code>sudo dscacheutil -flushcache</code> (macOS) or <code>ipconfig /flushdns</code> (Windows)</li>
+                <li>If using Cloudflare, propagation is typically under 5 minutes with proxied records</li>
+                <li>Reduce TTL to <code>300</code> (5 min) before making DNS changes, then increase after propagation</li>
+              </ul>
+              <strong>Quick fix:</strong> Use Cloudflare as your nameserver for near-instant propagation.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="trouble-card" id="trouble-2">
+        <div class="trouble-header" onclick="toggleTrouble(2)">
+          <div class="trouble-icon">!</div>
+          <div class="trouble-title">SSL mixed content &mdash; padlock missing or security warnings</div>
+          <span class="trouble-chevron">&#9654;</span>
+        </div>
+        <div class="trouble-body">
+          <div class="trouble-body-inner">
+            <div class="trouble-content">
+              <strong>Cause:</strong> HTTP resources (images, scripts, fonts) loaded on an HTTPS page.
+              <ul>
+                <li>Open browser DevTools &gt; Console and look for "Mixed Content" warnings</li>
+                <li>Find and replace all <code>http://</code> URLs with <code>https://</code> or use protocol-relative <code>//</code></li>
+                <li>Add <code>&lt;meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"&gt;</code> as a quick fix</li>
+                <li>Check third-party embeds (maps, fonts, widgets) are loaded over HTTPS</li>
+              </ul>
+              <strong>Prevention:</strong> Always use relative paths for local assets and <code>https://</code> for externals.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="trouble-card" id="trouble-3">
+        <div class="trouble-header" onclick="toggleTrouble(3)">
+          <div class="trouble-icon">!</div>
+          <div class="trouble-title">Google Maps iframe blocked &mdash; embed not displaying</div>
+          <span class="trouble-chevron">&#9654;</span>
+        </div>
+        <div class="trouble-body">
+          <div class="trouble-body-inner">
+            <div class="trouble-content">
+              <strong>Cause:</strong> Content Security Policy (CSP) headers or X-Frame-Options blocking the iframe.
+              <ul>
+                <li>Ensure your CSP header includes <code>frame-src https://www.google.com</code></li>
+                <li>Use the official Google Maps embed URL format: <code>https://www.google.com/maps/embed?pb=...</code></li>
+                <li>Do NOT use the shortened <code>goo.gl/maps</code> links &mdash; they redirect and may be blocked</li>
+                <li>Test the iframe in an incognito window to rule out browser extensions</li>
+              </ul>
+              <strong>Tip:</strong> Get the embed code directly from Google Maps > Share > Embed a map.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="trouble-card" id="trouble-4">
+        <div class="trouble-header" onclick="toggleTrouble(4)">
+          <div class="trouble-icon">!</div>
+          <div class="trouble-title">Mobile viewport issues &mdash; content overflowing or too small</div>
+          <span class="trouble-chevron">&#9654;</span>
+        </div>
+        <div class="trouble-body">
+          <div class="trouble-body-inner">
+            <div class="trouble-content">
+              <strong>Cause:</strong> Missing viewport meta tag or fixed-width elements.
+              <ul>
+                <li>Ensure <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code> is in the <code>&lt;head&gt;</code></li>
+                <li>Avoid fixed pixel widths on containers &mdash; use <code>max-width</code> and percentages</li>
+                <li>Check for horizontal scrollbars with <code>overflow-x: hidden</code> on the body (temporary debug)</li>
+                <li>Test on real devices, not just DevTools &mdash; touch targets need minimum 44px height</li>
+              </ul>
+              <strong>Debug tip:</strong> Add <code>* { outline: 1px solid red; }</code> to CSS to find overflowing elements.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="trouble-card" id="trouble-5">
+        <div class="trouble-header" onclick="toggleTrouble(5)">
+          <div class="trouble-icon">!</div>
+          <div class="trouble-title">Slow page loading &mdash; PageSpeed score below 90</div>
+          <span class="trouble-chevron">&#9654;</span>
+        </div>
+        <div class="trouble-body">
+          <div class="trouble-body-inner">
+            <div class="trouble-content">
+              <strong>Cause:</strong> Large images, render-blocking scripts, or unoptimised assets.
+              <ul>
+                <li>Compress images with <strong>Squoosh</strong> or <strong>TinyPNG</strong> &mdash; use WebP format where possible</li>
+                <li>Add <code>loading="lazy"</code> to images below the fold</li>
+                <li>Move non-critical JS to <code>&lt;script defer&gt;</code> or end of <code>&lt;body&gt;</code></li>
+                <li>Inline critical CSS and defer non-essential stylesheets</li>
+                <li>Enable Cloudflare's auto-minify for HTML, CSS, and JS</li>
+                <li>Use <code>font-display: swap</code> on custom fonts to prevent invisible text</li>
+              </ul>
+              <strong>Target:</strong> LCP &lt; 2.5s, FID &lt; 100ms, CLS &lt; 0.1 (Core Web Vitals).
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 7. POST-LAUNCH TIMELINE                -->
+    <!-- ═══════════════════════════════════════ -->
+    <h2 class="section-title">Post-Launch <span>Timeline</span></h2>
+    <p class="section-subtitle">What to do after the site goes live. Follow this timeline for every new client deployment.</p>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-when">Day 1</div>
+        <div class="timeline-what">Submit to Google Search Console</div>
+        <div class="timeline-detail">Add the site property, verify ownership via DNS TXT record, and submit the sitemap.xml. Request indexing for the homepage and key landing pages.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-when">Week 1</div>
+        <div class="timeline-what">Share with client and gather feedback</div>
+        <div class="timeline-detail">Send the live URL to the client. Walk them through the site on a call. Collect any text corrections, image swaps, or layout adjustments needed.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-when">Week 2</div>
+        <div class="timeline-what">First Google indexing check</div>
+        <div class="timeline-detail">Verify pages are appearing in Google Search Console's coverage report. Check for crawl errors, excluded pages, or indexing issues. Fix any warnings.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-when">Month 1</div>
+        <div class="timeline-what">First analytics report</div>
+        <div class="timeline-detail">Pull the first traffic report: visitors, page views, bounce rate, top pages, device breakdown. Share a summary with the client showing early traction.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-when">Month 2</div>
+        <div class="timeline-what">SEO rankings check</div>
+        <div class="timeline-detail">Check Search Console for keyword impressions and positions. Identify the top queries driving traffic and any quick-win keywords to optimise for.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-when">Month 3</div>
+        <div class="timeline-what">First quarterly review</div>
+        <div class="timeline-detail">Comprehensive review: traffic growth, conversion rates, SEO progress, site speed, and client satisfaction. Set goals for the next quarter. Discuss upsell opportunities.</div>
+      </div>
+
+    </div>
+
+
+  </div><!-- /.content -->
+</main>
+
+<script>
+  /* ══════════════════════════════════════════
+     DEPLOYMENT CHECKLIST (toggles)
+     ══════════════════════════════════════════ */
+  function handleDeployToggle(input) {
+    const item = input.closest('.checklist-item');
+    if (input.checked) {
+      item.classList.add('checked');
+    } else {
+      item.classList.remove('checked');
+    }
+    saveState();
+    updateDeployCounter();
+    updateGlobalProgress();
+  }
+
+  function toggleDeploy(label) {
+    const item = label.closest('.checklist-item');
+    const input = item.querySelector('input[type="checkbox"]');
+    input.checked = !input.checked;
+    handleDeployToggle(input);
+  }
+
+  function updateDeployCounter() {
+    const items = document.querySelectorAll('#deployChecklist .checklist-item');
+    let checked = 0;
+    items.forEach(function(item) {
+      if (item.querySelector('input[type="checkbox"]').checked) checked++;
+    });
+    document.getElementById('deployCounter').innerHTML = '<em>' + checked + '</em> / 10';
+  }
+
+
+  /* ══════════════════════════════════════════
+     GO-LIVE CHECKLIST (checkboxes)
+     ══════════════════════════════════════════ */
+  function updateGoLive() {
+    var total = 15;
+    var checks = document.querySelectorAll('#goLiveChecklist input[type="checkbox"]');
+    var checked = 0;
+    checks.forEach(function(c) { if (c.checked) checked++; });
+    var pct = Math.round((checked / total) * 100);
+    document.getElementById('goliveFill').style.width = pct + '%';
+    document.getElementById('goliveText').textContent = checked + ' / ' + total;
+    saveState();
+    updateGlobalProgress();
+  }
+
+  function resetGoLive() {
+    var checks = document.querySelectorAll('#goLiveChecklist input[type="checkbox"]');
+    checks.forEach(function(c) { c.checked = false; });
+    updateGoLive();
+    showToast('Go-live checklist reset.', 'info');
+  }
+
+
+  /* ══════════════════════════════════════════
+     GLOBAL PROGRESS BAR
+     ══════════════════════════════════════════ */
+  function updateGlobalProgress() {
+    var deployChecks = document.querySelectorAll('#deployChecklist input[type="checkbox"]');
+    var goliveChecks = document.querySelectorAll('#goLiveChecklist input[type="checkbox"]');
+    var total = deployChecks.length + goliveChecks.length;
+    var checked = 0;
+    deployChecks.forEach(function(c) { if (c.checked) checked++; });
+    goliveChecks.forEach(function(c) { if (c.checked) checked++; });
+    var pct = Math.round((checked / total) * 100);
+
+    document.getElementById('globalCount').innerHTML = '<em>' + checked + '</em> / ' + total + ' complete';
+    document.getElementById('globalPct').textContent = pct + '%';
+
+    var fill = document.getElementById('globalFill');
+    fill.style.width = pct + '%';
+    if (pct === 100) {
+      fill.classList.add('complete');
+    } else {
+      fill.classList.remove('complete');
+    }
+  }
+
+
+  /* ══════════════════════════════════════════
+     PERSISTENCE (localStorage)
+     ══════════════════════════════════════════ */
+  function saveState() {
+    try {
+      var state = {};
+      // Deploy checklist
+      document.querySelectorAll('#deployChecklist .checklist-item').forEach(function(item) {
+        var key = item.getAttribute('data-key');
+        state[key] = item.querySelector('input[type="checkbox"]').checked;
+      });
+      // Go-live checklist
+      for (var i = 1; i <= 15; i++) {
+        var el = document.getElementById('gl' + i);
+        if (el) state['gl' + i] = el.checked;
+      }
+      localStorage.setItem('e17_deploy_guide_v2', JSON.stringify(state));
+    } catch(e) {}
+  }
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem('e17_deploy_guide_v2');
+      if (!raw) return;
+      var state = JSON.parse(raw);
+
+      // Deploy checklist
+      document.querySelectorAll('#deployChecklist .checklist-item').forEach(function(item) {
+        var key = item.getAttribute('data-key');
+        if (state[key]) {
+          item.querySelector('input[type="checkbox"]').checked = true;
+          item.classList.add('checked');
+        }
+      });
+
+      // Go-live checklist
+      for (var i = 1; i <= 15; i++) {
+        var el = document.getElementById('gl' + i);
+        if (el && state['gl' + i]) el.checked = true;
+      }
+
+      updateDeployCounter();
+      updateGoLive();
+      updateGlobalProgress();
+    } catch(e) {}
+  }
+
+
+  /* ══════════════════════════════════════════
+     RESET ALL
+     ══════════════════════════════════════════ */
+  function resetAll() {
+    // Deploy checklist
+    document.querySelectorAll('#deployChecklist .checklist-item').forEach(function(item) {
+      item.querySelector('input[type="checkbox"]').checked = false;
+      item.classList.remove('checked');
+    });
+
+    // Go-live checklist
+    var goliveChecks = document.querySelectorAll('#goLiveChecklist input[type="checkbox"]');
+    goliveChecks.forEach(function(c) { c.checked = false; });
+
+    try { localStorage.removeItem('e17_deploy_guide_v2'); } catch(e) {}
+
+    updateDeployCounter();
+    updateGoLive();
+    updateGlobalProgress();
+    showToast('All checklists reset.', 'info');
+  }
+
+
+  /* ══════════════════════════════════════════
+     TROUBLESHOOTING ACCORDION
+     ══════════════════════════════════════════ */
+  function toggleTrouble(num) {
+    var card = document.getElementById('trouble-' + num);
+    card.classList.toggle('expanded');
+  }
+
+
+  /* ══════════════════════════════════════════
+     TOAST NOTIFICATION
+     ══════════════════════════════════════════ */
+  function showToast(message, type) {
+    var existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    var colors = { success: '#2ecc71', error: '#e74c3c', info: '#3498db' };
+    toast.style.cssText = 'position:fixed;bottom:32px;right:32px;padding:14px 24px;border-radius:12px;font-size:14px;font-weight:500;color:#fff;z-index:9999;opacity:0;transform:translateY(12px);transition:all .3s ease;background:' + (colors[type] || colors.info) + ';box-shadow:0 8px 32px rgba(0,0,0,.4);font-family:-apple-system,BlinkMacSystemFont,sans-serif;';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    requestAnimationFrame(function() {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+    });
+    setTimeout(function() {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(12px)';
+      setTimeout(function() { toast.remove(); }, 300);
+    }, 3500);
+  }
+
+
+  /* ══════════════════════════════════════════
+     INIT
+     ══════════════════════════════════════════ */
+  loadState();
+</script>
+</body>
+</html>

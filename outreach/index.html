@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outreach Agent — E17Studios</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    background: #09090f;
+    color: #e0e0e8;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+  a { color: #e74c3c; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header {
+    background: #111118;
+    border-bottom: 1px solid #1e1e2a;
+    padding: 18px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .header h1 span { color: #e74c3c; }
+  .header-nav { display: flex; gap: 18px; align-items: center; }
+  .header-nav a {
+    font-size: 14px;
+    color: #888;
+    transition: color .2s;
+  }
+  .header-nav a:hover { color: #e74c3c; }
+
+  /* Stats Bar */
+  .stats-bar {
+    display: flex;
+    gap: 0;
+    background: #111118;
+    border-bottom: 1px solid #1e1e2a;
+    padding: 0 32px;
+  }
+  .stat-item {
+    flex: 1;
+    padding: 20px 24px;
+    border-right: 1px solid #1e1e2a;
+    text-align: center;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-number {
+    font-size: 32px;
+    font-weight: 800;
+    color: #e74c3c;
+    display: block;
+    line-height: 1.1;
+  }
+  .stat-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #777;
+    margin-top: 4px;
+  }
+
+  /* Main Content */
+  .main { padding: 32px; }
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  /* Prospect Cards */
+  .prospects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+  .prospect-card {
+    background: #111118;
+    border: 1px solid #1e1e2a;
+    border-radius: 12px;
+    padding: 24px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .prospect-card:hover {
+    border-color: #e74c3c44;
+    box-shadow: 0 0 24px #e74c3c11;
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .business-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .lead-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .lead-A { background: #e74c3c22; color: #e74c3c; border: 1px solid #e74c3c55; }
+  .lead-B { background: #e67e2222; color: #e67e22; border: 1px solid #e67e2255; }
+  .lead-C { background: #f1c40f22; color: #f1c40f; border: 1px solid #f1c40f55; }
+  .lead-D { background: #95a5a622; color: #95a5a6; border: 1px solid #95a5a655; }
+  .review-info {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #999;
+  }
+  .review-info .stars { color: #f1c40f; }
+  .review-info .count { color: #aaa; }
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .status-row label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    flex-shrink: 0;
+  }
+  .status-select {
+    flex: 1;
+    background: #09090f;
+    color: #e0e0e8;
+    border: 1px solid #2a2a3a;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+  }
+  .status-select:focus { border-color: #e74c3c; }
+  .email-preview {
+    background: #09090f;
+    border: 1px solid #1e1e2a;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  .email-preview .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: #555;
+    margin-bottom: 4px;
+  }
+  .email-preview .subject { color: #ccc; }
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .btn-primary {
+    background: #e74c3c;
+    color: #fff;
+  }
+  .btn-primary:hover { background: #c0392b; }
+  .btn-secondary {
+    background: transparent;
+    color: #e74c3c;
+    border: 1px solid #e74c3c44;
+  }
+  .btn-secondary:hover { background: #e74c3c15; }
+  .btn-muted {
+    background: transparent;
+    color: #888;
+    border: 1px solid #2a2a3a;
+  }
+  .btn-muted:hover { background: #1e1e2a; color: #ccc; }
+
+  /* Timeline */
+  .timeline-section {
+    background: #111118;
+    border: 1px solid #1e1e2a;
+    border-radius: 12px;
+    padding: 32px;
+  }
+  .timeline-section h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 28px;
+  }
+  .timeline {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    height: 3px;
+    background: #1e1e2a;
+    z-index: 0;
+  }
+  .timeline-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+  .step-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #1e1e2a;
+    border: 3px solid #e74c3c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+  .step-dot .icon { font-size: 16px; }
+  .step-day {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #e74c3c;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .step-name {
+    font-size: 14px;
+    color: #ccc;
+    font-weight: 600;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+  .step-desc {
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    max-width: 160px;
+  }
+  .timeline-arrow {
+    display: flex;
+    align-items: center;
+    padding-top: 8px;
+    color: #e74c3c44;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .stats-bar { flex-wrap: wrap; }
+    .stat-item { flex: 1 1 50%; border-bottom: 1px solid #1e1e2a; }
+    .prospects-grid { grid-template-columns: 1fr; }
+    .timeline { flex-direction: column; align-items: flex-start; gap: 24px; }
+    .timeline::before {
+      top: 0; bottom: 0; left: 19px; right: auto;
+      width: 3px; height: auto;
+    }
+    .timeline-step { flex-direction: row; gap: 16px; }
+    .timeline-arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <h1>Outreach Agent <span>— E17Studios</span></h1>
+  <nav class="header-nav">
+    <a href="/admin/">CRM Dashboard</a>
+    <a href="/admin/lead-scoring.html">Lead Scoring</a>
+    <a href="/admin/sequence-builder.html">Sequences</a>
+    <a href="/admin/client-success.html">Clients</a>
+  </nav>
+</header>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-number">15</span>
+    <div class="stat-label">Prospects Found</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-number">9</span>
+    <div class="stat-label">Contacted</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-number">7</span>
+    <div class="stat-label">Previews Sent</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-number">6</span>
+    <div class="stat-label">Paying</div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<main class="main">
+  <h2 class="section-title">Prospect Pipeline</h2>
+
+  <div class="prospects-grid" id="prospectsGrid"></div>
+
+  <!-- Email Sequence Timeline -->
+  <div class="timeline-section">
+    <h2>4-Step Email Sequence</h2>
+    <div class="timeline">
+      <div class="timeline-step">
+        <div class="step-dot"><span class="icon">&#9993;</span></div>
+        <div class="step-day">Day 0</div>
+        <div class="step-name">Pitch</div>
+        <div class="step-desc">Initial outreach with free preview link and value proposition</div>
+      </div>
+      <div class="timeline-arrow">&#10141;</div>
+      <div class="timeline-step">
+        <div class="step-dot"><span class="icon">&#128276;</span></div>
+        <div class="step-day">Day 3</div>
+        <div class="step-name">Nudge</div>
+        <div class="step-desc">Gentle follow-up asking if they viewed the preview</div>
+      </div>
+      <div class="timeline-arrow">&#10141;</div>
+      <div class="timeline-step">
+        <div class="step-dot"><span class="icon">&#11088;</span></div>
+        <div class="step-day">Day 7</div>
+        <div class="step-name">Social Proof</div>
+        <div class="step-desc">Share success stories and competitor insights</div>
+      </div>
+      <div class="timeline-arrow">&#10141;</div>
+      <div class="timeline-step">
+        <div class="step-dot"><span class="icon">&#128075;</span></div>
+        <div class="step-day">Day 14</div>
+        <div class="step-name">Breakup</div>
+        <div class="step-desc">Final message - create urgency with limited-time offer</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const prospects = [
+  {
+    name: 'Morris Dry Cleaners',
+    reviews: 669,
+    rating: 4.9,
+    lead: 'A',
+    status: 'paying',
+    subject: 'Morris Dry Cleaners — your new website is ready to preview'
+  },
+  {
+    name: 'Vanish Dry Cleaners',
+    reviews: 175,
+    rating: 4.7,
+    lead: 'A',
+    status: 'paying',
+    subject: 'Vanish — we built you a free website preview'
+  },
+  {
+    name: 'Lagoon Eco-Friendly',
+    reviews: 99,
+    rating: 4.8,
+    lead: 'B',
+    status: 'paying',
+    subject: 'Lagoon — a brand-new website designed just for you'
+  },
+  {
+    name: 'Pressed 2 Perfection',
+    reviews: 90,
+    rating: 4.8,
+    lead: 'B',
+    status: 'paying',
+    subject: 'Pressed 2 Perfection — stand out online with a free preview'
+  },
+  {
+    name: 'Apollo Dry Cleaners',
+    reviews: 63,
+    rating: 4.1,
+    lead: 'C',
+    status: 'paying',
+    subject: 'Apollo — see what your new website could look like'
+  },
+  {
+    name: 'Supreme Dry Cleaners',
+    reviews: 423,
+    rating: 4.8,
+    lead: 'A',
+    status: 'paying',
+    subject: 'Supreme — your new website is live and ranking in E17'
+  }
+];
+
+const statusLabels = {
+  new: 'New Lead',
+  contacted: 'Contacted',
+  preview_sent: 'Preview Sent',
+  follow_up: 'Follow-up Sent',
+  paying: 'Paying Client',
+  lost: 'Lost'
+};
+
+function renderStars(rating) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5 ? 1 : 0;
+  let s = '';
+  for (let i = 0; i < full; i++) s += '&#9733;';
+  if (half) s += '&#9734;';
+  return s;
+}
+
+function getButtons(status) {
+  switch (status) {
+    case 'new':
+      return `<button class="btn btn-primary" onclick="sendAction(this, 'pitch')">Send Pitch</button>`;
+    case 'contacted':
+      return `<button class="btn btn-primary" onclick="sendAction(this, 'follow-up')">Send Follow-up</button>
+              <button class="btn btn-muted" onclick="sendAction(this, 'breakup')">Send Breakup</button>`;
+    case 'preview_sent':
+      return `<button class="btn btn-secondary" onclick="sendAction(this, 'follow-up')">Send Follow-up</button>
+              <button class="btn btn-muted" onclick="sendAction(this, 'breakup')">Send Breakup</button>`;
+    case 'follow_up':
+      return `<button class="btn btn-muted" onclick="sendAction(this, 'breakup')">Send Breakup</button>`;
+    default:
+      return '';
+  }
+}
+
+function renderCards() {
+  const grid = document.getElementById('prospectsGrid');
+  grid.innerHTML = prospects.map((p, i) => `
+    <div class="prospect-card">
+      <div class="card-top">
+        <div class="business-name">${p.name}</div>
+        <div class="lead-badge lead-${p.lead}">${p.lead}</div>
+      </div>
+      <div class="review-info">
+        <span class="stars">${renderStars(p.rating)}</span>
+        <span class="count">${p.reviews} reviews</span>
+        <span>${p.rating} rating</span>
+      </div>
+      <div class="status-row">
+        <label>Status</label>
+        <select class="status-select" data-index="${i}" onchange="updateStatus(this)">
+          ${Object.entries(statusLabels).map(([val, label]) =>
+            `<option value="${val}"${val === p.status ? ' selected' : ''}>${label}</option>`
+          ).join('')}
+        </select>
+      </div>
+      <div class="email-preview">
+        <div class="label">Email Subject</div>
+        <div class="subject">${p.subject}</div>
+      </div>
+      <div class="card-actions" id="actions-${i}">
+        ${getButtons(p.status)}
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateStatus(select) {
+  const idx = parseInt(select.dataset.index);
+  prospects[idx].status = select.value;
+  const actionsEl = document.getElementById('actions-' + idx);
+  actionsEl.innerHTML = getButtons(select.value);
+}
+
+function sendAction(btn, type) {
+  const orig = btn.textContent;
+  btn.textContent = 'Sent!';
+  btn.disabled = true;
+  btn.style.opacity = '0.6';
+  setTimeout(() => {
+    btn.textContent = orig;
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }, 2000);
+}
+
+renderCards();
+</script>
+
+</body>
+</html>

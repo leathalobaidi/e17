@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Pressed 2 Perfection — Premium Dry Cleaning | 90 Reviews ★4.8</title>
+    <meta name="description" content="Premium dry cleaning and pressing in Walthamstow E17. 90 five-star reviews. Pressed to perfection, every single time.">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--purple:#5b2d8e;--purple-light:#7b4db0;--lavender:#e8daf5;--lilac:#f5f0fa;--gold:#d4a853;--white:#fff;--text:#2a1a3e;--text-muted:#7a6a8e;--radius:12px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:var(--text);background:var(--lilac)}
+        .container{max-width:1100px;margin:0 auto;padding:0 20px}
+        a{text-decoration:none;color:inherit}
+        .nav{background:var(--purple);padding:16px 0;position:sticky;top:0;z-index:100}
+        .nav-inner{display:flex;justify-content:space-between;align-items:center}
+        .nav-brand{color:#fff;font-weight:800;font-size:1.2rem}.nav-brand span{color:var(--lavender)}
+        .nav-links{display:flex;gap:24px;list-style:none}
+        .nav-links a{color:rgba(255,255,255,.8);font-size:.9rem;font-weight:500}
+        .nav-links a:hover{color:var(--lavender)}
+        .nav-cta{background:var(--gold);color:var(--purple);padding:10px 24px;border-radius:var(--radius);font-weight:700;font-size:.9rem}
+
+        .hero{background:linear-gradient(135deg,var(--purple),var(--purple-light));padding:80px 0 60px;text-align:center;color:#fff;overflow:hidden;position:relative}
+        .hero::before{content:'✨';position:absolute;top:30px;right:12%;font-size:6rem;opacity:.1}
+        .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(212,168,83,.15);border:1px solid rgba(212,168,83,.3);padding:8px 20px;border-radius:50px;font-size:.85rem;color:var(--gold);margin-bottom:24px}
+        .hero h1{font-size:2.8rem;font-weight:900;letter-spacing:-.03em;margin-bottom:16px;line-height:1.1}
+        .hero h1 span{color:var(--gold)}
+        .hero p{font-size:1.15rem;color:rgba(255,255,255,.7);max-width:560px;margin:0 auto 32px}
+        .hero-cta{display:inline-block;background:var(--gold);color:var(--purple);padding:16px 40px;border-radius:var(--radius);font-weight:800;font-size:1.1rem;transition:transform .2s}
+        .hero-cta:hover{transform:translateY(-3px)}
+        .hero-stats{display:flex;justify-content:center;gap:48px;margin-top:40px}
+        .hero-stat-num{font-size:2rem;font-weight:900;color:var(--gold)}
+        .hero-stat-label{font-size:.85rem;color:rgba(255,255,255,.6);margin-top:4px}
+
+        .tagline{padding:48px 0;background:var(--purple);text-align:center}
+        .tagline-text{font-size:1.6rem;font-weight:300;color:rgba(255,255,255,.7);font-style:italic;letter-spacing:.02em}
+        .tagline-text em{color:var(--gold);font-weight:700;font-style:normal}
+
+        .services{padding:80px 0}
+        .section-title{text-align:center;font-size:2rem;font-weight:800;margin-bottom:12px}
+        .section-sub{text-align:center;color:var(--text-muted);margin-bottom:48px}
+        .services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+        .service-card{background:var(--white);border-radius:var(--radius);padding:32px 20px;text-align:center;border:1px solid var(--lavender);transition:transform .2s,box-shadow .2s}
+        .service-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(91,45,142,.1)}
+        .service-icon{font-size:2.5rem;margin-bottom:16px}
+        .service-card h3{font-size:1rem;font-weight:700;margin-bottom:8px}
+        .service-card p{color:var(--text-muted);font-size:.85rem;line-height:1.5}
+
+        .reviews{padding:60px 0;background:var(--white)}
+        .reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+        .review-card{background:var(--lilac);border-radius:var(--radius);padding:24px;border:1px solid var(--lavender)}
+        .review-stars{color:var(--purple);font-size:1.1rem;margin-bottom:12px}
+        .review-text{color:var(--text-muted);font-size:.92rem;line-height:1.6;margin-bottom:16px;font-style:italic}
+        .review-author{font-weight:700;font-size:.85rem;color:var(--purple)}
+
+        .map-section{padding:60px 0}
+        .map-section h2{text-align:center;font-size:1.8rem;font-weight:800;margin-bottom:32px}
+        .map-wrap{border-radius:var(--radius);overflow:hidden;border:2px solid var(--lavender);height:350px}
+        .map-wrap iframe{width:100%;height:100%;border:0}
+        .map-info{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:32px}
+        .map-info-card{text-align:center;padding:16px}
+        .map-info-card h4{font-weight:700;margin-bottom:4px}
+        .map-info-card p{color:var(--text-muted);font-size:.9rem}
+
+        .cta-section{background:linear-gradient(135deg,var(--purple),#8a5cc0);padding:60px 0;text-align:center;color:#fff}
+        .cta-section h2{font-size:2rem;font-weight:900;margin-bottom:12px}
+        .cta-section p{font-size:1.1rem;margin-bottom:32px;opacity:.85}
+        .cta-btn{display:inline-block;background:var(--gold);color:var(--purple);padding:16px 40px;border-radius:var(--radius);font-weight:800;font-size:1.1rem;transition:transform .2s}
+        .cta-btn:hover{transform:translateY(-3px)}
+
+        .footer{background:var(--purple);padding:40px 0;color:rgba(255,255,255,.5);text-align:center;font-size:.85rem}
+        .footer a{color:var(--lavender)}
+
+        @media(max-width:768px){.hero h1{font-size:2rem}.hero-stats{flex-direction:column;gap:16px}.services-grid{grid-template-columns:1fr 1fr}.reviews-grid,.map-info{grid-template-columns:1fr}.nav-links{display:none}}
+    </style>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"DryCleaningOrLaundry","name":"Pressed 2 Perfection","address":{"@type":"PostalAddress","streetAddress":"28 Hoe St","addressLocality":"Walthamstow","postalCode":"E17 4PG","addressCountry":"GB"},"telephone":"020 8527 3456","aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","reviewCount":"90"},"priceRange":"£££"}
+    </script>
+</head>
+<body>
+<nav class="nav"><div class="container nav-inner"><a class="nav-brand">Pressed 2 <span>Perfection</span></a><ul class="nav-links"><li><a href="#services">Services</a></li><li><a href="#reviews">Reviews</a></li><li><a href="#location">Find Us</a></li><li><a href="#contact" class="nav-cta">Book Premium</a></li></ul></div></nav>
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">✨ Premium Dry Cleaning — Walthamstow E17</div>
+        <h1>Pressed 2<br><span>Perfection.</span></h1>
+        <p>The name says it all. Premium dry cleaning, expert pressing, and impeccable attention to detail. 90 five-star reviews.</p>
+        <a href="#contact" class="hero-cta">Book Premium Service →</a>
+        <div class="hero-stats">
+            <div><div class="hero-stat-num">90</div><div class="hero-stat-label">5-Star Reviews</div></div>
+            <div><div class="hero-stat-num">4.8★</div><div class="hero-stat-label">Google Rating</div></div>
+            <div><div class="hero-stat-num">Premium</div><div class="hero-stat-label">Quality Guarantee</div></div>
+        </div>
+    </div>
+</section>
+
+<div class="tagline"><div class="container"><div class="tagline-text">"Our name is our promise — every garment <em>Pressed 2 Perfection</em>"</div></div></div>
+
+<section class="services" id="services">
+    <div class="container">
+        <h2 class="section-title">Premium Services</h2>
+        <p class="section-sub">Where quality meets craftsmanship</p>
+        <div class="services-grid">
+            <div class="service-card"><div class="service-icon">👔</div><h3>Executive Pressing</h3><p>Hand-finished shirts and suits for the professional who demands perfection.</p></div>
+            <div class="service-card"><div class="service-icon">👗</div><h3>Designer Care</h3><p>Specialist handling for luxury brands and delicate fabrics.</p></div>
+            <div class="service-card"><div class="service-icon">✂️</div><h3>Expert Alterations</h3><p>Precision tailoring from simple hems to complex restructuring.</p></div>
+            <div class="service-card"><div class="service-icon">🏠</div><h3>Household Items</h3><p>Curtains, duvets, table linens — freshened to perfection.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="reviews" id="reviews">
+    <div class="container">
+        <h2 class="section-title">90 Five-Star Reviews</h2>
+        <div class="reviews-grid">
+            <div class="review-card"><div class="review-stars">★★★★★</div><div class="review-text">"They hand-finish every shirt. You can feel the difference. Worth every penny for the quality."</div><div class="review-author">— Richard F.</div></div>
+            <div class="review-card"><div class="review-stars">★★★★★</div><div class="review-text">"Brought in my Burberry trench coat. It came back looking better than when I bought it. Exceptional."</div><div class="review-author">— Sophia W.</div></div>
+            <div class="review-card"><div class="review-stars">★★★★★</div><div class="review-text">"The attention to detail is unmatched. Every button wrapped, every crease immaculate. True perfectionists."</div><div class="review-author">— Kenji M.</div></div>
+        </div>
+    </div>
+</section>
+
+<section class="map-section" id="location">
+    <div class="container">
+        <h2>Visit Our Studio</h2>
+        <div class="map-wrap"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2479.5!2d-0.021!3d51.583!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTHCsDM1JzAwIk4!5e0!3m2!1sen!2suk!4v1" loading="lazy"></iframe></div>
+        <div class="map-info">
+            <div class="map-info-card"><h4>📍 Address</h4><p>28 Hoe Street, Walthamstow E17 4PG</p></div>
+            <div class="map-info-card"><h4>🕐 Hours</h4><p>Mon-Fri 7:30am-7pm · Sat 8:30am-5pm</p></div>
+            <div class="map-info-card"><h4>📞 Phone</h4><p><a href="tel:02085273456">020 8527 3456</a></p></div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section" id="contact">
+    <div class="container">
+        <h2>Experience the Difference</h2>
+        <p>Try our premium service — you won't go back to ordinary dry cleaning</p>
+        <a href="tel:02085273456" class="cta-btn">✨ Call: 020 8527 3456</a>
+    </div>
+</section>
+
+<footer class="footer"><div class="container"><p>© 2026 Pressed 2 Perfection — 28 Hoe Street, Walthamstow E17 4PG</p><p style="margin-top:8px">Website by <a href="/e17studios/">E17Studios.com</a></p></div></footer>
+</body>
+</html>

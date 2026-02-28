@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Monthly Report — Morris Dry Cleaners | February 2026</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#1a1f3a;--accent:#c8a951;--green:#27ae60;--blue:#3498db;--red:#e74c3c;--text:#2a2a3e;--text-muted:#6a6a7e;--bg:#fafbfc;--white:#fff;--border:#e8eaf0;--radius:12px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text)}
+        .container{max-width:800px;margin:0 auto;padding:32px 24px}
+        a{text-decoration:none;color:inherit}
+
+        .report-header{background:var(--primary);color:#fff;padding:32px;border-radius:var(--radius);margin-bottom:32px;display:flex;justify-content:space-between;align-items:center}
+        .report-header h1{font-size:1.4rem;font-weight:800}
+        .report-header p{color:rgba(255,255,255,.6);font-size:.85rem;margin-top:4px}
+        .report-plan{background:var(--accent);color:var(--primary);padding:8px 20px;border-radius:50px;font-weight:700;font-size:.85rem}
+
+        .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+        .kpi{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center}
+        .kpi-num{font-size:2rem;font-weight:900;color:var(--primary)}
+        .kpi-label{font-size:.75rem;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+        .kpi-change{font-size:.8rem;margin-top:4px;font-weight:600}
+        .kpi-up{color:var(--green)}
+        .kpi-down{color:var(--red)}
+
+        .section{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px}
+        .section h2{font-size:1.1rem;font-weight:800;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+
+        table{width:100%;border-collapse:collapse;font-size:.88rem}
+        th{text-align:left;font-weight:700;padding:10px 12px;border-bottom:2px solid var(--border);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted)}
+        td{padding:10px 12px;border-bottom:1px solid var(--border)}
+        tr:last-child td{border-bottom:none}
+
+        .bar-container{width:100%;height:8px;background:#eee;border-radius:4px;overflow:hidden}
+        .bar-fill{height:100%;border-radius:4px;transition:width .3s}
+        .bar-blue{background:var(--blue)}
+        .bar-green{background:var(--green)}
+        .bar-gold{background:var(--accent)}
+
+        .device-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+        .device-name{width:80px;font-size:.85rem;font-weight:600}
+        .device-bar{flex:1}
+        .device-pct{width:40px;text-align:right;font-size:.85rem;font-weight:700;color:var(--text-muted)}
+
+        .recommendations{list-style:none}
+        .recommendations li{padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:start}
+        .recommendations li:last-child{border-bottom:none}
+        .rec-icon{font-size:1.2rem;flex-shrink:0}
+        .rec-text h4{font-size:.9rem;font-weight:700;margin-bottom:2px}
+        .rec-text p{font-size:.82rem;color:var(--text-muted);line-height:1.5}
+
+        .what-we-did{list-style:none}
+        .what-we-did li{padding:8px 0;font-size:.88rem;display:flex;gap:8px;align-items:center}
+        .what-we-did li::before{content:'✅';font-size:.8rem}
+
+        .print-btn{display:block;margin:32px auto 0;padding:12px 32px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-weight:700;font-size:.95rem;cursor:pointer;transition:opacity .2s}
+        .print-btn:hover{opacity:.85}
+
+        .footer-bar{text-align:center;margin-top:32px;padding:16px;color:var(--text-muted);font-size:.8rem}
+        .footer-bar a{color:var(--accent);font-weight:600}
+
+        @media print{
+            body{background:#fff}
+            .print-btn,.footer-bar{display:none}
+            .container{padding:0}
+            .report-header{border-radius:0}
+        }
+        @media(max-width:768px){.kpi-grid{grid-template-columns:1fr 1fr}}
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="report-header">
+        <div>
+            <h1>Morris Dry Cleaners</h1>
+            <p>Monthly Performance Report — February 2026</p>
+        </div>
+        <div class="report-plan">Professional Plan — £49/mo</div>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-num">847</div><div class="kpi-label">Page Views</div><div class="kpi-change kpi-up">↑ 23% vs Jan</div></div>
+        <div class="kpi"><div class="kpi-num">34</div><div class="kpi-label">Call Clicks</div><div class="kpi-change kpi-up">↑ 15% vs Jan</div></div>
+        <div class="kpi"><div class="kpi-num">61</div><div class="kpi-label">Map Clicks</div><div class="kpi-change kpi-up">↑ 8% vs Jan</div></div>
+        <div class="kpi"><div class="kpi-num">669</div><div class="kpi-label">Google Reviews</div><div class="kpi-change kpi-up">↑ 12 new</div></div>
+    </div>
+
+    <div class="section">
+        <h2>Traffic Sources</h2>
+        <table>
+            <thead><tr><th>Source</th><th>Visitors</th><th>%</th><th>Trend</th></tr></thead>
+            <tbody>
+                <tr><td>Google Search</td><td>412</td><td>48.6%</td><td style="color:var(--green)">↑ 31%</td></tr>
+                <tr><td>Direct / Bookmark</td><td>203</td><td>24.0%</td><td style="color:var(--green)">↑ 12%</td></tr>
+                <tr><td>Google Maps</td><td>148</td><td>17.5%</td><td style="color:var(--green)">↑ 18%</td></tr>
+                <tr><td>Social Media</td><td>52</td><td>6.1%</td><td style="color:var(--text-muted)">—</td></tr>
+                <tr><td>Referral</td><td>32</td><td>3.8%</td><td style="color:var(--green)">↑ 5%</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Top Search Terms</h2>
+        <table>
+            <thead><tr><th>Search Term</th><th>Impressions</th><th>Clicks</th><th>Position</th></tr></thead>
+            <tbody>
+                <tr><td>dry cleaners walthamstow</td><td>1,240</td><td>186</td><td>3.2</td></tr>
+                <tr><td>dry cleaning near me e17</td><td>890</td><td>124</td><td>4.1</td></tr>
+                <tr><td>morris dry cleaners</td><td>340</td><td>289</td><td>1.0</td></tr>
+                <tr><td>alterations walthamstow</td><td>210</td><td>42</td><td>5.8</td></tr>
+                <tr><td>laundry service e17</td><td>180</td><td>31</td><td>6.2</td></tr>
+                <tr><td>suit dry cleaning east london</td><td>145</td><td>22</td><td>7.4</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Device Breakdown</h2>
+        <div class="device-row"><div class="device-name">Mobile</div><div class="device-bar"><div class="bar-container"><div class="bar-fill bar-blue" style="width:68%"></div></div></div><div class="device-pct">68%</div></div>
+        <div class="device-row"><div class="device-name">Desktop</div><div class="device-bar"><div class="bar-container"><div class="bar-fill bar-green" style="width:24%"></div></div></div><div class="device-pct">24%</div></div>
+        <div class="device-row"><div class="device-name">Tablet</div><div class="device-bar"><div class="bar-container"><div class="bar-fill bar-gold" style="width:8%"></div></div></div><div class="device-pct">8%</div></div>
+    </div>
+
+    <div class="section">
+        <h2>Google Reviews Update</h2>
+        <table>
+            <thead><tr><th>Metric</th><th>This Month</th><th>Last Month</th><th>Change</th></tr></thead>
+            <tbody>
+                <tr><td>Total Reviews</td><td>669</td><td>657</td><td style="color:var(--green)">+12</td></tr>
+                <tr><td>Average Rating</td><td>4.9★</td><td>4.9★</td><td>Steady</td></tr>
+                <tr><td>Response Rate</td><td>92%</td><td>88%</td><td style="color:var(--green)">↑ 4%</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>What We Did This Month</h2>
+        <ul class="what-we-did">
+            <li>Updated opening hours for half-term schedule</li>
+            <li>Added 12 new Google reviews to the showcase</li>
+            <li>Optimised page speed (now loads in 0.8 seconds)</li>
+            <li>Updated Schema markup with latest review count</li>
+            <li>Submitted updated sitemap to Google Search Console</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Recommendations</h2>
+        <ul class="recommendations">
+            <li><div class="rec-icon">📸</div><div class="rec-text"><h4>Add Professional Photos</h4><p>Real photos of your shop and team build trust. We can arrange a free photo session and add them to your site.</p></div></li>
+            <li><div class="rec-icon">⭐</div><div class="rec-text"><h4>Ask for More Reviews</h4><p>You're averaging 12 new reviews/month. A small sign at the counter reminding customers to leave a review could push this to 20+.</p></div></li>
+            <li><div class="rec-icon">📱</div><div class="rec-text"><h4>Consider Social Media</h4><p>A simple Instagram showing before/after transformations could drive significant traffic. We can help set this up.</p></div></li>
+        </ul>
+    </div>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+
+    <div class="footer-bar">
+        <p>Report generated by <a href="/e17studios/">E17Studios.com</a> · Professional Plan · Next report: March 2026</p>
+    </div>
+</div>
+</body>
+</html>
