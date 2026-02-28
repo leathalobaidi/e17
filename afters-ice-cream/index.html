@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Afters — Walthamstow's Late Night Dessert Parlour | E17</title>
+<meta name="description" content="Afters Ice Cream Parlour — sundaes, falooda, waffles, shakes & more. Open until midnight. 589 Forest Road, Walthamstow E17.">
+<meta name="keywords" content="ice cream Walthamstow, dessert E17, falooda London, sundae parlour, Afters ice cream, late night dessert London">
+
+<!-- Schema.org -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "IceCreamShop",
+  "name": "Afters",
+  "description": "Walthamstow's favourite late-night dessert parlour. Sundaes, falooda, waffles, shakes and more.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "589 Forest Road",
+    "addressLocality": "Walthamstow",
+    "postalCode": "E17 4PP",
+    "addressCountry": "GB"
+  },
+  "telephone": "07738726754",
+  "openingHours": ["Mo-Th 12:00-23:30", "Fr-Sa 12:00-00:00", "Su 12:00-23:30"],
+  "servesCuisine": "Ice Cream, Desserts"
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --midnight:#0a0814;
+  --surface:#131020;
+  --surface2:#1a1630;
+  --card:#201c38;
+  --coral:#ff4b6e;
+  --coral-dim:rgba(255,75,110,.15);
+  --coral-glow:rgba(255,75,110,.35);
+  --mint:#7ff5c2;
+  --mint-dim:rgba(127,245,194,.12);
+  --cream:#fff4e6;
+  --cream-dim:rgba(255,244,230,.7);
+  --muted:#8b82a8;
+  --border:rgba(255,255,255,.07);
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--midnight);
+  color:var(--cream);
+  overflow-x:hidden;
+  line-height:1.6;
+}
+
+/* ── Grain texture ── */
+body::after{
+  content:'';
+  position:fixed;inset:0;pointer-events:none;z-index:999;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity:.035;
+}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:100;
+  padding:18px 32px;
+  background:rgba(10,8,20,.85);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.nav-brand{
+  font-family:'Fraunces',serif;
+  font-size:1.5rem;font-weight:900;
+  color:var(--cream);letter-spacing:-.02em;
+  display:flex;align-items:center;gap:8px;
+}
+.nav-brand .scoop{
+  display:inline-block;
+  font-size:1.4rem;
+  animation:bobble 3s ease-in-out infinite;
+}
+@keyframes bobble{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-4px) rotate(5deg)}}
+
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{
+  color:var(--muted);text-decoration:none;
+  font-size:.9rem;font-weight:500;letter-spacing:.02em;
+  transition:color .2s;
+}
+.nav-links a:hover{color:var(--coral)}
+.nav-order{
+  background:var(--coral);color:#fff;
+  padding:10px 22px;border-radius:100px;
+  font-weight:600;font-size:.88rem;
+  text-decoration:none;transition:all .2s;
+  letter-spacing:.02em;
+}
+.nav-order:hover{background:#ff6a85;transform:translateY(-1px);box-shadow:0 8px 24px var(--coral-glow)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  padding:80px 32px 0;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Radial glow behind headline */
+.hero::before{
+  content:'';
+  position:absolute;top:-10%;left:50%;transform:translateX(-50%);
+  width:900px;height:700px;
+  background:radial-gradient(ellipse at center,rgba(255,75,110,.12) 0%,transparent 65%);
+  pointer-events:none;
+}
+
+/* Floating blobs */
+.blob{
+  position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;
+  opacity:.35;animation:drift 8s ease-in-out infinite alternate;
+}
+.blob-1{width:350px;height:350px;background:var(--coral);top:5%;right:-8%;animation-delay:0s}
+.blob-2{width:280px;height:280px;background:#6b4fff;bottom:15%;left:-5%;animation-delay:-3s}
+.blob-3{width:200px;height:200px;background:var(--mint);bottom:30%;right:15%;animation-delay:-5s;opacity:.2}
+
+@keyframes drift{
+  from{transform:translate(0,0) scale(1)}
+  to{transform:translate(20px,30px) scale(1.08)}
+}
+
+.hero-content{
+  max-width:780px;
+  position:relative;z-index:2;
+}
+
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--coral-dim);border:1px solid rgba(255,75,110,.3);
+  padding:7px 16px;border-radius:100px;
+  font-size:.78rem;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--coral);
+  margin-bottom:28px;
+  animation:fadeUp .6s ease both;
+}
+.hero-badge .dot{width:7px;height:7px;background:var(--coral);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+.hero h1{
+  font-family:'Fraunces',serif;
+  font-size:clamp(3.5rem,9vw,7.5rem);
+  font-weight:900;
+  line-height:.95;
+  letter-spacing:-.04em;
+  color:var(--cream);
+  animation:fadeUp .7s .1s ease both;
+}
+.hero h1 .word-sweet{
+  color:var(--coral);
+  font-style:italic;
+  display:block;
+  position:relative;
+}
+
+/* Drip animation under "Sweet" */
+.hero h1 .word-sweet::after{
+  content:'';
+  position:absolute;bottom:-12px;left:0;
+  width:100%;height:3px;
+  background:linear-gradient(90deg,var(--coral),transparent);
+  border-radius:2px;
+}
+
+.hero-sub{
+  font-size:clamp(1rem,2vw,1.2rem);
+  color:var(--muted);line-height:1.65;
+  max-width:520px;margin:28px 0 40px;
+  animation:fadeUp .7s .2s ease both;
+  font-weight:300;
+}
+
+.hero-cta-row{
+  display:flex;gap:16px;flex-wrap:wrap;
+  animation:fadeUp .7s .3s ease both;
+}
+.btn-primary{
+  background:var(--coral);color:#fff;
+  padding:16px 36px;border-radius:100px;
+  font-weight:600;font-size:1rem;
+  text-decoration:none;
+  transition:all .25s;display:inline-block;
+  letter-spacing:.01em;
+}
+.btn-primary:hover{background:#ff6a85;transform:translateY(-2px);box-shadow:0 12px 32px var(--coral-glow)}
+.btn-ghost{
+  color:var(--cream-dim);
+  padding:16px 28px;border:1px solid var(--border);
+  border-radius:100px;
+  text-decoration:none;font-size:.95rem;
+  transition:all .2s;display:inline-block;
+}
+.btn-ghost:hover{border-color:var(--coral);color:var(--coral)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* Hours banner */
+.hours-banner{
+  margin-top:60px;
+  display:flex;gap:2px;
+  animation:fadeUp .7s .4s ease both;
+}
+.hours-pill{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  padding:14px 24px;
+  display:flex;flex-direction:column;gap:2px;
+  flex:1;
+}
+.hours-pill:first-child{border-radius:12px 0 0 12px}
+.hours-pill:last-child{border-radius:0 12px 12px 0}
+.hours-day{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.hours-time{font-size:1rem;font-weight:600;color:var(--cream)}
+.hours-time.late{color:var(--coral)}
+
+/* Wavy divider */
+.wave-divider{
+  display:block;width:100%;height:80px;
+  fill:var(--surface);
+}
+.wave-divider.flip{transform:scaleY(-1)}
+
+/* ── MENU SECTION ── */
+.section{padding:80px 32px;max-width:1100px;margin:0 auto}
+.section-bg{background:var(--surface)}
+
+.tag{
+  font-size:.72rem;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--coral);
+  margin-bottom:14px;display:block;
+  font-family:'Outfit',sans-serif;
+}
+.section h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2rem,5vw,3.5rem);
+  font-weight:900;letter-spacing:-.03em;
+  line-height:1.05;color:var(--cream);
+  margin-bottom:12px;
+}
+.section-lead{
+  color:var(--muted);font-size:1rem;
+  max-width:520px;line-height:1.7;
+  margin-bottom:56px;font-weight:300;
+}
+
+/* Menu cards */
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:16px;
+}
+.menu-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:28px 24px;
+  position:relative;overflow:hidden;
+  transition:all .3s;cursor:default;
+}
+.menu-card::before{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(circle at top right,var(--coral-dim),transparent 70%);
+  opacity:0;transition:opacity .3s;
+}
+.menu-card:hover{transform:translateY(-4px);border-color:rgba(255,75,110,.25)}
+.menu-card:hover::before{opacity:1}
+
+.card-emoji{
+  font-size:2.8rem;
+  display:block;margin-bottom:16px;
+  transition:transform .3s;
+}
+.menu-card:hover .card-emoji{transform:scale(1.15) rotate(5deg)}
+
+.card-name{
+  font-family:'Fraunces',serif;
+  font-size:1.25rem;font-weight:700;
+  color:var(--cream);margin-bottom:6px;
+  letter-spacing:-.01em;
+}
+.card-desc{
+  color:var(--muted);font-size:.85rem;line-height:1.55;
+  font-weight:300;
+}
+.card-tag{
+  display:inline-block;margin-top:14px;
+  background:var(--coral-dim);color:var(--coral);
+  font-size:.72rem;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;padding:4px 10px;border-radius:100px;
+}
+
+/* ── SPECIALS ── */
+.specials-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;gap:16px;
+}
+.special-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:32px;
+  display:flex;justify-content:space-between;align-items:flex-start;
+  transition:all .3s;
+  position:relative;overflow:hidden;
+}
+.special-card.featured{
+  grid-column:1/-1;
+  background:linear-gradient(135deg,#1e1040,#2a1850);
+  border-color:rgba(127,245,194,.2);
+}
+.special-card.featured::after{
+  content:'';position:absolute;
+  top:-40px;right:-40px;
+  width:200px;height:200px;
+  background:radial-gradient(circle,var(--mint-dim),transparent);
+}
+.special-card:hover{transform:translateY(-3px);border-color:rgba(255,75,110,.3)}
+
+.special-info{}
+.special-label{
+  font-size:.72rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--mint);margin-bottom:8px;display:block;
+}
+.special-name{
+  font-family:'Fraunces',serif;
+  font-size:1.5rem;font-weight:700;color:var(--cream);
+  letter-spacing:-.02em;margin-bottom:8px;
+}
+.special-desc{color:var(--muted);font-size:.88rem;line-height:1.55;max-width:360px}
+.special-emoji{
+  font-size:3.5rem;flex-shrink:0;
+  transition:transform .3s;
+}
+.special-card:hover .special-emoji{transform:scale(1.1) rotate(-5deg)}
+
+/* ── LOCATION ── */
+.location-split{
+  display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+}
+.location-info{}
+.info-item{
+  display:flex;gap:16px;align-items:flex-start;
+  padding:20px 0;border-bottom:1px solid var(--border);
+}
+.info-item:first-child{padding-top:0}
+.info-icon{
+  width:42px;height:42px;flex-shrink:0;
+  background:var(--coral-dim);border:1px solid rgba(255,75,110,.2);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;
+}
+.info-label{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.info-value{color:var(--cream);font-size:.95rem;line-height:1.5}
+.info-value a{color:var(--coral);text-decoration:none}
+.info-value a:hover{text-decoration:underline}
+
+.map-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;
+  height:380px;position:relative;
+}
+.map-card iframe{width:100%;height:100%;border:0;filter:saturate(.8) brightness(.85)}
+
+/* ── REVIEWS ── */
+.reviews-strip{
+  display:flex;gap:16px;overflow-x:auto;
+  padding-bottom:8px;
+  scrollbar-width:none;
+}
+.reviews-strip::-webkit-scrollbar{display:none}
+.review-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:24px;
+  flex-shrink:0;width:300px;
+}
+.review-stars{color:var(--coral);font-size:1rem;margin-bottom:10px;letter-spacing:2px}
+.review-text{
+  color:var(--cream-dim);font-size:.88rem;line-height:1.6;
+  margin-bottom:14px;font-style:italic;font-weight:300;
+}
+.review-text::before{content:'"'}
+.review-text::after{content:'"'}
+.review-author{
+  font-size:.8rem;font-weight:600;color:var(--muted);
+  display:flex;justify-content:space-between;
+}
+
+/* ── LATE NIGHT CTA ── */
+.cta-section{
+  padding:120px 32px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta-section::before{
+  content:'';
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:700px;height:500px;
+  background:radial-gradient(ellipse,var(--coral-dim),transparent 65%);
+  pointer-events:none;
+}
+.cta-section h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2.5rem,7vw,5rem);
+  font-weight:900;letter-spacing:-.04em;
+  line-height:1;color:var(--cream);
+  margin-bottom:16px;position:relative;
+}
+.cta-section h2 em{color:var(--coral);font-style:italic}
+.cta-section p{
+  color:var(--muted);font-size:1.05rem;
+  margin-bottom:40px;position:relative;
+  font-weight:300;
+}
+.cta-section .open-until{
+  display:inline-block;
+  background:var(--coral-dim);border:1px solid rgba(255,75,110,.3);
+  color:var(--coral);padding:8px 20px;border-radius:100px;
+  font-size:.85rem;font-weight:600;margin-bottom:32px;position:relative;
+}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  padding:40px 32px;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:16px;
+}
+.footer-brand{
+  font-family:'Fraunces',serif;
+  font-size:1.2rem;font-weight:700;color:var(--cream);
+}
+.footer-meta{color:var(--muted);font-size:.82rem;line-height:1.6}
+.footer-meta a{color:var(--coral);text-decoration:none}
+.footer-badge{
+  background:var(--surface2);border:1px solid var(--border);
+  padding:8px 16px;border-radius:8px;
+  font-size:.75rem;color:var(--muted);
+}
+.footer-badge a{color:var(--muted);text-decoration:none}
+.footer-badge:hover{border-color:var(--coral)}
+.footer-badge a:hover{color:var(--coral)}
+
+/* ── Reveal ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  nav{padding:14px 20px}
+  .nav-links{display:none}
+  .hero{padding:60px 20px 0}
+  .hours-banner{flex-direction:column;gap:8px}
+  .hours-pill{border-radius:10px!important}
+  .section{padding:60px 20px}
+  .menu-grid{grid-template-columns:1fr 1fr}
+  .specials-grid{grid-template-columns:1fr}
+  .special-card.featured{grid-column:1}
+  .location-split{grid-template-columns:1fr}
+  .map-card{height:260px}
+  footer{flex-direction:column;text-align:center}
+}
+@media(max-width:480px){
+  .menu-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-brand">
+    <span class="scoop">🍦</span> Afters
+  </div>
+  <ul class="nav-links">
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#specials">Specials</a></li>
+    <li><a href="#find-us">Find Us</a></li>
+  </ul>
+  <a href="tel:07738726754" class="nav-order">Call & Order</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Open until Midnight Fri & Sat
+    </div>
+
+    <h1>
+      Walthamstow's
+      <span class="word-sweet">Sweetest</span>
+      Spot.
+    </h1>
+
+    <p class="hero-sub">
+      Sundaes, falooda, waffles, shakes and everything in between.
+      Late-night desserts done right — right here in E17 since 2004.
+    </p>
+
+    <div class="hero-cta-row">
+      <a href="#menu" class="btn-primary">See the Menu</a>
+      <a href="#find-us" class="btn-ghost">Find Us →</a>
+    </div>
+
+    <div class="hours-banner">
+      <div class="hours-pill">
+        <span class="hours-day">Mon – Thu</span>
+        <span class="hours-time">12:00 – 23:30</span>
+      </div>
+      <div class="hours-pill">
+        <span class="hours-day">Fri – Sat</span>
+        <span class="hours-time late">12:00 – 00:00 🌙</span>
+      </div>
+      <div class="hours-pill">
+        <span class="hours-day">Sunday</span>
+        <span class="hours-time">12:00 – 23:30</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Wavy divider -->
+<svg viewBox="0 0 1440 80" class="wave-divider" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z"/>
+</svg>
+
+<!-- ── MENU ── -->
+<div class="section-bg">
+<section id="menu" class="section">
+  <span class="tag">// What we do</span>
+  <h2>Something for<br><em style="font-style:italic;color:var(--coral)">every craving.</em></h2>
+  <p class="section-lead">Made fresh, served generous. Whatever you're after — we've got it.</p>
+
+  <div class="menu-grid reveal">
+    <div class="menu-card">
+      <span class="card-emoji">🍨</span>
+      <div class="card-name">Ice Cream</div>
+      <div class="card-desc">Scoops in cones or tubs — classic flavours and seasonal specials. Piled high, never stingy.</div>
+      <span class="card-tag">From £2.50</span>
+    </div>
+    <div class="menu-card">
+      <span class="card-emoji">🥛</span>
+      <div class="card-name">Falooda</div>
+      <div class="card-desc">The showstopper. Layered rose milk, vermicelli, basil seeds and scoops of ice cream. A East London favourite.</div>
+      <span class="card-tag">Signature</span>
+    </div>
+    <div class="menu-card">
+      <span class="card-emoji">🧇</span>
+      <div class="card-name">Waffles</div>
+      <div class="card-desc">Golden, crisp waffles served warm with your choice of sauce and ice cream on top. Perfect at any hour.</div>
+      <span class="card-tag">Customer Fave</span>
+    </div>
+    <div class="menu-card">
+      <span class="card-emoji">🍫</span>
+      <div class="card-name">Chocolate Shakes</div>
+      <div class="card-desc">Thick, indulgent shakes built around your favourite chocolate bars. Kinder, Ferrero, Oreo and more.</div>
+      <span class="card-tag">Loaded</span>
+    </div>
+    <div class="menu-card">
+      <span class="card-emoji">🥤</span>
+      <div class="card-name">Smoothies</div>
+      <div class="card-desc">Fresh fruit blended to order — tropical, berry or classic. A lighter option that still hits the spot.</div>
+      <span class="card-tag">Fresh Daily</span>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- Wavy divider flip -->
+<svg viewBox="0 0 1440 80" class="wave-divider flip" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="fill:var(--surface)">
+  <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z"/>
+</svg>
+
+<!-- ── SPECIALS ── -->
+<section id="specials" class="section">
+  <span class="tag">// House specials</span>
+  <h2>The ones everyone<br>keeps coming back for.</h2>
+  <p class="section-lead">A few of our most-loved creations — if you haven't tried them, you haven't really been to Afters.</p>
+
+  <div class="specials-grid reveal">
+    <div class="special-card featured">
+      <div class="special-info">
+        <span class="special-label">⭐ House Favourite</span>
+        <div class="special-name">The Famous Fudge Cake</div>
+        <div class="special-desc">Dense, rich, utterly indulgent. Our fudge cake comes with a scoop of ice cream and has been on the menu since day one — for good reason.</div>
+      </div>
+      <div class="special-emoji">🎂</div>
+    </div>
+
+    <div class="special-card">
+      <div class="special-info">
+        <span class="special-label">🍰 Cake of the Season</span>
+        <div class="special-name">Red Velvet</div>
+        <div class="special-desc">Velvety smooth with cream cheese frosting. Served by the slice or as a dessert plate with ice cream.</div>
+      </div>
+      <div class="special-emoji">❤️</div>
+    </div>
+
+    <div class="special-card">
+      <div class="special-info">
+        <span class="special-label">🌙 Late Night Pick</span>
+        <div class="special-name">Sundae Supreme</div>
+        <div class="special-desc">Three scoops, two sauces, whipped cream, sprinkles, a wafer. The full experience in one glass.</div>
+      </div>
+      <div class="special-emoji">🍧</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FIND US ── -->
+<div class="section-bg">
+<section id="find-us" class="section">
+  <span class="tag">// Find us</span>
+  <h2>We're right here<br>in <em style="font-style:italic;color:var(--coral)">E17.</em></h2>
+
+  <div class="location-split reveal">
+    <div class="location-info">
+      <div class="info-item">
+        <div class="info-icon">📍</div>
+        <div>
+          <div class="info-label">Address</div>
+          <div class="info-value">589 Forest Road<br>Walthamstow, London E17 4PP</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">🚇</div>
+        <div>
+          <div class="info-label">Nearest Station</div>
+          <div class="info-value">Walthamstow Central<br><span style="color:var(--muted);font-size:.85rem">Victoria line · 0.5 miles</span></div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">📞</div>
+        <div>
+          <div class="info-label">Phone</div>
+          <div class="info-value"><a href="tel:07738726754">077 3872 6754</a></div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">🕐</div>
+        <div>
+          <div class="info-label">Opening Hours</div>
+          <div class="info-value">
+            Mon–Thu: 12:00–23:30<br>
+            Fri–Sat: 12:00–<span style="color:var(--coral)">00:00 (midnight)</span><br>
+            Sunday: 12:00–23:30
+          </div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">📱</div>
+        <div>
+          <div class="info-label">Follow Us</div>
+          <div class="info-value">
+            <a href="https://www.instagram.com/afters_walthamstow/" target="_blank">@afters_walthamstow</a> on Instagram
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="map-card">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1241.5!2d-0.0184902!3d51.5905556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48761de66f838ba5%3A0x6da82e1a8de7a3ab!2sAfters!5e0!3m2!1sen!2suk!4v1"
+        allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ── REVIEWS ── -->
+<section class="section">
+  <span class="tag">// What people say</span>
+  <h2>The E17 verdict.</h2>
+  <p class="section-lead">Afters has been a Walthamstow favourite since 2004. Here's why people keep coming back.</p>
+
+  <div class="reviews-strip reveal">
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">The falooda is incredible — I've been coming here for years and it never disappoints. Perfect late-night spot.</div>
+      <div class="review-author"><span>Aisha M.</span><span>Google</span></div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">Portions are massive and prices are really fair. The chocolate shake is out of this world. My new favourite dessert place in London.</div>
+      <div class="review-author"><span>James T.</span><span>Google</span></div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">Came here after dinner and couldn't believe how good the waffles were. Staff are lovely too. A proper hidden gem in E17.</div>
+      <div class="review-author"><span>Priya K.</span><span>Google</span></div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★☆</div>
+      <div class="review-text">Love that they're open late. The fudge cake is genuinely one of the best things I've eaten. Will be back every weekend.</div>
+      <div class="review-author"><span>Marcus R.</span><span>Google</span></div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">A cute little ice cream parlour that's been here forever. Cheap, cheerful and absolutely delicious. What more do you want?</div>
+      <div class="review-author"><span>Leila F.</span><span>Google</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FINAL CTA ── -->
+<div class="section-bg">
+<section class="cta-section">
+  <div class="open-until">🌙 Open until midnight on weekends</div>
+  <h2>The night is<br><em>sweeter</em> at Afters.</h2>
+  <p>No reservations needed. Just show up. We'll handle the rest.</p>
+  <a href="tel:07738726754" class="btn-primary" style="font-size:1.1rem;padding:18px 44px">
+    Call 077 3872 6754
+  </a>
+  <div style="margin-top:20px">
+    <a href="https://maps.google.com/?q=589+Forest+Road+Walthamstow+E17" target="_blank" class="btn-ghost" style="font-size:.9rem">
+      Get Directions →
+    </a>
+  </div>
+</section>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-brand">🍦 Afters</div>
+  <div class="footer-meta">
+    589 Forest Road, Walthamstow, London E17 4PP<br>
+    <a href="tel:07738726754">077 3872 6754</a> ·
+    <a href="https://www.instagram.com/afters_walthamstow/" target="_blank">@afters_walthamstow</a>
+  </div>
+  <div class="footer-badge">
+    <a href="/e17/">Website by <strong>E17Studios</strong></a>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Stagger menu cards
+document.querySelectorAll('.menu-card').forEach((c, i) => {
+  c.style.transitionDelay = `${i * 0.07}s`;
+});
+document.querySelectorAll('.special-card').forEach((c, i) => {
+  c.style.transitionDelay = `${i * 0.1}s`;
+});
+</script>
+</body>
+</html>
